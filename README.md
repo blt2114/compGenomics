@@ -21,9 +21,27 @@ cat 57epigenomes.exon.N.pc > script-1.py | script-2.py | ... | script-n.py > TSS
 -Each object looks like:
 {
         "sample":sample_name,   # as a string, e.g. "E001"
-        "tss-id":identifer,     # some thing that will be unique to a given 
-                                # possible TSS, possible a nested object, 
-                                        # e.g. {"gene":"yfg-1","exon_number":2}
+
+        "tss-id":identifer,     # identifier unique to a given possible TSS, 
+                                # This will be a nested obj, defined below
+
         "site-used": is_TSS     # an integer, 1 if it is the TSS used in that 
                                 # given sample, 0 otherwise.
 }
+
+The format of identifier must contain sufficent information to do subsequent analysis
+identifer will look like:
+{
+        "gene":"yfg-1",         # this is just good to keep around for when we
+                                #  process result later on.
+
+        "chrom":"X",            # chromosome identifier as a string
+
+        "location":1220,        # base offset from chromosome start
+
+        "read_dir":1,           # 1 if forward, 0 if backwards. This is 
+                                # important if we are interested in looking
+                                #  at positions upstream/ downstream of the TSS
+}
+
+
