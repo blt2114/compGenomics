@@ -6,10 +6,9 @@ github. I ran into a few files that are several gigabytes in
 size, so please keep the links to the files here.
 
 File List
-=========
+---------
 
-FILE: gen10.long.gtf.gz
-------------------
+### FILE: gen10.long.gtf.gz ###
 
 > This file contains all the gene/transcript annotations that
 > Misha Belinky from UBC (author of the project) used to 
@@ -24,8 +23,7 @@ FILE: gen10.long.gtf.gz
 
 [gen10.long.gtf.gz](http://egg2.wustl.edu/roadmap/data/byDataType/rna/annotations/gen10.long.gtf.gz)
 
-FILE: 57epigenomes.exon.N.pc
-----------------------------
+### FILE: 57epigenomes.exon.N.pc ###
 
 > Brian put this file here.
 
