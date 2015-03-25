@@ -1,7 +1,7 @@
 import os, sys
-from utils import GTFRecord
+from utils import GTF
 
-def test_GTFRecord():
+def test_GTF():
     a = [
         'chr1',
         'ENSEMBL',
@@ -13,10 +13,10 @@ def test_GTFRecord():
         '.',
         'gene_id "7699"; transcript_id "7699"; gene_type "tRNAscan"; gene_status "NULL"; gene_name "7699"; transcript_type "tRNAscan"; transcript_status "NULL"; transcript_name "7699"; level 3;',
         ]
-    b = GTFRecord(a)
+    b = GTF(a)
     assert b.seqname == 'chr1'
     assert b.attribute['gene_id'] == '7699'
 
-def test_GTFRecord_importTSS():
-    list = GTFRecord.importTSS('../files/gen10.long.gtf')
+def test_GTF_importTSS():
+    list = GTF.importTSS('../files/gen10.long.gtf')
     assert list[0].attribute['transcript_id'] == 'ENST00000390237.2'

@@ -5,7 +5,7 @@ for our project.
 
 import csv
 
-class GTFRecord(object):
+class GTF(object):
     """
     This class is the python representation of each record in
     a GTF file. 
@@ -16,7 +16,7 @@ class GTFRecord(object):
     """
 
     def __init__(self, list):
-        """Constructor for the GTFRecord class."""
+        """Constructor for the GTF class."""
         self.seqname = list[0]
         self.source = list[1]
         self.feature = list[2]
@@ -35,14 +35,14 @@ class GTFRecord(object):
             self.attribute[key] = value.strip('"')
 
     def __str__(self):
-        """returns string representation of a GTFRecord"""
+        """returns string representation of a GTF"""
         print self.attribute['transcript_id']
 
     @classmethod
     def importTSS(cls, filename):
-        """returns a list of GTFRecords that contain TSS start sites
+        """returns a list of GTF that contain TSS start sites
 
-        Usage: GTFRecord.importTSS(<filename>)
+        Usage: GTF.importTSS(<filename>)
         """
         list = []
         try:
