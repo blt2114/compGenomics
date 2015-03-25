@@ -19,32 +19,39 @@ class GTF(object):
 
     def __init__(self, list):
         """Constructor for the GTF class."""
+        logging.debug('init GTF(list=%d): [%s]', 
+                     len(list), ', '.join(list))
         self.seqname = list[0]
         self.source = list[1]
         self.feature = list[2]
         self.start = int(list[3])
         self.end = int(list[4])
-        self.score = list[5]
+        if list[5] == '.': 
+            self.score = None
+        else: 
+            self.score = list[5]
         self.strand = list[6]
-        self.frame = list[7]
+        if list[7] == '.':
+            self.frame = None
+        else:
+            self.frame = list[7]
 
         # Converts str attribute => dictionary
         self.attribute = {}
         attribute_list = list[8].split(";")
         for item in attribute_list:
-            logging.info('item:%s', item)
-            cleanitem = item.strip(' ')
-            logging.info('cleanitem:%s', cleanitem)
-            key = cleanitem.split(" ")[0]
-            value = cleanitem.split(" ")[1]
-            self.attribute[key] = value.strip('"')
+            attribute = item.strip(' ')
+            if len(attribute) > 0:
+                key = attribute.split(" ")[0]
+                value = attribute.split(" ")[1]
+                self.attribute[key] = value.strip('"')
 
     def __str__(self):
         """returns string representation of a GTF"""
         print self.attribute['transcript_id']
 
     @classmethod
-    def filterFeatures(cls, infile, outfile, featurelist):
+    def filterFeatures(cls, infile, featurelist):
         """returns a GTF file filtered for a list of features
 
         GTF files are large and they take a long time to process. To
@@ -62,12 +69,11 @@ class GTF(object):
         """
         list = []
         try:
-            logger.info('Opening GTF file...')
+            logger.info('importTSS:Opening GTF file...')
             f = open(filename, 'rb')
-            logger.info('CSV reader starting...')
+            logger.info('importTSS:CSV reader starting...')
             csvfile = csv.reader(f, delimiter='\t')
             for row in csvfile:
-                logger.debug('CSVreader row: %s', row)
                 gtf = cls(row)
                 logger.info('gtf.feature: %s-%s', gtf.feature, gtf.attribute['transcript_id'])
                 if gtf.feature == 'transcript':
