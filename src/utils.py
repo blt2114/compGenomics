@@ -30,10 +30,13 @@ class GTF(object):
 
         # Converts str attribute => dictionary
         self.attribute = {}
-        attribute_list = list[8].split("; ")
+        attribute_list = list[8].split(";")
         for item in attribute_list:
-            key = item.split(" ")[0]
-            value = item.split(" ")[1]
+            logging.info('item:%s', item)
+            cleanitem = item.strip(' ')
+            logging.info('cleanitem:%s', cleanitem)
+            key = cleanitem.split(" ")[0]
+            value = cleanitem.split(" ")[1]
             self.attribute[key] = value.strip('"')
 
     def __str__(self):
