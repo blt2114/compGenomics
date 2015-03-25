@@ -41,6 +41,17 @@ class GTF(object):
         print self.attribute['transcript_id']
 
     @classmethod
+    def filterFeatures(cls, infile, outfile, featurelist):
+        """returns a GTF file filtered for a list of features
+
+        GTF files are large and they take a long time to process. To
+        reduce the overall time to process GTF files, it will be
+        economical to filter GTF files for only the features we are 
+        interested in (ie: transcript, exon).
+        """
+        pass
+
+    @classmethod
     def importTSS(cls, filename):
         """returns a list of GTF that contain TSS start sites
 
