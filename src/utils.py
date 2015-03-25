@@ -15,47 +15,45 @@ class GTFRecord(object):
     parameter is to be stored as a python dictionary.
     """
 
-    def __init__(self, seqname, source, feature, start, end, 
-                 score, strand, frame, attribute):
+    def __init__(self, list):
         """Constructor for the GTFRecord class."""
-        self.seqname = seqname
-        self.source = source
-        self.feature = feature
-        self.start = int(start)
-        self.end = int(end)
-        self.score = score
-        self.strand = strand
-        self.frame = frame
+        self.seqname = list[0]
+        self.source = list[1]
+        self.feature = list[2]
+        self.start = int(list[3])
+        self.end = int(list[4])
+        self.score = list[5]
+        self.strand = list[6]
+        self.frame = list[7]
 
         # Converts str attribute => dictionary
         self.attribute = {}
-        list = attribute.split("; ")
-        for item in list:
+        attribute_list = list[8].split("; ")
+        for item in attribute_list:
             key = item.split(" ")[0]
             value = item.split(" ")[1]
             self.attribute[key] = value.strip('"')
 
     def __str__(self):
         """returns string representation of a GTFRecord"""
-        pass
+        print self.attribute['transcript_id']
 
     @classmethod
-    def importFile(cls, filename, function):
-        """returns a list of GTFRecords that satisfy the function
+    def importTSS(cls, filename):
+        """returns a list of GTFRecords that contain TSS start sites
 
-        Since GTFs are very large files to hold in memory and we
-        only need a subset of the data, we can apply a function as
-        a filter to obtain only the records we need.
-
-        Usage: GTFRecord.importFile(<filename>, <function>)
+        Usage: GTFRecord.importTSS(<filename>)
         """
+        list = []
         try:
             f = open(filename, 'rb')
             csvfile = csv.reader(f)
             for row in csvfile:
-                # do something
-                print row[0]
+                gtf = cls(row)
+                if gtf.feature == transcript:
+                    list.append(gtf)
             f.close()
+            return list
         except IOError:
             print "file error"
 
