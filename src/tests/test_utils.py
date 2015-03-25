@@ -1,5 +1,9 @@
 import os, sys
+import logging
 from utils import GTF
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def test_GTF():
     a = [
@@ -19,4 +23,7 @@ def test_GTF():
 
 def test_GTF_importTSS():
     list = GTF.importTSS('../files/gen10.long.gtf')
+    
+    
+    
     assert list[0].attribute['transcript_id'] == 'ENST00000390237.2'

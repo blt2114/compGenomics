@@ -3,7 +3,9 @@ This module contains utility classes and functions necessary
 for our project.
 """
 
-import csv
+import csv, logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class GTF(object):
     """
@@ -46,15 +48,21 @@ class GTF(object):
         """
         list = []
         try:
+            logger.info('Opening GTF file...')
             f = open(filename, 'rb')
-            csvfile = csv.reader(f)
+            logger.info('CSV reader starting...')
+            csvfile = csv.reader(f, delimiter='\t')
             for row in csvfile:
+                logger.debug('CSVreader row: %s', row)
                 gtf = cls(row)
-                if gtf.feature == transcript:
+                logger.info('gtf.feature: %s-%s', gtf.feature, gtf.attribute['transcript_id'])
+                if gtf.feature == 'transcript':
                     list.append(gtf)
+                    logger.info('Added record to list: %s', gtf.attribute['transcript_id'])
             f.close()
+            logger.info('Finished importing GTF file')
             return list
         except IOError:
-            print "file error"
+            print "Error opening file."
 
                 

@@ -7,7 +7,7 @@ of TSS start sites to std.out.
 Usage: python gtf2tss.py <gtf_filename> > <output_file>
 """
 
-from utils import GTFRecord
+from utils import GTF
 
 # Pseudocode
 
@@ -18,3 +18,6 @@ from utils import GTFRecord
 # 5: Unix sort filtered list
 # 6: Merge transcripts that have the same TSS
 # 7: Output to std.out
+
+list = GTF.importTSS('../files/gen10.long.gtf')
+print str(list[0])
