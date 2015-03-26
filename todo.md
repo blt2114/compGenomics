@@ -8,13 +8,13 @@ Things that need to be done
 Things Jeff is Working On
 -------------------------
 
-===Priority:===
+###Priority:###
 * ~~GTF class~~ -- **DONE**
 * Import GTF file -- **CAN DO**
 * Filter GTF file for feature or attributes -- **HACKED/DONE**
 * Produce a list of TSS coordinate in json format -- **IN PROGRESS**
 
-===Other Things:===
+###Other Things:###
 * Package GTF utils into one file
 * Documentation
 
