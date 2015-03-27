@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 This module contains all scripts and classes relevant to GTF files. 
 
@@ -10,6 +9,7 @@ recommended to use UNIX commands such as cat, tee, and pipes to take
 advantage of this script in its entirety. 
 
 """
+# HINT: type "python gtftools.py" on the command line to get started
 
 import sys, argparse, logging, csv
 from utils import file_len
@@ -25,8 +25,7 @@ def main(argv):
     
     :param argv: Command line arguments.
     :type arv: list.
-    :returns: None. Output printed to stdout.
-    :raises: n/a.
+    :raises: AttributeError
     """
     
     # Parse Command Line Arguments
