@@ -3,9 +3,43 @@ This module contains utility classes and functions necessary
 for our project.
 """
 
-import csv, logging
-logging.basicConfig(level=logging.INFO)
+import sys, csv, logging, subprocess
+logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
+
+class FileProgress(object):
+    """Utility class to count lines and print the progress through
+    a file
+    
+    """
+    def __init__(self, total=None, interval=100):
+        self.line = 0
+        self.total = total
+        self.interval = interval
+        self.prevPercent = None
+
+    def incr(self):
+        if self.total == None:
+            # Count lines
+            if self.line % self.interval == 0: 
+                sys.stderr.write('\rLines Filtered: %d' %self.line)
+                sys.stderr.flush()
+        else:
+            # Count percentage
+            percent = int(float(self.line) / float(self.total) * 100)
+            if self.prevPercent != percent:
+                sys.stderr.write('\rCurrent Progress: %d%%' %percent)
+                sys.stderr.flush()
+        self.line += 1
+ 
+    @staticmethod
+    def file_len(fname):
+        p = subprocess.Popen(['wc', '-l', fname], stdout=subprocess.PIPE, 
+                             stderr=subprocess.PIPE)
+        result, err = p.communicate()
+        if p.returncode != 0:
+            raise IOError(err)
+        return int(result.strip().split()[0])
 
 class GTF(object):
     """
