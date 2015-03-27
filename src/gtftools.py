@@ -1,33 +1,18 @@
 #!/usr/bin/env python
 
 """
-This module contains all scripts and classes relevant to GTF files.
+This module contains all scripts and classes relevant to GTF files. 
 
-.. module:: gtftools
-    :platform: Unix, MacOSX
-    :synopsis: Scripts and classes relevant to GTF files.
+This script is capable of reading GTF files from stdin as well as from
+files. Please be sure to select the correct arguments. By default, the
+script assumes all input comes from stdin and goes out on stdout. It is
+recommended to use UNIX commands such as cat, tee, and pipes to take
+advantage of this script in its entirety. 
 
-.. moduleauthor:: Jeffrey Zhou <zhou.jeffrey.y@gmail.com>
-
-Usage: 
-
-cat ../files/gen10.long.gtf | python gtftools.py -f feature=transcript |
-tee gen10.long.gtf.transcripts |
-
-...what's next?
-
-TODO:
-gtftools.py -complex |
-gtftools.py -tss -unique >
-tss-loc.json
-
--tss option outputs list of tss coordinates in json format
--unique [default] = merges all TSS that have the same start site
--complex [default] = takes only transcripts that have multiple variants
 """
 
 import sys, argparse, logging, csv
-from utils import FileProgress
+from utils import file_len
 
 #aliases for logging
 logging.getLogger(__name__).setLevel(logging.WARNING)
@@ -46,14 +31,18 @@ def main(argv):
     
     # Parse Command Line Arguments
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--verbose', '-v',
+    parser.add_argument('-v', '--verbose',
                         action='store_true',
                         help='verbose flag')
-    parser.add_argument('--filter', '-f',
-                        help='filter GTF for specified feature.'
-                        'Example: -f feature=exon')
+    parser.add_argument('-i', dest='infile',
+                        help='input filename (default: stdin)')
+    parser.add_argument('-o', dest='outfile',
+                        help='output filename (default: stdout)')
+    parser.add_argument('-f', dest='filter',
+                        help='filter GTF. Ex: [-f feature=exon] or ' 
+                        '[-f seqname=chr1]')
     args = parser.parse_args()
-
+    
     # Evaluated Parsed Arguments
     if args.verbose:
         logging.getLogger(__name__).setLevel(logging.INFO)
@@ -68,16 +57,14 @@ def main(argv):
             parser.error('\n\tImproper parameter provided for filter.' +
                          '\n\tCorrect usage: "-f feature=exon"')
         try:
-            GTF.filter(criteria[0], criteria[1])
+            GTF.filter(criteria[0], criteria[1], args.infile, args.outfile)
         except AttributeError, e:
             logw(e)
             parser.error('\n\tImproper parameter provided for filter.' +
                          '\n\tCorrect usage: "-f feature=exon"')
     else:
         log('Filter is not defined')
-
-        # temp test
-        GTF.filter('feature','transcript', '../files/gen10.long.gtf')
+        parser.print_help()
 
 class GTF(object):
     """This class is the python representaiton of each record in a GTF file.
@@ -174,29 +161,42 @@ class GTF(object):
         fi = sys.stdin
         count = 0
         if infile != None:
+            # Infile was provided
             try:
                 fi = open(infile, 'rb')
             except IOError as e:
                 sys.stderr.write('Cannot open file %s' %infile)
             log('Estimating time to compute...')
-            i = FileProgress(FileProgress.file_len(fi.name))
+            flen = file_len(infile)
             log('CSV reader starting...')
             csvfile = csv.reader(fi, delimiter='\t')
             log('Beginning import')
+            count = 0
+            prev = None
             for row in csvfile:
+                percent = int(float(count) / float(flen) * 100)
                 if len(row) == 9:
                     gtf = GTF(row)
+                    if prev != percent:
+                        sys.stderr.write("\rPercent Complete: %d%%" 
+                                         %percent)
+                        sys.stderr.flush()
                     if eval('gtf.' + field) == value:
-                        fo.write('\t'.join(row))
-                i.incr()
+                        fo.write('\t'.join(row) + '\n')
+                count += 1
+                prev = percent
             fi.close()
         else:
-            i = FileProgress()
+            count = 0
+            interval = 100
             for line in sys.stdin:
                 gtf = GTF(line.strip('\n').split('\t'))
                 if eval('gtf.' + field) == value:
                     fo.write(line)
-                i.incr()
+                if count % interval == 0:
+                     sys.stderr.write("\rLines Read: %d" %count)
+                     sys.stderr.flush()
+                count += 1
             fi.close()
         fo.close()
         log('\nFinished filtering file')
