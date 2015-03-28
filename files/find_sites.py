@@ -5,6 +5,8 @@ reads upstream/downstream of locations provided in JSON file.
 
 The sites of interest in the json file are assumeded to be in the same order
 as mapped ChIP-Seq reads
+
+First developed and tested on E001-H3K4me3.tagAlign 
 """
 
 #TODO: update to take sample ID and Experiment type as command line
