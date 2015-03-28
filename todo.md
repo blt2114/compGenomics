@@ -20,3 +20,9 @@ Things Jeff is Working On
 
 Things Brian is Working On
 --------------------------
+
+###Priority###
+* ~~Write first iteration of ChIP-Seq read count extraction~~ -- **DONE**
+* Download additional ChIP-Seq Tag files -- **much check memory requirements**
+* Update find_sites.py to take experiment ID and sample ID as command line argumentsand carry them into the output-- **~30 minutes of work**
+* Write bash script to automate the running of this script once the TSS coordinates are available **CAN DO (pending run-time constraints)**
