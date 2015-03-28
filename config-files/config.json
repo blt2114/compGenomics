@@ -1,6 +1,7 @@
 {
-        "upstream_window":100,
-        "downstream_window":100,
+        "upstream_window":500,
+        "downstream_window":500,
         "chromosome_order_fn":"config-files/chromosome_order.json",
-        "sites_fn":"files_for_testing/test_locations.json" 
+        "sites_fn":"test_files/test_locations.json", 
+        "raw_dir" : "raw/tagAlign"
 }

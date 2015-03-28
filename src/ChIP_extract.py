@@ -17,8 +17,9 @@ import sys
 
 from pprint import pprint
 
-if len(sys.argv) is not 2:
-    sys.stderr.write("invalid usage: python find_sites.py <config.json>")
+if len(sys.argv) is not 4:
+    sys.stderr.write("invalid usage: python find_sites.py <config.json>"+
+            "<sample_ID> <mark_ID>")
     sys.exit(2)
 
 config_fn = sys.argv[1]
@@ -27,6 +28,11 @@ config_fn = sys.argv[1]
 with open(config_fn) as config_file:
     config = json.load(config_file)
 
+sample_ID = sys.argv[2]
+mark_ID = sys.argv[3]
+data_root = config["raw_dir"]
+
+data_fn = data_root + "/" + sample_ID + "-" + mark_ID + ".tagAlign"
 
 upstream_window =config["upstream_window"]
 downstream_window =config["downstream_window"]
@@ -46,57 +52,49 @@ num_sites = len(sites)
 
 current_site_idx = 0
 current_site = sites[current_site_idx]
-current_site["num_reads"] = 0
+if current_site.has_key(sample_ID):
+    current_site[sample_ID][mark_ID]={"num_reads":0}
+else:
+    current_site[sample_ID]={mark_ID:{"num_reads":0}}
+
+if current_site["read_dir"] == 1:
+    win_start=current_site["location"]-upstream_window
+    win_end=current_site["location"]+downstream_window
+else:
+    win_start=current_site["location"]-downstream_window
+    win_end=current_site["location"]+upstream_window
+
+site_chrom = chromosomes[current_site["chrom"]]
+site_start=(site_chrom,win_start)
+site_end = (site_chrom,win_end)
+
 #iterate through lines of stdin
-for line in sys.stdin:
+f = open(data_fn, 'r')
+for line in f:
+
     # parse out the read location
     values = line.split("\t")
-    chromosome = values[0]
-    read_loc = int(values[1])
-    if chromosome == current_site["chrom"]:
-        # if the read is downstream of the lower boundary of the window,
-        # continue
-        if current_site["location"] - upstream_window > read_loc:
-            continue
 
-        # if the read is within the boundaries, add one to the count and
-        # continue
-        # since this is repeated below, this first replicate is functionally
-        # unnessary, however it improves the programs efficiency
-        if current_site["location"] + downstream_window >= read_loc:
-            current_site["num_reads"]+=1
-            continue
+    chromosome = chromosomes[values[0]]
+    read_loc = int(values[1])
+
+    read_pos = (chromosome,read_loc)
+
+    # if the read is before the lower boundary of the window,
+    # continue
+    if read_pos < site_start:
+        continue
+
+    # since this is repeated below, this first replicate is functionally
+    # unnessary, however it improves the programs efficiency
+    # if the read is within the boundaries, add one to the count and
+    # continue
+    if read_pos <= site_end:
+        current_site[sample_ID][mark_ID]["num_reads"]+=1
+        continue
     
         # if the read is upstream of the upper boundary of the window, 
-        while chromosome == current_site["chrom"] and current_site["location"] + downstream_window < read_loc:
-            # print the site with the additional information to stdout 
-            pprint(current_site)
-            sites[current_site_idx]=current_site
-
-            current_site_idx+=1
-            if current_site_idx is num_sites:
-                current_site = None
-                break
-            current_site = sites[current_site_idx]
-            current_site["num_reads"] = 0
-        
-        #when there are no more sites to go check, break
-        if current_site is None:
-            break
-        
-        # at this point, the downstream end of the current window is past
-        # the current read  
-
-        # if the read is above the upstream end
-        if chromosome == current_site["chrom"] and  current_site["location"] - upstream_window <= read_loc:
-            current_site["num_reads"]+=1
-        continue
-
-    if chromosomes[chromosome] < chromosomes[current_site["chrom"]]:
-        continue
-    
-    # if the current site is on an earlier chromosome than the current read
-    while chromosomes[current_site["chrom"]] < chromosomes[chromosome]: 
+    while read_pos > site_end:
         # print the site with the additional information to stdout 
         pprint(current_site)
         sites[current_site_idx]=current_site
@@ -105,12 +103,30 @@ for line in sys.stdin:
         if current_site_idx is num_sites:
             current_site = None
             break
+
         current_site = sites[current_site_idx]
-        current_site["num_reads"] = 0
-
-    #TODO: fix so that if the first read on a chromosome is within the range
-    # it is counted, currently this case is ignored.
-
+        if current_site.has_key(sample_ID):
+            current_site[sample_ID][mark_ID]={"num_reads":0}
+        else:
+            current_site[sample_ID]={mark_ID:{"num_reads":0}}
+        if current_site["read_dir"] == 1:
+            win_start=current_site["location"]-upstream_window
+            win_end=current_site["location"]+downstream_window
+        else:
+            win_start=current_site["location"]-downstream_window
+            win_end=current_site["location"]+upstream_window
+        site_chrom = chromosomes[current_site["chrom"]]
+        site_start=(site_chrom,win_start)
+        site_end = (site_chrom,win_end)
+        
     #when there are no more sites to go check, break
     if current_site is None:
         break
+    
+    # at this point, the downstream end of the current window is past
+    # the current read  
+
+    # if the read is above the upstream end
+    if read_pos >= site_start:
+        current_site[sample_ID][mark_ID]["num_reads"]+=1
+f.close()

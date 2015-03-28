@@ -2,51 +2,63 @@
     "sites" : [
     {
         "chrom" : "chr1",
-        "location" : 540620
+        "read_dir":1,
+	"location" : 540620
     },
     {
         "chrom" : "chr1",
-        "location" : 1978207
+        "read_dir":-1,
+	"location" : 1978207
     },
     {
         "chrom" : "chr2",
-        "location" : 8956272
+        "read_dir":1,
+	"location" : 8956272
     },
     {
         "chrom" : "chr22",
-        "location" : 17640274
+        "read_dir":-1,
+	"location" : 17640274
     },
     {
         "chrom" : "chr22",
-        "location" : 18893864
+        "read_dir":1,
+	"location" : 18893864
     },
     {
         "chrom" : "chr22",
-        "location" : 18958027
+        "read_dir":-1,
+	"location" : 18958027
     },
     {
         "chrom" : "chr22",
-        "location" : 42348178
+        "read_dir":-1,
+	"location" : 42348178
     },
     {
         "chrom" : "chr22",
-        "location" : 51112843
+        "read_dir":-1,
+	"location" : 51112843
     },
     {
         "chrom" : "chrX",
-        "location" : 148511279
+        "read_dir":1,
+	"location" : 148511279
     },
     {
         "chrom" : "chrX",
-        "location" : 151727546
+        "read_dir":1,
+	"location" : 151727546
     },
     {
         "chrom" : "chrY",
-        "location" : 13400712
+        "read_dir":1,
+	"location" : 13400712
     },
     {
         "chrom" : "chrY",
-        "location" : 22537263
+        "read_dir":1,
+	"location" : 22537263
     }
     ]
 }
