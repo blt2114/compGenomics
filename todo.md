@@ -31,3 +31,20 @@ Things Brian is Working On
 ###Other Things###
 * Use ChIP-Seq Metadata to scale read-count by number of reads in experiment
 * Find out if a logistic model can be trained if not all data points have every feature defined
+
+
+###Additional things to think about/relevant papers###
+http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2276655/pdf/nihms35172.pdf
+        -H3K4me3 leads to recruitment of splicing factors
+        -out of James Manleys goup
+
+
+http://liulab.dfci.harvard.edu/publications/Kolasinska_H3K36me3_NatGen_2009.pdf
+        -H3K36me3 at lower levels in AS exons
+        -shirley Liu is a former student of Marty
+
+ 
+Should we consider final exons? Perhaps their are signals for end of transcription (e.g.histone marks recruiting factors that end transcription)
+
+When considering AS, it seems that for the 3 prime exon sites, we are primarily concerned with the state of the around the adenosine 20-40 bp upstream of the exon start that attacks the 5 prime exon end.
+For 5 prime exon sites, we are concerned with the sequences downstream of the end of the exon.

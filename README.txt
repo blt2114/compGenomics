@@ -16,7 +16,7 @@ ChIP-Seq for 5 core methylation marks present in all data samples
         -H3K4me1
 	-H3K4me3
 	-H3K27me3
-	-H3K36me3
+	-H3K36me3-- is involved in splicing
 	-H3K9me3
 Many to Most samples also have
         -H3K27ac
