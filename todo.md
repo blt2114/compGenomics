@@ -24,11 +24,10 @@ Things Brian is Working On
 ###Priority###
 * ~~Write first iteration of ChIP-Seq read count extraction~~ -- **DONE**
 * Download additional ChIP-Seq Tag files -- **much check memory requirements**
-* Update find_sites.py to take experiment ID and sample ID as command line argumentsand carry them into the output-- **~30 minutes of work**
+* ~~Update find_sites.py to take experiment ID and sample ID as command line argumentsand carry them into the output ~~-- **DONE**
 * Write bash script to automate the running of this script once the TSS coordinates are available **CAN DO (pending run-time constraints)**
-* update find_sites.py to take gene orientation into account -- **~ 10 minutes of work**
+* ~~update find_sites.py to take gene orientation into account ~~ -- **DONE**
 
 ###Other Things###
 * Use ChIP-Seq Metadata to scale read-count by number of reads in experiment
 * Find out if a logistic model can be trained if not all data points have every feature defined
-
