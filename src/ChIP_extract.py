@@ -17,9 +17,9 @@ import sys
 
 from pprint import pprint
 
-if len(sys.argv) is not 4:
+if len(sys.argv) is not 3:
     sys.stderr.write("invalid usage: python find_sites.py <config.json>"+
-            "<sample_ID> <mark_ID>")
+            "<sample_ID-mark_ID>")
     sys.exit(2)
 
 config_fn = sys.argv[1]
@@ -28,8 +28,9 @@ config_fn = sys.argv[1]
 with open(config_fn) as config_file:
     config = json.load(config_file)
 
-sample_ID = sys.argv[2]
-mark_ID = sys.argv[3]
+sample_mark = sys.argv[2].split("-")
+sample_ID = sample_mark[0]
+mark_ID =sample_mark[1]
 data_root = config["raw_dir"]
 
 data_fn = data_root + "/" + sample_ID + "-" + mark_ID + ".tagAlign"
