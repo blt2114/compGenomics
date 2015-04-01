@@ -52,3 +52,5 @@ Should we consider final exons? Perhaps their are signals for end of transcripti
 When considering AS, it seems that for the 3 prime exon sites, we are primarily concerned with the state of the around the adenosine 20-40 bp upstream of the exon start that attacks the 5 prime exon end.
 For 5 prime exon sites, we are concerned with the sequences downstream of the end of the exon.
 
+Consider ignoring splicing that does not go through the major splicing pathway
+        -It is possible that the selection mechanisms are different from the major pathways so including them may introduce noise into our data.
