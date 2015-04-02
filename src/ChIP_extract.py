@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+
+"""
+some shit i took from stack overflow:
+"""
+def _decode_list(data):
+    rv = []
+    for item in data:
+        if isinstance(item, unicode):
+            item = item.encode('utf-8')
+        elif isinstance(item, list):
+            item = _decode_list(item)
+        elif isinstance(item, dict):
+            item = _decode_dict(item)
+        rv.append(item)
+    return rv
+
+def _decode_dict(data):
+    rv = {}
+    for key, value in data.iteritems():
+        if isinstance(key, unicode):
+            key = key.encode('utf-8')
+        if isinstance(value, unicode):
+            value = value.encode('utf-8')
+        elif isinstance(value, list):
+            value = _decode_list(value)
+        elif isinstance(value, dict):
+            value = _decode_dict(value)
+        rv[key] = value
+    return rv
+
 """
 This main looks through raw tagAlign chip-seq files and finds the number of
 reads upstream/downstream of locations provided in JSON file.
@@ -16,12 +46,13 @@ import json
 import sys
 
 
-if len(sys.argv) is not 3:
+if len(sys.argv) is not 5:
     sys.stderr.write("invalid usage: python find_sites.py <config.json>"+
-            "<sample_ID-mark_ID>\n")
+            " <sample_ID-mark_ID> <sites.json> <data_root>\n")
     sys.exit(2)
 
 config_fn = sys.argv[1]
+data_root = sys.argv[4]
 
 # load config info from json into a dictionary
 with open(config_fn) as config_file:
@@ -31,7 +62,6 @@ config_file.close()
 sample_mark = sys.argv[2].split("-")
 sample_ID = sample_mark[0]
 mark_ID =sample_mark[1]
-data_root = config["raw_dir"]
 
 data_fn = data_root + "/" + sample_ID + "-" + mark_ID + ".tagAlign"
 
@@ -44,10 +74,10 @@ with open(chromosomes_fn) as chromosomes_file:
     chromosomes = json.load(chromosomes_file)
 chromosomes_file.close()
 
-sites_json_fn = config["sites_fn"]
+sites_json_fn = sys.argv[3]
 # load sites of interest from json into a list
 sites_file= open(sites_json_fn)
-current_site = json.loads(sites_file.readline())
+current_site = json.loads(sites_file.readline(),object_hook=_decode_dict)
 
 if current_site.has_key(sample_ID):
     current_site[sample_ID][mark_ID]={"num_reads":0}
@@ -93,13 +123,13 @@ for line in f:
         # if the read is upstream of the upper boundary of the window, 
     while read_pos > site_end:
         # print the site with the additional information to stdout 
-        print(current_site)
+        print json.dumps(current_site)
 
         current_site_line= sites_file.readline()
         if current_site_line == "":
             current_site = None
             break
-        current_site= json.loads(current_site_line)
+        current_site= json.loads(current_site_line,object_hook=_decode_dict)
 
         if current_site.has_key(sample_ID):
             current_site[sample_ID][mark_ID]={"num_reads":0}
