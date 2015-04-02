@@ -1,64 +1,12 @@
-{
-    "sites" : [
-    {
-        "chrom" : "chr1",
-        "read_dir":1,
-	"location" : 540620
-    },
-    {
-        "chrom" : "chr1",
-        "read_dir":-1,
-	"location" : 1978207
-    },
-    {
-        "chrom" : "chr2",
-        "read_dir":1,
-	"location" : 8956272
-    },
-    {
-        "chrom" : "chr22",
-        "read_dir":-1,
-	"location" : 17640274
-    },
-    {
-        "chrom" : "chr22",
-        "read_dir":1,
-	"location" : 18893864
-    },
-    {
-        "chrom" : "chr22",
-        "read_dir":-1,
-	"location" : 18958027
-    },
-    {
-        "chrom" : "chr22",
-        "read_dir":-1,
-	"location" : 42348178
-    },
-    {
-        "chrom" : "chr22",
-        "read_dir":-1,
-	"location" : 51112843
-    },
-    {
-        "chrom" : "chrX",
-        "read_dir":1,
-	"location" : 148511279
-    },
-    {
-        "chrom" : "chrX",
-        "read_dir":1,
-	"location" : 151727546
-    },
-    {
-        "chrom" : "chrY",
-        "read_dir":1,
-	"location" : 13400712
-    },
-    {
-        "chrom" : "chrY",
-        "read_dir":1,
-	"location" : 22537263
-    }
-    ]
-}
+{    "chrom" : "chr1",        "read_dir":1,        "location" : 540620}
+{    "chrom" : "chr1",    "read_dir":-1,    "location" : 1978207}
+{    "chrom" : "chr2",    "read_dir":1,    "location" : 8956272}
+{    "chrom" : "chr22",    "read_dir":-1,    "location" : 17640274}
+{    "chrom" : "chr22",    "read_dir":1,    "location" : 18893864}
+{    "chrom" : "chr22",    "read_dir":-1,    "location" : 18958027}
+{    "chrom" : "chr22",    "read_dir":-1,    "location" : 42348178}
+{    "chrom" : "chr22",    "read_dir":-1,    "location" : 51112843}
+{    "chrom" : "chrX",    "read_dir":1,    "location" : 148511279}
+{    "chrom" : "chrX",    "read_dir":1,    "location" : 151727546}
+{    "chrom" : "chrY",    "read_dir":1,    "location" : 13400712}
+{    "chrom" : "chrY",    "read_dir":1,    "location" : 22537263}
