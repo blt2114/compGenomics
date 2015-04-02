@@ -11,7 +11,7 @@ advantage of this script in its entirety.
 """
 # HINT: type "python gtftools.py" on the command line to get started
 
-import sys, argparse, logging, csv, json
+import sys, argparse, logging, csv, json, copy
 from utils import file_len
 
 #aliases for logging
@@ -42,6 +42,8 @@ def main(argv):
                         '[-f seqname=chr1]')
     parser.add_argument('-t', dest='tss', action='store_true',
                         help='produce TSS json file from GTF file')
+    parser.add_argument('-m', dest='merge', type=int,
+                        help='merge multiple TSSs with same start sites')
     args = parser.parse_args()
     
     # Evaluated Parsed Arguments
@@ -63,6 +65,9 @@ def main(argv):
             logw(e)
             parser.error('\n\tImproper parameter provided for filter.' +
                          '\n\tCorrect usage: "-f feature=exon"')
+    elif args.merge:
+        log('Merge option is selected')
+        GTF.mergeTSS(args.merge)
     elif args.tss:
         log('TSS option is selected')
         GTF.exportTSS()
@@ -114,7 +119,26 @@ class GTF(object):
         :raises: AttributeError, KeyError
 
         """
-        pass
+        dict = ['gene_id "' + self.attribute['gene_id'] + '"',
+                'transcript_id "' + self.attribute['transcript_id'] + '"',
+                ]
+        copy = self.attribute.copy()
+        del copy['gene_id']
+        del copy['transcript_id']
+        for key, value in copy.iteritems():
+            dict.append(key + ' "' + str(value) + '"')
+        list = [
+            self.seqname,
+            self.source,
+            self.feature,
+            str(self.start),
+            str(self.end),
+            self.score,
+            self.strand,
+            self.frame,
+            "; ".join(dict),
+            ]
+        return '\t'.join(list) + '\n'
 
     def __repr__(self):
         """Returns a str representation of GTF that can eval()
@@ -130,7 +154,7 @@ class GTF(object):
         del copy['gene_id']
         del copy['transcript_id']
         for key, value in copy.iteritems():
-            dict.append(key + ' "' + value + '"')
+            dict.append(key + ' "' + str(value) + '"')
         list = [
             self.seqname,
             self.source,
@@ -205,10 +229,98 @@ class GTF(object):
         log('\nFinished filtering file')
 
     @classmethod
+    def mergeTSS(cls, threshold):
+        """Merges GTF file records that have duplicate TSS start sites or no 
+        alternative TSS"""
+
+        log('Opening GTF input file from stdin')
+        log(threshold)
+        fi = sys.stdin
+        fo = sys.stdout
+        p_gene = None
+        stack = []
+        for line in sys.stdin:
+            gtf = GTF(line.strip('\n').split('\t'))
+            if gtf.strand == '+':
+                tss = gtf.start
+            else:
+                tss = gtf.end
+            tup = (gtf, tss)
+            if p_gene is None or gtf.attribute['gene_id'] == p_gene:
+                stack.append(tup)
+            else:
+                if len(stack) < 1: logw('Stack not supposed to be 0.')
+                GTF.dump_stack(stack, threshold, fo)
+                if len(stack) != 0: logw('Stack is supposed to be 0.')
+                stack.append(tup)
+            p_gene = gtf.attribute['gene_id']
+        if len(stack) < 1: logw('Stack not supposed to be 0.')
+        GTF.dump_stack(stack, threshold, fo)
+        fi.close()
+        fo.close()
+        log('\nFinished merging GTF file')
+        
+    @staticmethod
+    def dump_stack(stack, threshold, fo):
+        if len(stack) < 2:
+            while stack: stack.pop()
+        else:
+            stack.sort(key=lambda tup: tup[1])
+            logd('\n' + str(len(stack)))
+            listoflists = []
+            mergelist = []
+            p_tss = None
+            while stack:
+                item = stack.pop()
+                # Find shared tss and group them
+                if p_tss is None or (abs(item[1] - p_tss) <= threshold):
+                    mergelist.append(item)
+                else:
+                    # Clear mergelist
+                    if len(mergelist) < 1: logw('merglist len error')
+                    templist = []
+                    while mergelist:
+                        templist.append(mergelist.pop())
+                    listoflists.append(templist)
+                    if len(mergelist) != 0: logw('mergelist not 0, len:' + str(len(mergelist)))
+                    mergelist.append(item)
+                p_tss = item[1]
+            # Clear mergelist one last time
+            listoflists.append(mergelist)
+            # Now deal with list of lists
+            for list in listoflists:
+                if len(list) < 1: logw('list len error')
+                if len(list) == 1:
+                    temp = list[0][0]
+                    logd(temp.attribute['gene_id'] + ' ' +
+                        temp.attribute['transcript_id'] + '\t' + 
+                        str(list[0][1]))
+                    fo.write(str(list[0][0]))
+                else:
+                    # find average
+                    sum = 0
+                    for i in list: sum += i[1]
+                    avg = sum / len(list)
+                    # find transcript closest to average
+                    record = None
+                    closest = None
+                    for i in list:
+                        logd('  ' + i[0].attribute['gene_id'] + ' ' +
+                            i[0].attribute['transcript_id'] + '\t' + 
+                            str(i[1]))
+                        if closest is None or abs(avg - i[1]) < closest:
+                            closest = abs(avg - i[1])
+                            record = i[0]
+                    logd('>>' + record.attribute['gene_id'] + ' ' +
+                            record.attribute['transcript_id'] + '\t' + 
+                            str(closest))
+                    fo.write(str(record))
+        
+    @classmethod
     def exportTSS(cls):
         """Reads GTF from stdin and outputs to stdout in json format."""
         
-        log('Opening GTF output file from stdin')
+        log('Opening GTF input file from stdin')
         fi = sys.stdin
         fo = sys.stdout
         for line in sys.stdin:
@@ -231,6 +343,7 @@ class GTF(object):
         fo.close
         fi.close
         log('\nFinished exporting TSS file')
+
 
 # Execute this module as a command line script
 if __name__ == "__main__":
