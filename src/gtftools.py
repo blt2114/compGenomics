@@ -11,7 +11,7 @@ advantage of this script in its entirety.
 """
 # HINT: type "python gtftools.py" on the command line to get started
 
-import sys, argparse, logging, csv
+import sys, argparse, logging, csv, json
 from utils import file_len
 
 #aliases for logging
@@ -40,6 +40,8 @@ def main(argv):
     parser.add_argument('-f', dest='filter',
                         help='filter GTF. Ex: [-f feature=exon] or ' 
                         '[-f seqname=chr1]')
+    parser.add_argument('-t', dest='tss', action='store_true',
+                        help='produce TSS json file from GTF file')
     args = parser.parse_args()
     
     # Evaluated Parsed Arguments
@@ -61,8 +63,10 @@ def main(argv):
             logw(e)
             parser.error('\n\tImproper parameter provided for filter.' +
                          '\n\tCorrect usage: "-f feature=exon"')
+    elif args.tss:
+        log('TSS option is selected')
+        GTF.exportTSS()
     else:
-        log('Filter is not defined')
         parser.print_help()
 
 class GTF(object):
@@ -199,6 +203,34 @@ class GTF(object):
             fi.close()
         fo.close()
         log('\nFinished filtering file')
+
+    @classmethod
+    def exportTSS(cls):
+        """Reads GTF from stdin and outputs to stdout in json format."""
+        
+        log('Opening GTF output file from stdin')
+        fi = sys.stdin
+        fo = sys.stdout
+        for line in sys.stdin:
+            gtf = GTF(line.strip('\n').split('\t'))
+            if gtf.feature == 'transcript':
+                dict = {}
+                TSS = None
+                dir = None
+                if gtf.strand == '+':
+                    TSS = gtf.start
+                    dir = 1
+                elif gtf.strand == '-':
+                    TSS = gtf.end
+                    dir = -1
+                dict['chrom'] = gtf.seqname
+                dict['read_dir'] = dir
+                dict['location'] = TSS
+                dict['gene'] = gtf.attribute['gene_id']
+                fo.write(json.dumps(dict) + '\n')
+        fo.close
+        fi.close
+        log('\nFinished exporting TSS file')
 
 # Execute this module as a command line script
 if __name__ == "__main__":
