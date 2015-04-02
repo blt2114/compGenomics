@@ -15,11 +15,10 @@ First developed and tested on E001-H3K4me3.tagAlign
 import json
 import sys
 
-from pprint import pprint
 
 if len(sys.argv) is not 3:
     sys.stderr.write("invalid usage: python find_sites.py <config.json>"+
-            "<sample_ID-mark_ID>")
+            "<sample_ID-mark_ID>\n")
     sys.exit(2)
 
 config_fn = sys.argv[1]
@@ -27,6 +26,7 @@ config_fn = sys.argv[1]
 # load config info from json into a dictionary
 with open(config_fn) as config_file:
     config = json.load(config_file)
+config_file.close()
 
 sample_mark = sys.argv[2].split("-")
 sample_ID = sample_mark[0]
@@ -42,17 +42,13 @@ downstream_window =config["downstream_window"]
 chromosomes_fn = config["chromosome_order_fn"] 
 with open(chromosomes_fn) as chromosomes_file:
     chromosomes = json.load(chromosomes_file)
+chromosomes_file.close()
 
 sites_json_fn = config["sites_fn"]
 # load sites of interest from json into a list
-with open(sites_json_fn) as sites_file:
-    sites_dict = json.load(sites_file)
-    sites = sites_dict["sites"]
+sites_file= open(sites_json_fn)
+current_site = json.loads(sites_file.readline())
 
-num_sites = len(sites)
-
-current_site_idx = 0
-current_site = sites[current_site_idx]
 if current_site.has_key(sample_ID):
     current_site[sample_ID][mark_ID]={"num_reads":0}
 else:
@@ -97,15 +93,14 @@ for line in f:
         # if the read is upstream of the upper boundary of the window, 
     while read_pos > site_end:
         # print the site with the additional information to stdout 
-        pprint(current_site)
-        sites[current_site_idx]=current_site
+        print(current_site)
 
-        current_site_idx+=1
-        if current_site_idx is num_sites:
+        current_site_line= sites_file.readline()
+        if current_site_line == "":
             current_site = None
             break
+        current_site= json.loads(current_site_line)
 
-        current_site = sites[current_site_idx]
         if current_site.has_key(sample_ID):
             current_site[sample_ID][mark_ID]={"num_reads":0}
         else:
@@ -121,7 +116,7 @@ for line in f:
         site_end = (site_chrom,win_end)
         
     #when there are no more sites to go check, break
-    if current_site is None:
+    if current_site == None:
         break
     
     # at this point, the downstream end of the current window is past
@@ -131,3 +126,5 @@ for line in f:
     if read_pos >= site_start:
         current_site[sample_ID][mark_ID]["num_reads"]+=1
 f.close()
+sites_file.close()
+
