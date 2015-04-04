@@ -27,6 +27,10 @@ Things Brian is Working On
 * ~~update find_sites.py to take gene orientation into account~~ -- **DONE**
 * Write bash script to automate the running of this script once the TSS coordinates are available **CAN DO (pending run-time constraints)**
         -download, decompress, parse revelant info and delete continuously
+* Script to break up list of experiments into chunks and run extract_chip.sh
+* Script to merge the results from multiple outputs of extract_ChIP.sh
+* Write script to break output of ChIP_extract.py into individual experiments
+
 
 
 ###Other Things###

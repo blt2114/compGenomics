@@ -1,34 +1,4 @@
 #!/usr/bin/env python
-
-"""
-some shit i took from stack overflow:
-"""
-def _decode_list(data):
-    rv = []
-    for item in data:
-        if isinstance(item, unicode):
-            item = item.encode('utf-8')
-        elif isinstance(item, list):
-            item = _decode_list(item)
-        elif isinstance(item, dict):
-            item = _decode_dict(item)
-        rv.append(item)
-    return rv
-
-def _decode_dict(data):
-    rv = {}
-    for key, value in data.iteritems():
-        if isinstance(key, unicode):
-            key = key.encode('utf-8')
-        if isinstance(value, unicode):
-            value = value.encode('utf-8')
-        elif isinstance(value, list):
-            value = _decode_list(value)
-        elif isinstance(value, dict):
-            value = _decode_dict(value)
-        rv[key] = value
-    return rv
-
 """
 This main looks through raw tagAlign chip-seq files and finds the number of
 reads upstream/downstream of locations provided in JSON file.
@@ -36,7 +6,6 @@ reads upstream/downstream of locations provided in JSON file.
 The sites of interest in the json file are assumeded to be in the same order
 as mapped ChIP-Seq reads
 
-First developed and tested on E001-H3K4me3.tagAlign 
 """
 
 #TODO: update to take sample ID and Experiment type as command line
@@ -77,7 +46,8 @@ chromosomes_file.close()
 sites_json_fn = sys.argv[3]
 # load sites of interest from json into a list
 sites_file= open(sites_json_fn)
-current_site = json.loads(sites_file.readline(),object_hook=_decode_dict)
+current_site = json.loads(sites_file.readline())
+
 
 if current_site.has_key(sample_ID):
     current_site[sample_ID][mark_ID]={"num_reads":0}
@@ -129,7 +99,7 @@ for line in f:
         if current_site_line == "":
             current_site = None
             break
-        current_site= json.loads(current_site_line,object_hook=_decode_dict)
+        current_site= json.loads(current_site_line)
 
         if current_site.has_key(sample_ID):
             current_site[sample_ID][mark_ID]={"num_reads":0}
