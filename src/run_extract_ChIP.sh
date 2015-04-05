@@ -1,24 +1,30 @@
 #!/bin/bash
-if [ "$#" -ne 4 ];then
-    echo "./run_extract_ChIP.sh <working_directory> <ChIP_experiment_list> <sites.json> <num_batches>"
-    exit
+chr=""
+if [ "$#" -ne 5 ];then
+    if [ "$#" -ne 6 ];then
+        echo "./run_extract_ChIP.sh <working_dir> <output_dir> <ChIP_experiment_list> <sites.json> <num_batches> (<chr#>)"
+        exit
+    fi
+    chr=$6
 fi
 
 wd=$1
-num_batches=$4
+out_dir=$2
+ChIP_expr_list=$3
+sites_fn=$4
+num_batches=$5
 
-total_lines=`wc -l<$2`
+total_lines=`wc -l<$ChIP_expr_list`
 
 part_len=`expr $total_lines / $num_batches`
 part_len=`expr $part_len + 1` #round up so no experiments are missed 
 
 ChIP_part_prefix=$wd"/"ChIP_File_
 
-echo split -l $part_len $1 $ChIP_part_prefix
-split -l $part_len $2 $ChIP_part_prefix
+split -l $part_len $ChIP_expr_list $ChIP_part_prefix
 
 ChIP_parts=`ls $ChIP_part_prefix*` 
 
 for part in $ChIP_parts; do
-    ./src/extract_ChIP.sh $wd $part $3 2>&1 > $part"_log" &
+    ./src/extract_ChIP.sh $wd $out_dir $part $sites_fn $chr > $part"_log" 2>&1 &
 done
