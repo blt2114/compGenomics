@@ -26,5 +26,11 @@ split -l $part_len $ChIP_expr_list $ChIP_part_prefix
 ChIP_parts=`ls $ChIP_part_prefix*` 
 
 for part in $ChIP_parts; do
-    ./src/extract_ChIP.sh $wd $out_dir $part $sites_fn $chr > $part"_log" 2>&1 &
+    if [ "$#" -lt 6 ];then
+        ./src/extract_ChIP.sh $wd $out_dir $part $sites_fn > $part"_log" 2>&1 &
+    fi
+    if [ "$#" -ge 6 ];then
+        ./src/extract_ChIP.sh $wd $out_dir $part $sites_fn $chr > $part"_log" 2>&1 &
+    fi
+
 done
