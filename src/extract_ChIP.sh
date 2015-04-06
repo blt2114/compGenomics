@@ -5,6 +5,7 @@ if [ "$#" -ne 4 ];then
         echo "./extract_data.sh <working_dir> <output_dir> <ChIP_experiment_list> <sites.json> (<chr#>)"
         exit
     fi
+    echo running on chr $5
     chr=$5
 fi
 root=http://egg2.wustl.edu/roadmap/data/byFileType/alignments/consolidated/
@@ -46,7 +47,7 @@ while read l; do
     #rm $output_fn_base$stage
     stage=$(($stage+1))
     next_stage=$(($stage+1))
-    #rm $unzipped_fn
+    rm $unzipped_fn
 done <$3
 
 mv $output_fn_base$stage $output_fn_base"final_output" 
