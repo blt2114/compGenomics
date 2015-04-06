@@ -21,11 +21,11 @@ cp $4 $output_fn_base$stage
 while read l; do
     data_url=$root$l
     echo $$ wget $data_url -O $wd"/"$l
-    wget $data_url -O $wd"/"$l
+    wget $data_url -O $wd"/"$l  > /dev/null
     if [ $? -ne 0 ]; then
         echo wget failed, waiting 20 seconds and trying again.
         sleep 20
-        wget $data_url -O $wd"/"$l
+        wget $data_url -O $wd"/"$l  > /dev/null
     fi
     if [ $? -ne 0 ]; then
         echo wget failed again, exiting now.
@@ -47,7 +47,7 @@ while read l; do
     #rm $output_fn_base$stage
     stage=$(($stage+1))
     next_stage=$(($stage+1))
-    rm $unzipped_fn
+    #rm $unzipped_fn
 done <$3
 
 mv $output_fn_base$stage $output_fn_base"final_output" 
