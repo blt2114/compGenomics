@@ -22,22 +22,23 @@ Things Brian is Working On
 --------------------------
 
 ###Priority###
-* ~~Write first iteration of ChIP-Seq read count extraction~~ -- **DONE**
-* ~~Update find_sites.py to take experiment ID and sample ID as command line argumentsand carry them into the output~~ -- **DONE**
-* ~~update find_sites.py to take gene orientation into account~~ -- **DONE**
-* Write bash script to automate the running of this script once the TSS coordinates are available **CAN DO (pending run-time constraints)**
-        -download, decompress, parse revelant info and delete continuously
-* Script to break up list of experiments into chunks and run extract_chip.sh
-* Script to merge the results from multiple outputs of extract_ChIP.sh
-* Write script to break output of ChIP_extract.py into individual experiments
-
+* Write script to break output of ChIP_extract.py into individual experiment (i.e. by gene or by tissue type)
+* Use ChIP-Seq Metadata to scale read-count by number of reads in experiment
 
 
 ###Other Things###
-* Use ChIP-Seq Metadata to scale read-count by number of reads in experiment
 * Find out if a logistic model can be trained if not all data points have every feature defined
 * consider inclduding expression of snRNAs as additona features in the feature vector we train on.
 
+###Completed###
+* ~~Write first iteration of ChIP-Seq read count extraction~~ -- **DONE**
+* ~~Update find_sites.py to take experiment ID and sample ID as command line argumentsand carry them into the output~~ -- **DONE**
+* ~~update find_sites.py to take gene orientation into account~~ -- **DONE**
+* ~~Write bash script to automate the running of this script once the TSS coordinates are available~~ -- **DONE**
+        -download, decompress, parse revelant info and delete continuously
+* ~~Script to break up list of experiments into chunks and run extract_chip.sh~~ -- **DONE**
+* ~~Python Script to merge the results from multiple outputs of extract_ChIP.sh~~ -- **DONE**
+* ~~Python Script to sort JSON dictionaries by chromosome and location~~ -- **DONE**
 
 ###Additional things to think about/relevant papers###
 http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2276655/pdf/nihms35172.pdf
@@ -59,3 +60,7 @@ For 5 prime exon sites, we are concerned with the sequences downstream of the en
 
 Consider ignoring splicing that does not go through the major splicing pathway
         -It is possible that the selection mechanisms are different from the major pathways so including them may introduce noise into our data.
+
+Consider scaling TSS ratios by the normal ratios
+
+Consider adding reads within upstream/ dowstream ranges as separate features
