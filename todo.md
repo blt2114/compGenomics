@@ -72,13 +72,13 @@ Limit data pool to the set of genes, G, such that for every g_i in G
 * g_i has exactly two observed TSS in our data-set
 * The two TSSs of g_i are sufficiently separated to be differentiaed by ChIP labels (ideally ~1Kb cutoff)
 * A significant portion of cell-line samples use the other TSS (perhaps ~20% cutoff)
-        -drop data points from samples where the level of expression is below some threshold
+**drop data points from samples where the level of expression is below some threshold
 
 #####Feature Vectors and Labels#####
 For all g_i in G, we will have a feature vector x_i and a label y_i.
-        -x_i is a 10 dimentional vector, 5 dimensions representing the states of the core histone marks for each TSS.
-        -y_i is a real number, that is the portion of transcripts that used the first site 
-                -we can consider binarizing this (e.g. TSS 1 is most frequently used)
+*x_i is a 10 dimentional vector, 5 dimensions representing the states of the core histone marks for each TSS.
+*y_i is a real number, that is the portion of transcripts that used the first site 
+**we can consider binarizing this (e.g. TSS 1 is most frequently used)
 
 ###AS###
 
