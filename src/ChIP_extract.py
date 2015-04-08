@@ -8,15 +8,12 @@ as mapped ChIP-Seq reads
 
 """
 
-#TODO: update to take sample ID and Experiment type as command line
-# arguments and carry that include that with the read count.
-
 import json
 import sys
 
 
 if len(sys.argv) is not 5:
-    sys.stderr.write("invalid usage: python find_sites.py <config.json>"+
+    sys.stderr.write("invalid usage: python ChIP_extract.py <config.json>"+
             " <sample_ID-mark_ID> <sites.json> <data_root>\n")
     sys.exit(2)
 
