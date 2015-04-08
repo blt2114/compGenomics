@@ -32,3 +32,9 @@ File List
 ### FILE: tss.json ###
 
 > made with -m set to 50
+
+
+### genes\_expressed\_in\_most\_samples.tsv
+> made with grep command formed by filter\_genes\_by\_expression.sh
+> filtered out genes with no more than 35 samples with expression less than 100 RPKM
+> 334 genes in the list
