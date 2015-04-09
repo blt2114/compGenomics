@@ -41,27 +41,29 @@ Things Brian is Working On
 * ~~Python Script to sort JSON dictionaries by chromosome and location~~ -- **DONE**
 
 ###Additional things to think about/relevant papers###
-http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2276655/pdf/nihms35172.pdf
-        -H3K4me3 leads to recruitment of splicing factors
+[H3K4me3 leads to recruitment of splicing factors](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2276655/pdf/nihms35172.pdf)
         -out of James Manleys goup
 
 
-http://liulab.dfci.harvard.edu/publications/Kolasinska\_H3K36me3\_NatGen\_2009.pdf
-        -H3K36me3 at lower levels in AS exons
+
+[H3K36me3 at lower levels in AS exons](http://liulab.dfci.harvard.edu/publications/Kolasinska\_H3K36me3\_NatGen\_2009.pdf)
         -shirley Liu is a former student of Marty
 
-null hypothesis supported by role of snRNAs:
-http://en.wikipedia.org/wiki/Small\_nuclear\_RNA
+Null hypothesis supported by potentially sequence specific role of [snRNAs](http://en.wikipedia.org/wiki/Small\_nuclear\_RNA)
  
 Should we consider final exons? Perhaps their are signals for end of transcription (e.g.histone marks recruiting factors that end transcription)
 
 When considering AS, it seems that for the 3 prime exon sites, we are primarily concerned with the state of the around the adenosine 20-40 bp upstream of the exon start that attacks the 5 prime exon end.
 For 5 prime exon sites, we are concerned with the sequences downstream of the end of the exon.
 
-Consider ignoring splicing that does not go through the major splicing pathway
-        -It is possible that the selection mechanisms are different from the major pathways so including them may introduce noise into our data.
+* Consider ignoring [splicing that does not go through the major splicing pathway](http://en.wikipedia.org/wiki/Minor_spliceosome)
+ * It is possible that the selection mechanisms are different from the major pathways so including them may introduce noise into our data.
 
-Consider adding reads within upstream/ dowstream ranges as separate features
+* Consider adding reads within upstream/ dowstream ranges as separate features
+
+* Checking assumptions we are making with scaling down by read counts. 
+* Using Narrow/Broad peaks insatead of reads within a BP range of sites of interst
+
 
 ###TSS###
 ####Possible Experimental Question:####
@@ -73,7 +75,7 @@ For genes with two TSS observed in our data set, can histone state around these 
 * g\_i has exactly two observed TSS in our data-set
 * The two TSSs of g\_i are sufficiently separated to be differentiaed by ChIP labels (ideally ~1Kb cutoff)
 * A significant portion of cell-line samples use the other TSS (perhaps ~20% cutoff)
-** drop data points from samples where the level of expression is below some threshold
+ * drop data points from samples where the level of expression is below some threshold
 
 ####Feature Vectors and Labels ####
 #####For all g\_i in G, we will have a feature vector x\_i and a label y\_i.#####
