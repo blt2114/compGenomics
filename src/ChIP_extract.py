@@ -9,7 +9,9 @@ as mapped ChIP-Seq reads
 """
 
 import json
+import collections
 import sys
+import itertools
 
 
 if len(sys.argv) is not 5:
@@ -64,64 +66,100 @@ site_end = (site_chrom,win_end)
 
 #iterate through lines of stdin
 f = open(data_fn, 'r')
-for line in f:
+recent_genes= collections.deque()
+file_not_over=True
+BUFFER_LENGTH= 2000 #number of line to read at once
+#recent_genes.append(list(itertools.islice(f,BUFFER_LENGTH)))
 
-    # parse out the read location
-    values = line.split("\t")
+while file_not_over:
+    #when there are no more sites to go check, break
+    if current_site == None:
+        break
 
-    chromosome = chromosomes[values[0]]
-    read_loc = int(values[1])
+    lines=collections.deque(itertools.islice(f,BUFFER_LENGTH)) 
+    if not lines:
+        file_not_over=False 
+        
 
-    read_pos = (chromosome,read_loc)
+    while len(lines) != 0:
+        #when there are no more sites to go check, break
+        if current_site == None:
+            break
 
-    # if the read is before the lower boundary of the window,
-    # continue
-    if read_pos < site_start:
-        continue
+        line = lines.popleft()
+        recent_genes.appendleft(line)
+        if len(recent_genes)>BUFFER_LENGTH:
+            recent_genes.pop()
+        #print "len of deque is: "+str(len(recent_genes))+"\ntype of line is: "+str(type(line))
+        # parse out the read location
+        values = line.split("\t")
 
-    # since this is repeated below, this first replicate is functionally
-    # unnessary, however it improves the programs efficiency
-    # if the read is within the boundaries, add one to the count and
-    # continue
-    if read_pos <= site_end:
-        current_site[sample_ID][mark_ID]["num_reads"]+=1
-        continue
-    
-        # if the read is upstream of the upper boundary of the window, 
-    while read_pos > site_end:
-        # print the site with the additional information to stdout 
+        chromosome = chromosomes[values[0]]
+        read_loc = int(values[1])
+
+        read_pos = (chromosome,read_loc)
+        '''
+        if read_pos[1] >540520 and read_pos[1] < 540820:
+            print "current site: "+json.dumps(current_site)
+            print "current site_start: "+str(site_start)
+            print "current site_end: "+str(site_end)
+            print "current read loc: "+str(read_pos) 
+        '''
+        #print "read pos" + str(read_pos)
+        #print "site start" + str(site_start)
+        # if the read is before the lower boundary of the window,
+        # continue
+        if read_pos < site_start:
+            continue
+
+        # if the read is within the boundaries, add one to the count and
+        # continue
+        if read_pos <= site_end:
+            current_site[sample_ID][mark_ID]["num_reads"]+=1
+            continue
+        print "moving to next site"
+        '''
+        print "current site: "+json.dumps(current_site)
+        print "current site_start: "+str(site_start)
+        print "current site_end: "+str(site_end)
+        print "current read loc: "+str(read_pos) 
+        '''
+        # by this point, read is upstream of the upper boundary of the window, 
+        
+        # print the site(which has now been passed) with the additional information to stdout 
         print json.dumps(current_site)
 
         current_site_line= sites_file.readline()
         if current_site_line == "":
             current_site = None
-            break
+            continue
         current_site= json.loads(current_site_line)
 
         if current_site.has_key(sample_ID):
             current_site[sample_ID][mark_ID]={"num_reads":0}
         else:
             current_site[sample_ID]={mark_ID:{"num_reads":0}}
+
         if current_site["read_dir"] == 1:
             win_start=current_site["location"]-upstream_window
             win_end=current_site["location"]+downstream_window
         else:
             win_start=current_site["location"]-downstream_window
             win_end=current_site["location"]+upstream_window
+
+        #calculate new site information 
         site_chrom = chromosomes[current_site["chrom"]]
         site_start=(site_chrom,win_start)
         site_end = (site_chrom,win_end)
         
-    #when there are no more sites to go check, break
-    if current_site == None:
-        break
-    
-    # at this point, the downstream end of the current window is past
-    # the current read  
-
-    # if the read is above the upstream end
-    if read_pos >= site_start:
-        current_site[sample_ID][mark_ID]["num_reads"]+=1
+        #add the recent genes onto the beginning of the lines to process
+        #this allows lines to be counted towards multiple sites
+        #print "extending lines now\n\tlen deque:"+str(len(recent_genes))+"\n\tlen before: "+str(len(lines))
+        lines.extendleft(recent_genes)
+        #print "\tlen after: "+str(len(lines))
+        recent_genes.clear()
+        line=None
+            
 f.close()
 sites_file.close()
 
