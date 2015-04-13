@@ -1,12 +1,17 @@
-Things that need to be done
----------------------------
-
-* Take json of TSS coordinates and pull RNA-seq data into TSS data
-* Get list of splice coordinates
-* Write machine learning fun stuff
-
 Things Jeff is Working On
 -------------------------
+
+###Questions that Jeff is asking right now:###
+* Can we train a model on genes that only have one TSS site?
+    * Implies we need to filter for all genes that only have one TSS site, and get that location
+        * I should check to see that none of these locations overlap by our definition of GRANULARITY. If they overlap, I should remove them.
+    * Get the RNA data RPKMe/RPKMg of the closest exon (withint GRANULARITY). Return if RPKM > 1, as our definition for expressed.
+* Can we train a model on genes that have exactly two TSS sites?
+    * Implies we need to filter for all genes that have exactly two TSS sites, and get those locations.
+        * I should check to see that none of these locations overlap by our definition of GRANULARITY. If they overlap, I should remove them.
+   
+    * Get the RNA data (
+
 
 ###Priority:###
 * ~~GTF class~~ -- **DONE**
