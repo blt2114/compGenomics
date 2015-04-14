@@ -47,12 +47,15 @@ Programs and Commands
     cat gen10.long.gtf | python gtftools.py -f feature=transcript > gen10.long.gtf.transcripts 
 
 Note: To use the filter_single_tss.py script, you need to:
+
     export PYTHONPATH={path to the compgenomics folder}
 
 Command Used:
+
     python filter_single_tss.py ../../files/gen10.long.gtf.transcripts 500 > single_tss.json
 
 stderr output:
+
     Sorting GTF file based on gene name, chr, start.
     Starting to read sorted GTF file.
     Finished sorting file. Now removing genes within granularity.
