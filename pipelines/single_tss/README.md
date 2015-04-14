@@ -75,7 +75,46 @@ stderr output:
 
     >1 TSS Genes Types:
     {'IG_V_gene': 1, 'pseudogene': 1122, 'lincRNA': 1449, 'retained_intron': 2, 'antisense': 773, 'protein_coding': 15716, 'sense_intronic': 24, 'processed_transcript': 449, 'sense_overlapping': 1, 'ncrna_host': 3, 'polymorphic_pseudogene': 23, 'non_coding': 17, 'ambiguous_orf': 2}    
-   
+
+It is very important to consider the processed data in the results. It will be worthwhile to discuss this later:
+
+| Data      	| Genes w/ >1 TSS 	| Genes w/ 1 TSS 	| Granularity Discarded 	|
+|-----------	|-----------------	|----------------	|-----------------------	|
+| Frequency 	| 44.9%           	| 55.1%          	| 3.6%                  	|
+
+
+| Gene Status 	| Genes w/ >1 TSS 	| Genes w/ 1 TSS 	|
+|-------------	|-----------------	|----------------	|
+| KNOWN       	| 85.7%           	| 65.3%          	|
+| NOVEL       	| 11.9%           	| 19.7%          	|
+| PUTATIVE    	| 2.4%            	| 15.0%          	|
+
+
+| Data                   	|      Counts     	|    Percentage   	|     Counts     	|   Percentage   	|
+|------------------------	|:---------------:	|:---------------:	|:--------------:	|:--------------:	|
+| Gene Types             	| Genes w/ >1 TSS 	| Genes w/ >1 TSS 	| Genes w/ 1 TSS 	| Genes w/ 1 TSS 	|
+| protein coding         	|      15716      	|      80.3%      	|      4291      	|      17.9%     	|
+| pseudogene             	|       1122      	|       5.7%      	|      11017     	|      45.9%     	|
+| lincRNA                	|       1449      	|       7.4%      	|      4035      	|      16.8%     	|
+| processed transcript   	|       449       	|       2.3%      	|       808      	|      3.4%      	|
+| antisense              	|       773       	|       3.9%      	|      2753      	|      11.5%     	|
+| sense intronic         	|        24       	|       0.1%      	|       371      	|      1.5%      	|
+| noncoding              	|        17       	|       0.1%      	|       87       	|      0.4%      	|
+| polymorphic pseudogene 	|        23       	|       0.1%      	|        4       	|      0.0%      	|
+| ambiguous orf          	|        2        	|       0.0%      	|       18       	|      0.1%      	|
+| sense overlapping      	|        1        	|       0.0%      	|       17       	|      0.1%      	|
+| ncrna host             	|        3        	|       0.0%      	|       11       	|      0.0%      	|
+| 3' overlapping ncRNA   	|        0        	|       0.0%      	|       12       	|      0.1%      	|
+| retained intron        	|        2        	|       0.0%      	|        8       	|      0.0%      	|
+| IG genes               	|        1        	|       0.0%      	|       190      	|      0.8%      	|
+| IG psuedogenes         	|        0        	|       0.0%      	|       161      	|      0.7%      	|
+| TR genes               	|        0        	|       0.0%      	|       179      	|      0.7%      	|
+| TR pseudogenes         	|        0        	|       0.0%      	|       31       	|      0.1%      	|
+
+In short, by picking genes with only 1 TSS, we actually end up selecting for mostly noncoding pseudogenes.
+
+This will ~probably~ have some kind of impact on our results. The good news is that we'd probably be able to stratify
+this data further and pick our genes more carefully before we do any kind of running.
 
 ### Step 3: Get RNA data at these TSS positions ###
 
