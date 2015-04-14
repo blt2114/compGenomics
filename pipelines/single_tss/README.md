@@ -44,6 +44,10 @@ Programs and Commands
     tail -q -n +2 57epigenomes.RPKM.pc 57epigenomes.RPKM.nc >> 57epigenomes.RPKM.all
     
 ### Step 2: Filter the gtf file for transcripts that have only one TSS per gene -- WIP ###
+    cat gen10.long.gtf | python gtftools.py -f feature=transcript > gen10.long.gtf.transcripts 
+
+    
+
 
 ### Step 3: Get RNA data at these TSS positions ###
 
