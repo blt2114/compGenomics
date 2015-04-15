@@ -1,4 +1,5 @@
 {    "chrom" : "chr1",        "read_dir":1,        "location" : 540620}
+{    "chrom" : "chr1",        "read_dir":1,        "location" : 540747}
 {    "chrom" : "chr1",    "read_dir":-1,    "location" : 1978207}
 {    "chrom" : "chr2",    "read_dir":1,    "location" : 8956272}
 {    "chrom" : "chr22",    "read_dir":-1,    "location" : 17640274}
