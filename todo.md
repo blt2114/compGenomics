@@ -41,20 +41,20 @@ Things Brian is Working On
 * ~~Python Script to sort JSON dictionaries by chromosome and location~~ -- **DONE**
 
 ###Additional things to think about/relevant papers###
-[H3K4me3 leads to recruitment of splicing factors](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2276655/pdf/nihms35172.pdf)
-        -out of James Manleys goup
+* [H3K4me3 leads to recruitment of splicing factors](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2276655/pdf/nihms35172.pdf)
+ * Published out of James Manleys goup
 
+* [H3K36me3 at lower levels in AS exons](http://liulab.dfci.harvard.edu/publications/Kolasinska\_H3K36me3\_NatGen\_2009.pdf)
+ * Published by Shirley Liu, a former student of Marty
 
-
-[H3K36me3 at lower levels in AS exons](http://liulab.dfci.harvard.edu/publications/Kolasinska\_H3K36me3\_NatGen\_2009.pdf)
-        -shirley Liu is a former student of Marty
-
-Null hypothesis supported by potentially sequence specific role of [snRNAs](http://en.wikipedia.org/wiki/Small\_nuclear\_RNA)
+* Null hypothesis supported by potentially sequence specific role of [snRNAs](http://en.wikipedia.org/wiki/Small\_nuclear\_RNA)
  
-Should we consider final exons? Perhaps their are signals for end of transcription (e.g.histone marks recruiting factors that end transcription)
+* Should we consider final exons? Perhaps their are signals for end of transcription (e.g.histone marks recruiting factors that end transcription)
 
-When considering AS, it seems that for the 3 prime exon sites, we are primarily concerned with the state of the around the adenosine 20-40 bp upstream of the exon start that attacks the 5 prime exon end.
-For 5 prime exon sites, we are concerned with the sequences downstream of the end of the exon.
+* When considering AS, it seems that for the 3 prime exon sites, we are primarily concerned with the state of the around the adenosine 20-40 bp upstream of the exon start that attacks the 5 prime exon end.
+ * **NO, ChIP Resolution is not high enough**
+
+* For 5 prime exon sites, we are concerned with the sequences downstream of the end of the exon.
 
 * Consider ignoring [splicing that does not go through the major splicing pathway](http://en.wikipedia.org/wiki/Minor_spliceosome)
  * It is possible that the selection mechanisms are different from the major pathways so including them may introduce noise into our data.
