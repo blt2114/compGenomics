@@ -67,16 +67,17 @@ site_end = (site_chrom,win_end)
 #iterate through lines of stdin
 f = open(data_fn, 'r')
 recent_genes= collections.deque()
+RECENT_GENE_BUFFER_LENGTH=2000
 file_not_over=True
-BUFFER_LENGTH= 2000 #number of line to read at once
-#recent_genes.append(list(itertools.islice(f,BUFFER_LENGTH)))
+CHIP_BUFFER_LENGTH= 2000 #number of line to read at once
+#recent_genes.append(list(itertools.islice(f,CHIP_BUFFER_LENGTH)))
 
 while file_not_over:
     #when there are no more sites to go check, break
     if current_site == None:
         break
 
-    lines=collections.deque(itertools.islice(f,BUFFER_LENGTH)) 
+    lines=collections.deque(itertools.islice(f,CHIP_BUFFER_LENGTH)) 
     if not lines:
         file_not_over=False 
         
@@ -88,9 +89,8 @@ while file_not_over:
 
         line = lines.popleft()
         recent_genes.appendleft(line)
-        if len(recent_genes)>BUFFER_LENGTH:
+        if len(recent_genes)>RECENT_GENE_BUFFER_LENGTH:
             recent_genes.pop()
-        #print "len of deque is: "+str(len(recent_genes))+"\ntype of line is: "+str(type(line))
         # parse out the read location
         values = line.split("\t")
 
