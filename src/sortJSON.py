@@ -31,7 +31,7 @@ json_file.close()
 
 # Lambda expression for sort taken from stack overflow:
 # http://stackoverflow.com/questions/18761776/sort-list-of-dictionaries-by-multiple-keys-with-different-ordering
-dicts.sort(key=lambda x: (chromosomes[x['chrom']],x['location']))
+dicts.sort(key=lambda x: (chromosomes[x['chrom']],int(x['five_p_loc'])))
 for site in dicts:
     print json.dumps(site)
 
