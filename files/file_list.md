@@ -38,3 +38,16 @@ File List
 > made with grep command formed by filter\_genes\_by\_expression.sh
 > filtered out genes with no more than 35 samples with expression less than 100 RPKM
 > 334 genes in the list
+
+### exon\_labels\_sorted.txt 
+> Lines of exons in JSON formatwith labels for each sample of the inclusion ratio 
+> (the RPKM for that exon/ the RPKM for the gene is in)
+> This is a horrible metric, but was easy to come up with, later iterations are intended to 
+> use a better metric and include a better subset of exons
+> Dictionaries also include 5' and 3' locations.
+
+### labeled\_exons\_with\_features.txt
+> This was the first set of data used to train and test a model.
+> lines are JSON dictionaries that include the chromatin states at the 3' and 
+> 5' and the inclusion ratio for every sample in which the gene of 
+> that exon is expressed.
