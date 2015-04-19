@@ -51,3 +51,9 @@ File List
 > lines are JSON dictionaries that include the chromatin states at the 3' and 
 > 5' and the inclusion ratio for every sample in which the gene of 
 > that exon is expressed.
+
+### distribution\_of\_some\_exon\_inclusion.png 
+> This shows the distribution of expression of some exons.  
+> This was produced to see if a strong trend of bimodality was present
+> It seems that this is not the case for most exons in this sample.
+
