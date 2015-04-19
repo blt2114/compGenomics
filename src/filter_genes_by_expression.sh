@@ -8,19 +8,18 @@ if [ "$#" -ne 5 ];then
 fi
 
 raw_gene_RPKMs=$1
-order_of_magnitude=$2
-MSD=$3
+order_of_magnitude=$2 # the number of digits RPKM values must excede to count as expressed
+MSD=$3 #most significant digit
 num_repeats=$4
 output_fn=$5
 
-repeated_pat=""
-small_RPKM_pat="\t[0-9]{0,$order_of_magnitude}\..*"
-#small_RPKM_pat="\t[0-$MSD][0-9]{0,$order_of_magnitude}\..*"
-for i in $(seq 1 $num_repeats); do 
-    echo pat: $repeated_pat
-    repeated_pat=$repeated_pat$small_RPKM_pat
-done
+# this pattern looks for values that are either $order_of_magnitude digits or 
+# start with MSD and have $order_of_magnitude - 1 digits following.  This must 
+# be in the line at least num_repeats times.
+pattern_for_line="(\t([0-9]{0,$order_of_magnitude}|[0-$MSD][0-9]{"$((order_of_magnitude-1))"})\..*){$num_repeats}"
 
-cmd="grep -v -E "\""$repeated_pat"\""" 
-echo cmd: $cmd
-
+echo $pattern_for_line
+cmd="grep -v -E ""'"$pattern_for_line"'"
+echo $cmd
+grep -v -E "'"$pattern_for_line"'" < $raw_gene_RPKMs > $output_fn
+echo "finished filtering through genes"

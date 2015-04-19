@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 """
 Filter_exons goes through a file gene expression data (from raw gene RPKM
-file) and file of exon RPKM data and sel
+file) and file of exon RPKM data and selects those exons which are part of
+genes in the list provided and for which the gene RPKM for that sample 
+meets a specifed threshold. This is useful because it allows us data from
+samples in which that gene in question is not expressed, since in such cases
+exon inclusion likely is not under regulation.
+
 """
 
 import json
@@ -18,27 +23,31 @@ if not len(sys.argv) in [3, 4]:
 
 genes_fn = sys.argv[1]
 exons_fn = sys.argv[2]
-gene_RPKM_threshold = 100.0 #default threshold for gene expression in sample
-                            #for exons in that gene ot be included.
-if len(sys.argv) is 4:
+gene_RPKM_threshold = 100.0 # default threshold for gene expression in sample
+                            # for exons in that gene ot be included.
+
+if len(sys.argv) is 4:      # if included, set explicitly
     gene_RPKM_threshold=float(sys.argv[3])
 
 # load genes info from json into a dictionary
+    # Presumably this file will be small enough that doing this is not a
+    # problem.
 with open(genes_fn) as genes_file:
     genes = list(genes_file)
 genes_file.close()
 
-genes_dict={}
+genes_dict={} # holds information by gene
 gene_labels=genes[0].strip("\n").split("\t") # first row is column headings
-for gene in genes[1:]:
-    gene_split = gene.strip("\n").split("\t")
+for gene in genes[1:]: # for all lines after the headings
+    # remove newline and split tsv's in the line into a list
+    gene_split = gene.strip("\n").split("\t") 
     gene_dict={}
     for i in range(1,len(gene_labels)):
         if float(gene_split[i]) <gene_RPKM_threshold:
             gene_dict[gene_labels[i]]=None
         else:
             gene_dict[gene_labels[i]]=gene_split[i]
-    genes_dict[gene_split[0]]=gene_dict #index whole line by gene name
+    genes_dict[gene_split[0]]=gene_dict # index whole line by gene name
 
 # load exons info from json into a dictionary
 with open(exons_fn) as exons_file:
@@ -60,10 +69,11 @@ def parse_3p_5p(exon_location):
     return chrom, five_p, three_p,int(location_dir[1])
 
 
-exons_dict={}
+exons_dict={} # this structure is similar to that of the genes_dict
 exon_labels=exons[0].strip("\n").split("\t") # first row is column headings
 
-last_end =0
+# a marker to keep track of the location of the most recent exon end.
+last_end = 0 
 for exon in exons[1:]:
     exon_split=exon.strip("\n").split("\t")
     inclusion_vals=[]
@@ -94,17 +104,21 @@ for exon in exons[1:]:
     print json.dumps(exon_dict)
 
 
-if False: #set to True to produce figures
+# this plots a fairly arbitrary subset of exon inclusions rates. This was
+# done in order to get a sense of how the inclusion proportion of some exons 
+# are distributed on single exon basis across samples
+if True: #set to True to produce figures
     keys= exons_dict.keys()
     vals = exons_dict[keys[0]]
     count = 0
     side_len =6
     for i in range(0,side_len):
         for j  in range (0,side_len):
+            exon_idx=np.random.randint(0,len(keys)-1)
             count+=1
             plt.subplot(side_len,side_len,count)
             plt.title("mean: " +
-                str(np.mean(exons_dict[keys[count]]))[0:5])
-            plt.hist(exons_dict[keys[count]],bins=100,range=(0,3))
-            plt.axis([0,3,0,20])
+                str(np.mean(exons_dict[keys[exon_idx]]))[0:5])
+            plt.hist(exons_dict[keys[exon_idx]],bins=100,range=(0,3))
+            plt.axis([0,3,0,10])
     plt.show()
