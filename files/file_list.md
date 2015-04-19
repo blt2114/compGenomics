@@ -57,3 +57,15 @@ File List
 > This was produced to see if a strong trend of bimodality was present
 > It seems that this is not the case for most exons in this sample.
 
+### experiment\_read\_counts.json
+> JSON dictionary with the read counts for every ChIP experiment for every sample
+> This is necessary for scaling the read counts from individual experiments.
+> The correct way to preform this scaling without introducing bias has decided.
+> This information aparsed out of "metadata.tsv"
+
+
+### exons\_with\_all\_features\_and\_labels
+> The contents of this are manifest in its title
+> read counts are not scaled in any way.
+> these results were used in the first trials of classification of inclusion using a random forest
+> The exons are the same set present in \'exons\_labels\_sorted.txt\'
