@@ -32,6 +32,6 @@ with open(file_to_scale_down) as json_file:
                 for k2 in site[k1].keys():
                     mark=k2.split("_")[0]
                     if reads[k1].has_key(mark):
-                        site[k1][k2]/= float(reads[k1][mark])
+                        site[k1][k2]/= (float(reads[k1][mark])/10000000)
         print json.dumps(site)
 json_file.close()

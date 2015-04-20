@@ -69,3 +69,7 @@ File List
 > read counts are not scaled in any way.
 > these results were used in the first trials of classification of inclusion using a random forest
 > The exons are the same set present in \'exons\_labels\_sorted.txt\'
+
+### exons\_with\_all\_features\_and\_scaled\_labels
+> the same as above with labels scaled by read count
+> currently this scaling is simply dividing by read cound and mulitplying by 1e7 (so that number are not as small)
