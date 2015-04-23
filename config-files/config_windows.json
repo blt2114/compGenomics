@@ -1,0 +1,6 @@
+{
+        "upstream_window":5000,
+        "downstream_window":5000,
+        "window_size":100,
+        "chromosome_order_fn":"config-files/chromosome_order.json"
+}
