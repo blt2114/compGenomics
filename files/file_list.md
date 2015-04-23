@@ -61,7 +61,7 @@ File List
 > JSON dictionary with the read counts for every ChIP experiment for every sample
 > This is necessary for scaling the read counts from individual experiments.
 > The correct way to preform this scaling without introducing bias has decided.
-> This information aparsed out of "metadata.tsv"
+> This information parsed out of "metadata.tsv"
 
 
 ### exons\_with\_all\_features\_and\_labels
