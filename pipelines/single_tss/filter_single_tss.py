@@ -4,11 +4,15 @@
 This file filters a gtf file for genes that have only one tss start site.
 
 By default, it will exclude pairs of genes that are closer than the defined granuality parameter.
+
+Usage:
+python filter_single_tss.py ../../files/gen10.long.gtf.transcripts 500 > single_tss.json
+
 """
 
 __author__ = 'jeffrey'
 
-import sys, tempfile, subprocess
+import sys, tempfile, subprocess, json
 from src.utils import GTF
 
 # Main Method
@@ -74,14 +78,16 @@ def main(argv):
         elif previous_gene[0].seqname != gene_tup[0].seqname:
             # Can Write Previous Gene, the two genes are on different chromosomes
             if write_next:
-                print str('{"read_dir": ' + previous_gene[0].strand +
-                    ' "gene": ' + previous_gene[0].attribute['gene_id'].split('.')[0] +
-                    ' "chrom": ' + previous_gene[0].seqname +
-                    ' "location": ' + str(previous_gene[1]) +
-                    ' "gene_type": ' + previous_gene[0].attribute['gene_type'] +
-                    ' "gene_status": ' + previous_gene[0].attribute['gene_status'] +
-                    ' "gene_name": ' + previous_gene[0].attribute['gene_name'] +
-                    '}')
+                data = {
+                    "read_dir" : previous_gene[0].strand,
+                    "gene" : previous_gene[0].attribute['gene_id'].split('.')[0],
+                    "chrom" :previous_gene[0].seqname,
+                    "location" : previous_gene[1],
+                    "gene_type" : previous_gene[0].attribute['gene_type'],
+                    "gene_status" : previous_gene[0].attribute['gene_status'],
+                    "gene_name" : previous_gene[0].attribute['gene_name'],
+                }
+                print json.dumps(data)
             write_next = True
         elif abs(previous_gene[1] - gene_tup[1]) < granularity:
             # Do not write previous gene
@@ -92,26 +98,30 @@ def main(argv):
         else:
             # Implies the difference between the two genes is greater than the defined granularity
             if write_next:
-                print str('{"read_dir": ' + previous_gene[0].strand +
-                    ' "gene": ' + previous_gene[0].attribute['gene_id'].split('.')[0] +
-                    ' "chrom": ' + previous_gene[0].seqname +
-                    ' "location": ' + str(previous_gene[1]) +
-                    ' "gene_type": ' + previous_gene[0].attribute['gene_type'] +
-                    ' "gene_status": ' + previous_gene[0].attribute['gene_status'] +
-                    ' "gene_name": ' + previous_gene[0].attribute['gene_name'] +
-                    '}')
+                data = {
+                    "read_dir" : previous_gene[0].strand,
+                    "gene" : previous_gene[0].attribute['gene_id'].split('.')[0],
+                    "chrom" :previous_gene[0].seqname,
+                    "location" : previous_gene[1],
+                    "gene_type" : previous_gene[0].attribute['gene_type'],
+                    "gene_status" : previous_gene[0].attribute['gene_status'],
+                    "gene_name" : previous_gene[0].attribute['gene_name'],
+                }
+                print json.dumps(data)
             write_next = True
         previous_gene = gene_tup
     # Write Previous Gene
     if write_next:
-        print str('{"read_dir": ' + previous_gene[0].strand +
-            ' "gene": ' + previous_gene[0].attribute['gene_id'].split('.')[0] +
-            ' "chrom": ' + previous_gene[0].seqname +
-            ' "location": ' + str(previous_gene[1]) +
-            ' "gene_type": ' + previous_gene[0].attribute['gene_type'] +
-            ' "gene_status": ' + previous_gene[0].attribute['gene_status'] +
-            ' "gene_name": ' + previous_gene[0].attribute['gene_name'] +
-              '}')
+        data = {
+            "read_dir" : previous_gene[0].strand,
+            "gene" : previous_gene[0].attribute['gene_id'].split('.')[0],
+            "chrom" :previous_gene[0].seqname,
+            "location" : previous_gene[1],
+            "gene_type" : previous_gene[0].attribute['gene_type'],
+            "gene_status" : previous_gene[0].attribute['gene_status'],
+            "gene_name" : previous_gene[0].attribute['gene_name'],
+        }
+        print json.dumps(data)
     f.close()
 
     sys.stderr.write('Program is done.\n')
