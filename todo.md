@@ -70,6 +70,8 @@ Things Brian is Working On
 * Using Narrow/Broad peaks insatead of reads within a BP range of sites of interst
 
 
+#possible increase in accuracy with addional histone features could come from using it for additional resolution on known regulators, i.e. H3K4me3 and H3K36me3
+
 ###TSS###
 ####Possible Experimental Question:####
 For genes with two TSS observed in our data set, can histone state around these sites predict which TSS predominates?
@@ -104,3 +106,5 @@ For exons with that have observed alternative splicing in our data set, can hist
 * x\_i is a 10 dimentional vector, 5 dimensions representing the states of the core histone marks for the 3' and 5' ends
 * y\_i is a real number, that is the portion of transcripts that used the first site 
  * we can consider binarizing this (e.g. exon is usually used)
+
+
