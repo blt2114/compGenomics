@@ -11,17 +11,19 @@ fi
 root=http://egg2.wustl.edu/roadmap/data/byFileType/alignments/consolidated/
 wd=$1
 output_dir=$2
+ChIP_experiment_list=$3
+sites=$4
 config=config-files/config.json
 output_fn_base=$output_dir"/"$$"_" #include PID so script don't overwrite eachother's progress
 stage=0
 next_stage=$(($stage+1))
 
 #copy the original sites to a new location
-cp $4 $output_fn_base$stage
+cp $sites $output_fn_base$stage
 while read l; do
     data_url=$root$l
     echo $$ wget $data_url -O $wd"/"$l
-    wget $data_url -O $wd"/"$l  > /dev/null
+    wget $data_url -O $wd"/"$l  > /dev/null 2>&1
     if [ $? -ne 0 ]; then
         echo wget failed, waiting 20 seconds and trying again.
         sleep 20
@@ -51,6 +53,6 @@ while read l; do
     stage=$(($stage+1))
     next_stage=$(($stage+1))
     rm $unzipped_fn
-done <$3
+done <$ChIP_experiment_list
 
 mv $output_fn_base$stage $output_fn_base"final_output" 
