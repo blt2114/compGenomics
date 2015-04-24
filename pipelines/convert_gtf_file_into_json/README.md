@@ -26,7 +26,7 @@ Note: To use the gtf2dict.py script, you need to:
 
 Command Used:
 
-    python gtf2dict.py ../../files/gen10.long.gtf.genes ../../files/gen10.long.gtf.transcripts ../../files/gen10.long.gtf.exons > files/genes.json
+    python gtf2dict.py ../../files/gen10.long.gtf.genes ../../files/gen10.long.gtf.transcripts ../../files/gen10.long.gtf.exons > ../../files/genes.json
 
 stderr output:
 
