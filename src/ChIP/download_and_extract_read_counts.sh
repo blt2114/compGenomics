@@ -2,7 +2,7 @@
 chr=""
 if [ "$#" -ne 4 ];then
     if [ "$#" -ne 5 ];then
-        echo "./extract_data.sh <working_dir> <output_dir> <ChIP_experiment_list> <sites.json> (<chr#>)"
+        echo "./download_and_extract_reads.sh <working_dir> <output_dir> <ChIP_experiment_list> <sites.json> (<chr#>)"
         exit
     fi
     echo running on chr $5
@@ -41,13 +41,11 @@ while read l; do
     fi
 
     sample_mark=`echo $l | sed "s/.tagAlign.gz//g"`
-    echo $$ : python src/ChIP_extract.py $config $sample_mark $output_fn_base$stage $wd
-    python src/ChIP_extract.py $config $sample_mark $output_fn_base$stage $wd > $output_fn_base$next_stage 
+    echo $$ : python src/ChIP/extract_reads_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd
+    python src/ChIP/extract_reads_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd > $output_fn_base$next_stage 
     echo $$ ": finished parsing "$l
-    #rm $output_fn_base$stage
     stage=$(($stage+1))
     next_stage=$(($stage+1))
-    #rm $unzipped_fn
 done <$3
 
 mv $output_fn_base$stage $output_fn_base"final_output" 

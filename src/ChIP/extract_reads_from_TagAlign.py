@@ -15,7 +15,7 @@ import itertools
 
 
 if len(sys.argv) is not 5:
-    sys.stderr.write("invalid usage: python ChIP_extract.py <config.json>"+
+    sys.stderr.write("invalid usage: python extract_reads_from_TagAlign.py <config.json>"+
             " <sample_ID-mark_ID> <sites.json> <data_root>\n")
     sys.exit(2)
 
