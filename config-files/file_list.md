@@ -1,6 +1,12 @@
 File List
 ---------
 
+### FILE: config.json ###
+> Configuration information used by the TagAlign ChIP extraction python scripts 
+
+### FILE: config\_windows.json ###
+> Configuration information used by the TagAlign ChIP extraction python scripts which extract read information in a windowed fasion.
+
 ### FILE: all\_marks ###
 > This file contains a list of the 11 histone marks we have ChIP seq data for plus DNAse
 
