@@ -73,3 +73,8 @@ File List
 ### exons\_with\_all\_features\_and\_scaled\_labels
 > the same as above with labels scaled by read count
 > currently this scaling is simply dividing by read cound and mulitplying by 1e7 (so that number are not as small)
+
+### labeled\_exons\_in\_middle\_of\_genes.txt
+> later iteration of exon selection.  Similar to those described above with two major differences:
+>       1. The labels are obtained from division of exon RPKM value with that of a reference exon, chosen becuase it is thought generally be included constituatively.
+>       2. No exons were included that are known to be outside of the normal range of transcripts.  This means that exons in this list are thought to only be excluded by AS, and could not be skipped by transcription beginning another TSS or transcription terminating early.
