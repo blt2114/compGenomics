@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 This main looks through raw tagAlign chip-seq files and finds the number of
-reads upstream/downstream of locations provided in JSON file.
+reads upstream/downstream of five_p_locs provided in JSON file.
 
 The sites of interest in the json file are assumeded to be in the same order
 as mapped ChIP-Seq reads
@@ -28,14 +28,12 @@ data_root = sys.argv[4]
 
 # a fucntion to get the running count from counts in bins
 def sums(list_of_counts):
-    return list_of_counts
-'''
     new_l=[0]*len(list_of_counts)
     new_l[0]=list_of_counts[0]
     for i in range(1,len(list_of_counts)):
             new_l[i]=new_l[i-1]+list_of_counts[i]
     return new_l
-'''
+
 # load config info from json into a dictionary
 with open(config_fn) as config_file:
     config = json.load(config_file)
@@ -66,9 +64,9 @@ current_site = json.loads(site_line)
 exon_sides=[]
 exon_side_order=[]
 if current_site["read_dir"] == 1:
-    (win_start,win_end)=(int(current_site["location"])-upstream_window,int(current_site["location"])+downstream_window)
+    (win_start,win_end)=(int(current_site["five_p_loc"])-upstream_window,int(current_site["five_p_loc"])+downstream_window)
 else:
-    (win_start,win_end)=(int(current_site["location"])-downstream_window,int(current_site["location"])+upstream_window)
+    (win_start,win_end)=(int(current_site["five_p_loc"])-downstream_window,int(current_site["five_p_loc"])+upstream_window)
 site_label=mark_ID+"_reads"
 site_chrom = chromosomes[current_site["chrom"]]
 site_start=(site_chrom,win_start)
@@ -78,7 +76,6 @@ if current_site.has_key(sample_ID):
     current_site[sample_ID][site_label]=[0]*num_windows
 else:
     current_site[sample_ID]={site_label:[0]*num_windows}
-finished_exon=False # other end will need to be processed after
 
 #iterate through lines of stdin
 f = open(data_fn, 'r')
@@ -105,7 +102,7 @@ while True:
         recent_genes.appendleft(line)
         if len(recent_genes)>RECENT_GENE_BUFFER_LENGTH:
             recent_genes.pop()
-        # parse out the read location
+        # parse out the read five_p_loc
         values = line.split("\t")
 
         chromosome = chromosomes[values[0]]
@@ -141,18 +138,18 @@ while True:
             current_site = None
             continue
         current_site= json.loads(current_site_line)
+
         if current_site.has_key(sample_ID):
             current_site[sample_ID][site_label]=[0]*num_windows
         else:
             current_site[sample_ID]={site_label:[0]*num_windows}
 
         if current_site["read_dir"] == 1:
-            (win_start,win_end)=(int(current_site["location"])-upstream_window,int(current_site["location"])+downstream_window)
+            (win_start,win_end)=(int(current_site["five_p_loc"])-upstream_window,int(current_site["five_p_loc"])+downstream_window)
         else:
-            (win_start,win_end)=(int(current_site["location"])-downstream_window,int(current_site["location"])+upstream_window)
+            (win_start,win_end)=(int(current_site["five_p_loc"])-downstream_window,int(current_site["five_p_loc"])+upstream_window)
 
         #calculate new site information 
-        finished_exon=False
 
         site_chrom = chromosomes[current_site["chrom"]]
         site_start=(site_chrom,win_start)

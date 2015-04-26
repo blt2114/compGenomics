@@ -42,7 +42,7 @@ while read l; do
 
     sample_mark=`echo $l | sed "s/.tagAlign.gz//g"`
     echo $$ : python src/ChIP/extract_reads_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd
-    python src/ChIP/extract_reads_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd > $output_fn_base$next_stage 
+    python src/ChIP/windowed_extract_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd > $output_fn_base$next_stage 
     echo $$ ": finished parsing "$l
     stage=$(($stage+1))
     next_stage=$(($stage+1))
