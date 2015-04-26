@@ -18,7 +18,7 @@ import itertools
 import json
 import sys
 if len(sys.argv) != 2:
-    sys.stderr.write("invalid usage: python test_kernel_ridge.py"+
+    sys.stderr.write("invalid usage: python ensembe_test.py"+
             " <exons.txt>\n")
     sys.exit(2)
 
