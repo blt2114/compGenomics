@@ -20,17 +20,17 @@ next_stage=$(($stage+1))
 cp $4 $output_fn_base$stage
 while read l; do
     data_url=$root$l
-    echo $$ wget $data_url -O $wd"/"$l
-    wget $data_url -O $wd"/"$l  > /dev/null
-    if [ $? -ne 0 ]; then
-        echo wget failed, waiting 20 seconds and trying again.
-        sleep 20
-        wget $data_url -O $wd"/"$l  > /dev/null
-    fi
-    if [ $? -ne 0 ]; then
-        echo wget failed again, exiting now.
-        exit 1
-    fi
+#    echo $$ wget $data_url -O $wd"/"$l
+#    wget $data_url -O $wd"/"$l  > /dev/null
+#    if [ $? -ne 0 ]; then
+     #   echo wget failed, waiting 20 seconds and trying again.
+     #   sleep 20
+     #   wget $data_url -O $wd"/"$l  > /dev/null
+    #fi
+    #if [ $? -ne 0 ]; then
+    #    echo wget failed again, exiting now.
+    #    exit 1
+    #fi
     gunzip -f $wd"/"$l
 
     unzipped_fn=`echo $wd"/"$l | sed "s/.gz//g"`
@@ -41,11 +41,12 @@ while read l; do
     fi
 
     sample_mark=`echo $l | sed "s/.tagAlign.gz//g"`
-    echo $$ : python src/ChIP/extract_reads_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd
+    echo $$ : python src/ChIP/windowed_extract_reads_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd
     python src/ChIP/windowed_extract_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd > $output_fn_base$next_stage 
     echo $$ ": finished parsing "$l
     stage=$(($stage+1))
     next_stage=$(($stage+1))
+    rm $unzipped_fn
 done <$3
 
 mv $output_fn_base$stage $output_fn_base"final_output" 
