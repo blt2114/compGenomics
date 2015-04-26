@@ -35,6 +35,8 @@ Programs and Commands
 
 ###Step 2: Start download###
 
+    mkdir chip
+    cd pipelines/download
     python download.py filelist.txt 1>> log.txt
 
 If for some reason you think you missed a file, you can run the script
