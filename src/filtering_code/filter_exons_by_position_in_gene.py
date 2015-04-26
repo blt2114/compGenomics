@@ -3,7 +3,7 @@ import json
 
 
 if not len(sys.argv) == 3:
-    sys.stderr.write("invalid usage: python trim_genes.py"+
+    sys.stderr.write("invalid usage: python filter_exons_by_position_in_gene.py"+
             " <genes.json> <exons.json>\n")
     sys.exit(2)
 
