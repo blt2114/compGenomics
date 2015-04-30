@@ -40,6 +40,7 @@ for l in exons_file:
             experiment_dicts.append(exon_dict[key])
             sample_dicts[key].append(exon_dict[key])
 exons_file.close()
+'''
 keys=[
 "H2A.Z_num_reads_five_p",
 "H3K4me1_num_reads_five_p",
@@ -53,25 +54,26 @@ keys=[
 "H3K79me2_num_reads_five_p",
 "H4K20me1_num_reads_five_p",
 "DNase_num_reads_five_p",
-"H2A.Z_num_reads_three_p",
-"H3K4me1_num_reads_three_p",
-"H3K4me2_num_reads_three_p",
-"H3K4me3_num_reads_three_p",
-"H3K9ac_num_reads_three_p",
-"H3K9me3_num_reads_three_p",
-"H3K27ac_num_reads_three_p",
-"H3K27me3_num_reads_three_p",
-"H3K36me3_num_reads_three_p",
-"H3K79me2_num_reads_three_p",
-"H4K20me1_num_reads_three_p",
-"DNase_num_reads_three_p",
+
+#"H2A.Z_num_reads_three_p",
+#"H3K4me1_num_reads_three_p",
+#"H3K4me2_num_reads_three_p",
+#"H3K4me3_num_reads_three_p",
+#"H3K9ac_num_reads_three_p",
+#"H3K9me3_num_reads_three_p",
+#"H3K27ac_num_reads_three_p",
+#"H3K27me3_num_reads_three_p",
+#"H3K36me3_num_reads_three_p",
+#"H3K79me2_num_reads_three_p",
+#"H4K20me1_num_reads_three_p",
+#"DNase_num_reads_three_p",
 ]
 '''
 keys=[
     "H3K9me3_num_reads_five_p",
     "H3K27me3_num_reads_five_p",
-#    "H3K36me3_num_reads_five_p",
- #   "H3K4me3_num_reads_five_p",
+    "H3K36me3_num_reads_five_p",
+    "H3K4me3_num_reads_five_p",
     "H3K4me1_num_reads_five_p",
 #    "H3K9me3_num_reads_three_p",
 #    "H3K27me3_num_reads_three_p",
@@ -79,13 +81,11 @@ keys=[
 #    "H3K4me3_num_reads_three_p",
 #    "H3K4me1_num_reads_three_p"
     ]
-'''
 label="p_inc"
 labels=[0,1]
 
 X=[]
 Y_R=[]#for regression
-Y_C=[]#for classification
 for i in experiment_dicts:
     exprmt_feature_vector=[]
     for k in keys:
@@ -93,8 +93,17 @@ for i in experiment_dicts:
     exprmt_label=i[label]
     X.append(exprmt_feature_vector)
     Y_R.append(exprmt_label)
-    Y_C.append(int(float(exprmt_label)<1))
 
+#label_cutoff=np.median(Y_R)
+label_cutoff=np.median(Y_R)
+print "label cutoff: "+str(label_cutoff)
+Y_C=[]#for classification
+for i in experiment_dicts:
+    exprmt_label=i[label]
+    Y_C.append(int(float(exprmt_label)<label_cutoff))
+
+print "mean label: "+str(np.mean(Y_R))
+print "median label: "+str(np.median(Y_R))
 samples_features_and_labels={}
 for key in sample_dicts.keys():
     samples_features_and_labels[key]={}
@@ -108,23 +117,23 @@ for key in sample_dicts.keys():
         exprmt_label=i[label]
         samples_features_and_labels[key]["X"].append(exprmt_feature_vector)
         samples_features_and_labels[key]["Y_R"].append(exprmt_label)
-        samples_features_and_labels[key]["Y_C"].append(int(float(exprmt_label)<1))
+        samples_features_and_labels[key]["Y_C"].append(int(float(exprmt_label)<label_cutoff))
 
 num_points = len(Y_C)
-train_size = int(num_points*0.5)
-test_size = 3000#num_points-train_size
+train_size = int(num_points*0.8)
+test_size = num_points-train_size
 print "number of datapoints: " + str(num_points)
 
 Y_R_sorted=sorted(Y_R)
-buckets=[0]*10
-for i in range(0,10):
-    buckets[i]=Y_R_sorted[(i)*len(Y_R_sorted)/10]
+buckets=[0]*9
+for i in range(0,9):
+    buckets[i]=Y_R_sorted[(i)*len(Y_R_sorted)/9]
 
 Y_R_decile=[0]*len(Y_R)
 for i in range(0,len(Y_R)):
     bucket=0
     label=Y_R[i]
-    while bucket<10 and Y_R[i]> buckets[bucket]:
+    while bucket<9 and Y_R[i]> buckets[bucket]:
         bucket+=1
     Y_R_decile[i]=float(bucket)/10
 
@@ -198,17 +207,21 @@ for a in [0.00001,0.0001, 0.001,0.01,0.1,1]:
     print "\n\n"
     for key in sample_dicts.keys()
         sample_dicts[key]
-
+'''
+'''
 # Random Forest Regressor
 print "testing Regressor"
+print "size of training set: "+str(len(train_Y_R_decile))
 for j in [20,200]:
-    for i in [10]:
+    for i in [8,10,13]:
     #   clf = AdaBoostRegressor(n_estimators=j)
         clf = RandomForestRegressor(n_estimators=j,
             max_depth=i, min_samples_split=10, random_state=0)
 #        clf=GradientBoostingRegressor(n_estimators=100,learning_rate=i)
         clf.fit(train_X,train_Y_R_decile)
+        #clf.fit(train_X,train_Y_R)
         Y_R_predicted=clf.predict(test_X)
+        #MSE=((np.array(test_Y_R) - np.array(Y_R_predicted)) ** 2).mean()
         MSE=((np.array(test_Y_R_decile) - np.array(Y_R_predicted)) ** 2).mean()
         print "params: " + str(clf.get_params())
         print "\tmax_depth= "+str(j)
@@ -216,20 +229,24 @@ for j in [20,200]:
         print "\tMSE="+str(MSE)
         Y_R_predicted_print = [ '%.2f' % elem for elem in Y_R_predicted ]
         test_Y_R_print = [ '%.2f' % elem for elem in Y_R_decile ]
-#        Y_C_predicted=np.array(Y_R_predicted)<1
-#        accuracy=(100*(float(sum(test_Y_C==Y_C_predicted)))/len(test_Y_C))
-#        print "\ttest accuracy: "+str(accuracy)
+        #test_Y_R_print = [ '%.2f' % elem for elem in Y_R ]
+        Y_C_predicted=np.array(Y_R_predicted)<=np.median(Y_R_decile)
+        accuracy=(100*(float(sum(test_Y_C==Y_C_predicted)))/len(test_Y_C))
+        p_1 =float(sum(test_Y_C==(np.array([1]*len(test_Y_C)))))/len(test_Y_C)
+        p_1_pred = float(sum(Y_C_predicted==1))/len(Y_C_predicted)
+        print "\tp 1:" +str(p_1)+ "\n\tp 1 predicted: "+ str(p_1_pred)
+        print "\ttest accuracy: "+str(accuracy)
         print "first 10 labels predicted: \t"+str(Y_R_predicted_print[0:10])
         print "first 10 labels real:\t\t"+str(list(test_Y_R_print[0:10]))
-        scores = cross_val_score(clf, train_X, train_Y_R_decile)
-        print "Random Forest Regressio mean cross validation score: " + str( scores.mean())
+#        scores = cross_val_score(clf, train_X, train_Y_R_decile)
+#        print "Random Forest Regressio mean cross validation score: " + str( scores.mean())
         print "\n\n"
-'''
-for j in [10,20,30]:
+        '''
+for j in [30,50,100]:
     clf = RandomForestClassifier(n_estimators=j,
         max_depth=10, min_samples_split=10, random_state=0)
 #    clf = AdaBoostClassifier(n_estimators=j)
-    clf.fit(X,Y_C)
+    clf.fit(train_X,train_Y_C)
     # print "params: "+str(clf.get_params())
     # print "estimators: "+str(clf.estimators_)
     feature_importances = clf.feature_importances_
@@ -237,22 +254,28 @@ for j in [10,20,30]:
     for i in range(0,len(keys)):
         print "\t"+keys[i]+":\t"+str(feature_importances[i])
     print "score by experiment:"
+    Y_C_predicted=clf.predict(test_X)
+    p_1 =float(sum(test_Y_C==(np.array([1]*len(test_Y_C)))))/len(test_Y_C)
+    p_1_pred = float(sum(Y_C_predicted==1))/len(Y_C_predicted)
+    print "\tp 1:" +str(p_1)+ "\n\tp 1 predicted: "+ str(p_1_pred)
     mean_acc=[] 
     for sample in samples_features_and_labels.keys():
         Y_C_sample=samples_features_and_labels[sample]["Y_C"]
         X_sample=samples_features_and_labels[sample]["X"]
         print "\t" +sample+": "+str(len(X_sample))+" points"
-        tr_size= int(float(len(X_sample))*0.8)
-        te_size= len(X_sample)-tr_size
-        Y_C_sample_tr=Y_C_sample[0:tr_size]
-        Y_C_sample_te=Y_C_sample[tr_size:tr_size+te_size]
-        X_sample_tr=X_sample[0:tr_size]
-        X_sample_te=X_sample[tr_size:tr_size+te_size]
-        clf.fit(X_sample_tr,Y_C_sample_tr)
-        pred=clf.predict(X_sample_te)
-        accuracy=(100*(float(sum(Y_C_sample_te==pred)))/len(Y_C_sample_te))
-        mean_acc.append(accuracy*(float(len(X_sample)/float(num_points))))
-        print "\t"+sample+" test accuracy: "+str(accuracy)
+     #   tr_size= int(float(len(X_sample))*0.8)
+     #   te_size= len(X_sample)-tr_size
+     #   Y_C_sample_tr=Y_C_sample[0:tr_size]
+     #   Y_C_sample_te=Y_C_sample[tr_size:tr_size+te_size]
+     #   X_sample_tr=X_sample[0:tr_size]
+     #   X_sample_te=X_sample[tr_size:tr_size+te_size]
+        sample_scores=cross_val_score(clf,X_sample,Y_C_sample)
+     #   pred=clf.predict(X_sample_te)
+     #   accuracy=(100*(float(sum(Y_C_sample_te==pred)))/len(Y_C_sample_te))
+        #mean_acc.append(accuracy*(float(len(X_sample)/float(num_points))))
+        mean_acc.append(np.mean(sample_scores)*(float(len(X_sample)/float(num_points))))
+        #print "\t"+sample+" test accuracy: "+str(accuracy)
+        print "\t"+sample+" test accuracy: "+str(np.mean(sample_scores))
     print "average sample accuracy:"+str(sum(mean_acc))
 
     scores = cross_val_score(clf, X, Y_C)

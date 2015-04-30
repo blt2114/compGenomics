@@ -41,7 +41,6 @@ with open(most_expressed_exons_fn) as most_expressed_exons_file:
     most_expressed_exons=json.loads(most_expressed_exons_file.readline())#,object_hook=_decode_dict)
 most_expressed_exons_file.close()
 
-
 genes_dict={} # holds information by gene
 gene_labels=genes[0].strip("\n").split("\t") # first row is column headings
 for gene in genes[1:]: # for all lines after the headings
@@ -57,6 +56,7 @@ for gene in genes[1:]: # for all lines after the headings
         else:
             gene_dict[gene_labels[i]]=gene_split[i]
     genes_dict[gene_split[0]]=gene_dict # index whole line by gene name
+#print json.dumps(genes_dict)
 
 # load exons info from json into a dictionary
 with open(exons_fn) as exons_file:
@@ -141,7 +141,8 @@ while line_num < len(exons):
             for i in exon_labels[2:]:
                 # if the gene is not expressed at high enough an RPMK to
                 # have been assigned an RPKM previously, continue
-                if (not past_exon_split[1] in genes_dict.keys())  or genes_dict[past_exon_split[1]][i] is None: 
+                gene_RPKM = genes_dict[past_exon_split[1]][i]
+                if (not past_exon_split[1] in genes_dict.keys())  or gene_RPKM is None:
                     continue
 
                 #make calculations for exons of current gene and move on.
@@ -155,11 +156,13 @@ while line_num < len(exons):
                 ref_RPKM=ref_RPKMs[exon_labels.index(i)]
                 if float(ref_RPKM) < float(ref_exon_RPKM_threshold):
                     continue
-                p_inclusion = exon_RPKM/float(ref_RPKM)
+                p_inclusion_exon = exon_RPKM/float(ref_RPKM)
+                p_inclusion_gene = exon_RPKM/float(gene_RPKM)
 
                 # add the p_inclusion to the exon dict
-                exon_dict[i]={"p_inc":p_inclusion}
-                inclusion_vals.append(p_inclusion)
+                exon_dict[i]={"p_inc":p_inclusion_gene}
+                exon_dict[i]={"p_inc_exon":p_inclusion_gene}
+                inclusion_vals.append(p_inclusion_exon)
             print json.dumps(exon_dict)
 
             exons_dict[past_exon_split[0]]=inclusion_vals
@@ -174,7 +177,7 @@ while line_num < len(exons):
 # this plots a fairly arbitrary subset of exon inclusions rates. This was
 # done in order to get a sense of how the inclusion proportion of some exons 
 # are distributed on single exon basis across samples
-if False: #set to True to produce figures
+if True: #set to True to produce figures
     keys= exons_dict.keys()
     vals = exons_dict[keys[0]]
     count = 0

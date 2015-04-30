@@ -25,6 +25,7 @@ with open(file_to_scale_down) as json_file:
     for line in json_file:
         site=json.loads(line)
         for k1 in site.keys(): 
+            
             if type(site[k1]) is dict:
                 if not reads.has_key(k1):
                     # this is the case for exprmt E000
