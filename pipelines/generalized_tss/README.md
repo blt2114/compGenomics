@@ -34,9 +34,12 @@ Run this program:
 It outputs a json file in this format, with one gene on each line:
 
     {
+      "gene_id": "ENSG00000167578", 
       "seqname": "chr19", 
-      "end": 41302847, 
       "source": "ENSEMBL", 
+      "start": 41277553, 
+      "end": 41302847, 
+      "strand": "+", 
       "attribute": {
         "gene_status": "KNOWN", 
         "level": "3", 
@@ -48,10 +51,6 @@ It outputs a json file in this format, with one gene on each line:
         "transcript_status": "KNOWN", 
         "gene_name": "MIA"
       }, 
-      "frame": ".", 
-      "feature": "gene", 
-      "start": 41277553, 
-      "score": ".", 
       "transcripts": {
         "ENST00000263369.2": {
           "seqname": "chr19", 
@@ -101,7 +100,5 @@ It outputs a json file in this format, with one gene on each line:
           "tss": 41284213, 
           "strand": "+"
         },
-      }, 
-      "strand": "+"
+      }
     }
-

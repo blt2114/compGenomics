@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-This file is used for extracting RNA RPKM by gene.
+The principle to this file is to add RPKM values to all transcripts in a config file
 
 The input is a gene list, and the output is the gene RPKM.
 """
@@ -12,8 +12,8 @@ import sys, tempfile, subprocess, json
 
 # parse args
 if len(sys.argv) is not 3:
-    sys.stderr.write("invalid usage: python xtract_rna_1_tss.py " +
-            " <single_tss.json> <57epigenomes.RPKM.all>\n")
+    sys.stderr.write("invalid usage: python " + sys.argv[0] +
+            " <all_tss.json> <57epigenomes.RPKM.all>\n")
     sys.exit(2)
 
 tss_fn = sys.argv[1]

@@ -71,3 +71,18 @@ def file_len(fname):
         raise IOError(err)
     return int(result.strip().split()[0])
 
+class FileProgress(object):
+    def __init__(self, fname, message):
+        sys.stderr.write("Estimating compute time.\n")
+        self.filelen = file_len(fname)
+        self.count = 0
+        self.message = message
+        self.previous = None
+
+    def update(self):
+        self.count += 1
+        percent = int(float(self.count) / float(self.filelen) * 100)
+        if self.previous != percent:
+            sys.stderr.write("\r" + self.message + "%d%%" % percent)
+            sys.stderr.flush()
+        self.previous = percent
