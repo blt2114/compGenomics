@@ -10,7 +10,7 @@ Usage:
 
 __author__ = 'jeffrey'
 
-import sys, json
+import sys, json, collections
 from src.utils import GTF, file_len
 
 def main(argv):
