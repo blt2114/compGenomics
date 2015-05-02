@@ -78,3 +78,11 @@ File List
 > later iteration of exon selection.  Similar to those described above with two major differences:
 >       1. The labels are obtained from division of exon RPKM value with that of a reference exon, chosen becuase it is thought generally be included constituatively.
 >       2. No exons were included that are known to be outside of the normal range of transcripts.  This means that exons in this list are thought to only be excluded by AS, and could not be skipped by transcription beginning another TSS or transcription terminating early.
+
+
+### raw/1254806-Supplementary-Tables.csv
+> Table S13.4 from Brandon Frey's paper on AS.
+> http://www.sciencemag.org/content/347/6218/1254806/suppl/DC1
+> "The human splicing code reveals new insights into the genetic determinants of disease"
+> Science December 2014
+
