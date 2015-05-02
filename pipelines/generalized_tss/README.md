@@ -14,8 +14,8 @@ Programs and Commands
 * 58epigenomes.RPKM.pc
 
 ### Step 1: Combine the two RPKM by gene files ###
-    head -1 57epigenomes.RPKM.pc >> 57epigenomes.exon.RPKM.all
-    tail -q -n +2 57epigenomes.RPKM.pc 57epigenomes.RPKM.nc >> 57epigenomes.RPKM.all
+    head -1 57epigenomes.exon.RPKM.pc > 57epigenomes.exon.RPKM.all
+    tail -q -n +2 57epigenomes.exon.RPKM.pc 57epigenomes.exon.RPKM.nc >> 57epigenomes.exon.RPKM.all
     
 ### Step 2: Use genes.json file for annotation purposes ###
 
