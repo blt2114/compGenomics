@@ -25,8 +25,8 @@ def main(argv):
 
     # Sort both files lexically by chromosome, then by position
     sys.stderr.write('Beginning to sort both files (may take a while).\n')
-    rna_f = unix_sort(rna_fn, "-k2,2 -k4,4", header=False, save=False)
-    chip_f = unix_sort(chip_fn, "-t $'\t' -k1,2", header=False, save=False)
+    rna_f = unix_sort(rna_fn, "-k2,2 -k4,4", header=False, save=True)
+    chip_f = unix_sort(chip_fn, "-t $'\t' -k1,2", header=False, save=True)
     sys.stderr.write('Finished sorting.\n')
 
     # Initialize relevant variables necessary for the loop (RNA FILE, outer loop)
@@ -44,6 +44,11 @@ def main(argv):
             chip_line = chip_f.readline()
             if not chip_line:
                 print json.dumps(tss_site)
+                count = 0
+                while True:
+                    count += 1
+                    if not chip_f.readline(): break
+                print "chip left: " + count
                 break
             chip_row = chip_line.split("\t")
             seqname, pos, sample, mark, rpm = (chip_row[0], chip_row[1], chip_row[2], chip_row[3], eval(chip_row[4]))
@@ -56,7 +61,13 @@ def main(argv):
             print json.dumps(tss_site)
 
             rna_line = rna_f.readline()
-            if not rna_line: break
+            if not rna_line:
+                count = 0
+                while True:
+                    count += 1
+                    if not chip_f.readline(): break
+                print "chip left: " + count
+                break
             tss_site = json.loads(rna_line)
 
             continue
@@ -72,6 +83,11 @@ def main(argv):
         chip_line = chip_f.readline()
         if not chip_line:
             print json.dumps(tss_site)
+            count = 0
+            while True:
+                count += 1
+                if not rna_f.readline(): break
+            print "rna left: " + count
             break
         chip_row = chip_line.split("\t")
         seqname, pos, sample, mark, rpm = (chip_row[0], chip_row[1], chip_row[2], chip_row[3], eval(chip_row[4]))

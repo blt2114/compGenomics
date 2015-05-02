@@ -27,13 +27,15 @@ def unix_sort(fname, args, header=False, save=False):
             sys.stderr.write('File ' + fname + '.sort already exists. No need to sort.\n')
             f = open(fname + ".sort", 'r+b')
         else:
-            f = open(fname + ".sort", 'r+b')
+            f = open(fname + ".sort", 'wb')
             sys.stderr.write('Sorting ' + fname + ' file based on arguments.\n')
             if header:
                 subprocess.call("(head -n 1 " + fname + " && tail -n +2 " + fname + " | sort " + args + ")",
                                 shell=True, stdout=f)
             else:
                 subprocess.call("sort " + args + " " + fname, shell=True, stdout=f)
+            f.close()
+            f = open(fname + ".sort", 'r+b')
     else:
         temporary_file = tempfile.NamedTemporaryFile()
         f = open(temporary_file.name, 'r+b')
