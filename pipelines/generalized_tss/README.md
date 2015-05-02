@@ -10,8 +10,8 @@ Programs and Commands
 
 ### Input Files ###
 * gen10.long.gtf
-* 57epigenomes.RPKM.nc
-* 58epigenomes.RPKM.pc
+* 57epigenomes.exon.RPKM.nc
+* 58epigenomes.exon.RPKM.pc
 
 ### Step 1: Combine the two RPKM by gene files ###
     head -1 57epigenomes.exon.RPKM.pc > 57epigenomes.exon.RPKM.all
@@ -116,69 +116,94 @@ Any transcript that does not map to any exon in the RNA-seq dataset is automatic
 
 To run this step:
 
-    python xtract_rna_all_tss.py ../../files/all_tss.json ../../files/57epigenomes.exon.RPKM.all > ../../files/all_tss_rna.json
+    python xtract_rna_all_tss.py ../../files/all_tss.json ../../files/57epigenomes.exon.RPKM.all ../../config-files/chromosome_order.json > ../../files/all_tss_rna.json
 
 It outputs a json file that looks like this:
 
     {
-      "seqname": "chr10", 
-      "tss": 100148265, 
-      "strand": "-", 
-      "gene_id": "ENSG00000119943", 
+      "seqname": "chr1", 
+      "tss": 11869, 
+      "strand": "+", 
+      "gene_id": "ENSG00000223972", 
+      "tss_type": "leading", 
       "transcripts": [
         {
-          "seqname": "chr10", 
-          "end": 100148193, 
-          "start": 100146958, 
+          "seqname": "chr1", 
+          "end": 14412, 
+          "start": 11872, 
           "attribute": {
             "transcript_status": "KNOWN", 
             "gene_status": "KNOWN", 
-            "havana_gene": "OTTHUMG00000018877.1", 
-            "level": "2", 
-            "transcript_type": "processed_transcript", 
-            "gene_id": "ENSG00000119943.6", 
-            "transcript_id": "ENST00000464808.1", 
-            "havana_transcript": "OTTHUMT00000049784.1", 
-            "gene_type": "protein_coding", 
-            "transcript_name": "PYROXD2-003", 
-            "gene_name": "PYROXD2"
+            "havana_gene": "OTTHUMG00000000961.2", 
+            "level": "3", 
+            "transcript_type": "transcribed_unprocessed_pseudogene", 
+            "gene_id": "ENSG00000223972.4", 
+            "transcript_id": "ENST00000515242.2", 
+            "gene_type": "pseudogene", 
+            "transcript_name": "DDX11L1-201", 
+            "gene_name": "DDX11L1"
           }, 
           "frame": ".", 
           "feature": "transcript", 
-          "source": "HAVANA", 
-          "length": 1235, 
+          "source": "ENSEMBL", 
+          "length": 2540, 
           "score": ".", 
-          "tss": 100148193, 
-          "strand": "-"
-        }
+          "tss": 11872, 
+          "strand": "+"
+        }, 
+        {
+          "seqname": "chr1", 
+          "end": 14409, 
+          "start": 11874, 
+          "attribute": {
+            "transcript_status": "KNOWN", 
+            "gene_status": "KNOWN", 
+            "havana_gene": "OTTHUMG00000000961.2", 
+            "level": "3", 
+            "transcript_type": "transcribed_unprocessed_pseudogene", 
+            "gene_id": "ENSG00000223972.4", 
+            "transcript_id": "ENST00000518655.2", 
+            "gene_type": "pseudogene", 
+            "transcript_name": "DDX11L1-202", 
+            "gene_name": "DDX11L1"
+          }, 
+          "frame": ".", 
+          "feature": "transcript", 
+          "source": "ENSEMBL", 
+          "length": 2535, 
+          "score": ".", 
+          "tss": 11874, 
+          "strand": "+"
+        },
       ], 
       "samples": {
         "E071": {
-          "rpkm": "3.931"
+          "rpkm": "0.000"
         }, 
         "E016": {
-          "rpkm": "2.902"
+          "rpkm": "0.041"
         }, 
         "E120": {
-          "rpkm": "11.220"
+          "rpkm": "0.182"
         }, 
         "E062": {
-          "rpkm": "2.938"
+          "rpkm": "0.191"
         }, 
         "E003": {
-          "rpkm": "0.461"
+          "rpkm": "0.120"
         }, 
         "E028": {
-          "rpkm": "2.277"
+          "rpkm": "0.013"
         }, 
-        "E000": {
-          "rpkm": "7.299"
+        "E066": {
+          "rpkm": "0.320"
         }, 
         "E007": {
-          "rpkm": "2.058"
+          "rpkm": "0.000"
         }, 
         "E006": {
-          "rpkm": "2.482"
-        },
+          "rpkm": "0.000"
       }
     }
+
+### Step 5: Sort all_tss_rna.json so it matches the chromosome order of the chip files ###
