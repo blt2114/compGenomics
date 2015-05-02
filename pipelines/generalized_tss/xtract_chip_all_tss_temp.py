@@ -2,38 +2,30 @@
 
 """
 The principle to this file is to add chip read counts to all transcripts in a config file
+
+This is a version of a file I want to keep just in case I screw something up. To be specific,
+this file can output the chip data in an interesting way I may want to check later on.
+
 """
 
 __author__ = 'jeffrey'
 
-import sys, json, os, collections, itertools, traceback
-import Queue, threading, subprocess
+import sys, json, os, collections, itertools
 
-# Global Settings
-RECENT_GENE_BUFFER_LENGTH = 15000
-CHIP_BUFFER_LENGTH = 2000
-
-# Global variables
-count_files = 0
-total_files = 0
-
-class PrintThread(threading.Thread):
-    def __init__(self, queue, outfile):
-        threading.Thread.__init__(self)
-        self.queue = queue
-        self.outfile = outfile
-        self.keepRunning = True
-
-    def run(self):
-        f = open(self.outfile, "w")
-        while self.keepRunning:
-            result = self.queue.get()
-            f.write(result + "\n")
-            f.flush()
-            self.queue.task_done()
-        f.close()
-
-def child(chip_fn, rna_fn, reads_fn, window_size, bin_size, out_queue):
+# Main Method
+def main(argv):
+    # parse args
+    if len(sys.argv) is not 6:
+        sys.stderr.write("invalid usage: python " + sys.argv[0] +
+                " <all_tss_rna.json> <E003-H2A.Z.tagAlign> <experiment_read_counts.json> <window_size> <bin_size>\n")
+        sys.exit(2)
+    rna_fn = sys.argv[1]
+    chip_fn = sys.argv[2]
+    reads_fn = sys.argv[3]
+    window_size = int(sys.argv[4])
+    bin_size = int(sys.argv[5])
+    RECENT_GENE_BUFFER_LENGTH = 15000
+    CHIP_BUFFER_LENGTH = 2000
 
     # load configuration file(s)
     with open(reads_fn) as experiment_read_counts_file:
@@ -111,9 +103,8 @@ def child(chip_fn, rna_fn, reads_fn, window_size, bin_size, out_queue):
             tss_site['samples'][sample][mark][:] = [x / correction for x in tss_site['samples'][sample][mark]]
 
             # Print!
-            result = tss_site['seqname'] + "\t" + str(tss_site['tss']) + "\t" + sample + "\t" + mark + "\t" + json.dumps(tss_site['samples'][sample][mark])
-            #print tss_site['seqname'] + "\t" + str(tss_site['tss']) + "\t" + sample + "\t" + mark + "\t" + json.dumps(tss_site['samples'][sample][mark])
-            out_queue.put(result)
+            #print json.dumps(tss_site, indent=2)
+            print tss_site['seqname'] + ":" + str(tss_site['tss']) + " " + sample + " " + mark + " " + json.dumps(tss_site['samples'][sample][mark])
 
             # Read the next TSS site and initialize
             current_tss_line = tss_file.readline()
@@ -138,89 +129,6 @@ def child(chip_fn, rna_fn, reads_fn, window_size, bin_size, out_queue):
             recent_genes.clear()
     f.close()
     tss_file.close()
-
-class ProcessThread(threading.Thread):
-    def __init__(self, in_queue, out_queue):
-        threading.Thread.__init__(self)
-        self.in_queue = in_queue
-        self.out_queue = out_queue
-        self.keepRunning = True
-
-    def run(self):
-        global count_files
-        global total_files
-        while self.keepRunning:
-            tuple = self.in_queue.get()
-            try:
-                self.process(tuple, self.out_queue)
-            except:
-                traceback.print_exc()
-            count_files += 1
-            sys.stderr.write(self.current_thread() + ": Finished processing file " +
-                             count_files + "/" + total_files + ": " + tuple[0] + "\n")
-            self.in_queue.task_done()
-
-    def process(self, tuple, out_queue):
-        path, rna_fn, reads_fn, window_size, bin_size = tuple
-        output_string = child(path, rna_fn, reads_fn, window_size, bin_size, out_queue)
-        return output_string
-
-# Main Method
-def main(argv):
-
-    # parse args
-    if len(sys.argv) is not 8:
-        sys.stderr.write("invalid usage: python " + sys.argv[0] +
-                    " <all_tss_rna.json> <chip_directory> <outfile> <experiment_read_counts.json> <window_size> <bin_size> <threads>\n")
-        sys.exit(2)
-
-    rna_fn = sys.argv[1]
-    chip_dir = sys.argv[2]
-    out_fn = sys.argv[3]
-    reads_fn = sys.argv[4]
-    window_size = int(sys.argv[5])
-    bin_size = int(sys.argv[6])
-    num_threads = int(sys.argv[7])
-
-    # Locate filelist
-    filelist = []
-    for file in os.listdir(chip_dir):
-        if file.endswith(".tagAlign"):
-            filelist.append(os.path.join(chip_dir, file))
-    sys.stderr.write("A total of " + str(len(filelist)) + " files have been located in " + chip_dir + ".\n")
-    global total_files
-    total_files = len(filelist)
-
-    pathqueue = Queue.Queue()
-    resultqueue = Queue.Queue()
-    paths = filelist
-
-    # spawn threads to process
-    threads = []
-    for i in range(0, int(num_threads)):
-        t = ProcessThread(pathqueue, resultqueue)
-        t.setDaemon(True)
-        t.start()
-        threads.append(t)
-
-    # spawn threads to print
-    t = PrintThread(resultqueue, out_fn)
-    t.setDaemon(True)
-    t.start()
-
-    # add paths to queue
-    for path in paths:
-        pathqueue.put((path, rna_fn, reads_fn, window_size, bin_size))
-
-    # wait for queue to get empty and close threads
-    pathqueue.join()
-    resultqueue.join()
-    t.keepRunning = False
-    for thread in threads:
-        thread.keepRunning = False
-
-    # cleanup process
-
 
 # Execute this module as a command line script
 if __name__ == "__main__":
