@@ -443,3 +443,9 @@ The output looks like this:
       "tss": 100435345, 
       "strand": "+"
     }
+
+### Step 8: At this point, filter for relevant entries and unpack them ###
+
+In the case for this experiment, I'm going to filter for only non-cassette TSS sites.
+
+

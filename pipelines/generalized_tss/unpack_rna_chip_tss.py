@@ -32,7 +32,7 @@ def main(argv):
     sys.stderr.write('Reading the RNA-seq data into memory.\n')
     dict = {}
     for line in rna_f:
-        site = json.loads(line, object_pairs_hook=collections.OrderedDict)
+        site = json.loads(line)
         seqname = site['seqname']
         tss = site['tss']
 
