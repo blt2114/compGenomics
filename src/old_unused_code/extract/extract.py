@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
-import os, sys, csv
-from windowed_extract_from_TagAlign import windowed_extract
+from src.old_unused_code.extract.windowed_extract_from_TagAlign import windowed_extract
 
 #if len(sys.argv) != 5:
  #   print "Usage: python " + sys.argv[0] + "<files_dir> <output_dir> <experiment list> <sites.json>"

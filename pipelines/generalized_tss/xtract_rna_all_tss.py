@@ -8,39 +8,79 @@ The input is a gene list, and the output is the gene RPKM.
 
 __author__ = 'jeffrey'
 
-import sys, tempfile, subprocess, json
+import sys, json, csv, collections
+from src.utils import FileProgress
 
-# parse args
-if len(sys.argv) is not 3:
-    sys.stderr.write("invalid usage: python " + sys.argv[0] +
-            " <all_tss.json> <57epigenomes.RPKM.all>\n")
-    sys.exit(2)
+# Main Method
+def main(argv):
+    # parse args
+    if len(sys.argv) is not 3:
+        sys.stderr.write("invalid usage: python " + sys.argv[0] +
+                " <all_tss.json> <57epigenomes.exons.RPKM.all>\n")
+        sys.exit(2)
 
-tss_fn = sys.argv[1]
-rna_fn = sys.argv[2]
+    tss_fn = sys.argv[1]
+    rna_fn = sys.argv[2]
+    progress = FileProgress(rna_fn, "Percent Complete: ")
 
-# Sort JSON file by gene id (column 4 is the gene ID)
-tss_temp = tempfile.NamedTemporaryFile()
-tss_f = open(tss_temp.name, 'r+b')
-sys.stderr.write('Sorting TSS file based on ensembl gene ID.\n')
-subprocess.call("sort -k4,4 " + tss_fn, shell=True, stdout=tss_f)
-tss_f.seek(0)
+    # Sort RNA file by gene id, so they are confirmed to be in order
+    #rna_f = unix_sort(rna_fn, "-2,2", header=True)
 
-# Sort RPKM file by gene id (column 1 is gene ID, note that first line is header)
-rna_temp = tempfile.NamedTemporaryFile()
-rna_f = open(rna_temp.name, 'r+b')
-sys.stderr.write('Sorting Gene RPKM file based on ensembl gene ID.\n')
-subprocess.call("(head -n 1 " + rna_fn + " && tail -n +2 " + rna_fn + " | sort -k1,1)",
-                shell=True, stdout=rna_f)
-rna_f.seek(0)
+    # Load JSON file into memory
+    gene_dict = {}
+    with open(tss_fn, 'rb') as json_file:
+        for line in json_file:
+            gene = json.loads(line)
+            gene_dict[gene['gene_id']] = gene
+    sys.stderr.write("Loaded " + str(len(gene_dict)) + " genes into memory.\n")
 
-# For each match, generate a json_file for all the TSS+RNA+Sample data
-tss_lines = tss_f.readlines()
-rna_lines = rna_f.readlines()
-samples = rna_lines[0].strip().split('\t')
-i = 0
-j = 1
-while i < len(tss_lines) and j < len(rna_lines):
-    tss_site = json.loads(tss_lines[i])
-    print tss_site
-    i += 1
+    # For each match, generate a json_file for all the TSS+RNA+Sample data
+    samples = []
+    with open(rna_fn) as csv_file:
+        rna_file = csv.reader(csv_file, delimiter='\t')
+        for row in rna_file:
+            if progress.count == 0:
+                samples = row
+            else:
+                gene = row[1]
+                if gene in gene_dict:
+                    seqname = row[0].split(':')[0]
+                    start = int(row[0].split(':')[1].split('-')[0])
+                    end = int(row[0].split('-')[1].split('<')[0])
+                    strand = int(row[0].split('<')[1])
+                    tss = (start if strand==1 else end)
+
+                    # Assign all transcripts that map to this exon
+                    exon_transcripts = []
+                    for transcript in gene_dict[gene]['transcripts'].itervalues():
+                        if transcript['tss'] > start and transcript['tss'] < end:
+                            exon_transcripts.append(transcript)
+
+                    # If a transcript mapped, print it
+                    if len(exon_transcripts) > 0:
+                        d = collections.OrderedDict()
+                        d['seqname'] = seqname
+                        d['tss'] = tss
+                        d['strand'] = ('+' if strand==1 else '-')
+                        d['gene_id'] = gene
+                        d['transcripts'] = exon_transcripts
+                        d['samples'] = {}
+                        for i in range(2, len(samples)):
+                             sample_name = samples[i]
+                             if sample_name not in d['samples']:
+                                 d['samples'][sample_name] = {}
+                             d['samples'][sample_name]['rpkm'] = row[i]
+                        print json.dumps(d)
+                else:
+                    pass
+            progress.update()
+    sys.stderr.write("\nAll done!\n")
+
+# Execute this module as a command line script
+if __name__ == "__main__":
+    main(sys.argv[1:])
+
+
+
+
+

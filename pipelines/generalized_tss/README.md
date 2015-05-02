@@ -25,6 +25,10 @@ Run pipeline (convert_gtf_file_into_json). This produces this file:
     
 ### Step 3: Get a list of all TSS ###
 
+To use this python be sure to:
+
+    export PYTHONPATH={path to the compgenomics folder}
+
 We are getting a comprehensive list of all TSS because there's no real reason to begin filtering until we limit
 ourselves to the granularity present in the physical RNA-seq. We can collapse the transcripts that we see at that point.
 Run this program:
@@ -99,6 +103,82 @@ It outputs a json file in this format, with one gene on each line:
           "score": ".", 
           "tss": 41284213, 
           "strand": "+"
+        },
+      }
+    }
+
+### Step 4: Append RNA-seq values to this list of TSS sites ###
+
+Since the granularity of our RNA-seq data is limited to the size of the exon, we will refine multiple transcripts down
+into the exon level. The start (or end) of the exon is taken to be the TSS of all the transcripts that map to that exon.
+
+Any transcript that does not map to any exon in the RNA-seq dataset is automatically discarded.
+
+To run this step:
+
+    python xtract_rna_all_tss.py ../../files/all_tss.json ../../files/57epigenomes.exon.RPKM.all > ../../files/all_tss_rna.json
+
+It outputs a json file that looks like this:
+
+    {
+      "seqname": "chr10", 
+      "tss": 100148265, 
+      "strand": "-", 
+      "gene_id": "ENSG00000119943", 
+      "transcripts": [
+        {
+          "seqname": "chr10", 
+          "end": 100148193, 
+          "start": 100146958, 
+          "attribute": {
+            "transcript_status": "KNOWN", 
+            "gene_status": "KNOWN", 
+            "havana_gene": "OTTHUMG00000018877.1", 
+            "level": "2", 
+            "transcript_type": "processed_transcript", 
+            "gene_id": "ENSG00000119943.6", 
+            "transcript_id": "ENST00000464808.1", 
+            "havana_transcript": "OTTHUMT00000049784.1", 
+            "gene_type": "protein_coding", 
+            "transcript_name": "PYROXD2-003", 
+            "gene_name": "PYROXD2"
+          }, 
+          "frame": ".", 
+          "feature": "transcript", 
+          "source": "HAVANA", 
+          "length": 1235, 
+          "score": ".", 
+          "tss": 100148193, 
+          "strand": "-"
+        }
+      ], 
+      "samples": {
+        "E071": {
+          "rpkm": "3.931"
+        }, 
+        "E016": {
+          "rpkm": "2.902"
+        }, 
+        "E120": {
+          "rpkm": "11.220"
+        }, 
+        "E062": {
+          "rpkm": "2.938"
+        }, 
+        "E003": {
+          "rpkm": "0.461"
+        }, 
+        "E028": {
+          "rpkm": "2.277"
+        }, 
+        "E000": {
+          "rpkm": "7.299"
+        }, 
+        "E007": {
+          "rpkm": "2.058"
+        }, 
+        "E006": {
+          "rpkm": "2.482"
         },
       }
     }
