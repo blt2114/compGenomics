@@ -156,8 +156,8 @@ class ProcessThread(threading.Thread):
             except:
                 traceback.print_exc()
             count_files += 1
-            sys.stderr.write(self.current_thread() + ": Finished processing file " +
-                             count_files + "/" + total_files + ": " + tuple[0] + "\n")
+            sys.stderr.write("Finished processing file " +
+                             str(count_files) + "/" + str(total_files) + ": " + tuple[0] + "\n")
             self.in_queue.task_done()
 
     def process(self, tuple, out_queue):
@@ -214,13 +214,15 @@ def main(argv):
 
     # wait for queue to get empty and close threads
     pathqueue.join()
+    sys.stderr.write("File queue has been emptied.\n")
     resultqueue.join()
+    sys.stderr.write("All results have been printed.\n")
     t.keepRunning = False
     for thread in threads:
         thread.keepRunning = False
 
     # cleanup process
-
+    sys.stderr.write("All done!\n")
 
 # Execute this module as a command line script
 if __name__ == "__main__":
