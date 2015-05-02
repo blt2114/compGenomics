@@ -14,10 +14,14 @@ results['transcript_status'] = {}
 results['level'] = {}
 results['transcript_type'] = {}
 results['source'] = {}
+results['tss_number'] = {}
+results['tss_type'] = {}
+gene_dict = {}
 
 progress = FileProgress(file, "Percent: ")
 
 with open(file, 'rb') as json_file:
+    prev = (None, 0)
     for line in json_file:
         site = json.loads(line)
         for transcript in site['transcripts']:
@@ -37,8 +41,25 @@ with open(file, 'rb') as json_file:
                 results['source'][transcript['source']] +=1
             else:
                 results['source'][transcript['source']] = 1
+        if site['tss_type'] in results['tss_type']:
+            results['tss_type'][site['tss_type']] += 1
+        else:
+            results['tss_type'][site['tss_type']] = 1
+
+        if not site['gene_id'] in gene_dict:
+            gene_dict[site['gene_id']] = True
+
+        if prev[0] != site['gene_id'] and prev[0] is not None:
+            label = str(prev[1]) + "_tss"
+            if label in results['tss_number']:
+                results['tss_number'][label] += 1
+            else:
+                results['tss_number'][label] = 1
+            prev = (site['gene_id'], 1)
+        else:
+            prev = (site['gene_id'], prev[1] + 1)
         progress.update()
 
 print json.dumps(results, indent=2)
-
+print str(len(gene_dict))
 
