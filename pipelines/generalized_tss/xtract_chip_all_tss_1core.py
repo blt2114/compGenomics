@@ -11,6 +11,8 @@ import sys, json, os, collections, itertools
 # Global Settings
 RECENT_GENE_BUFFER_LENGTH = 15000
 CHIP_BUFFER_LENGTH = 2000
+i_count = 0
+i_length = 0
 
 def child(chip_fn, rna_fn, reads_fn, window_size, bin_size):
 
@@ -117,6 +119,10 @@ def child(chip_fn, rna_fn, reads_fn, window_size, bin_size):
             recent_genes.clear()
     f.close()
     tss_file.close()
+    global i_length
+    global i_count
+    i_count += 1
+    sys.stderr.write("Finished file " + str(i_count) + "/" + str(i_length) + ": " + chip_fn + "\n")
 
 # Main Method
 def main(argv):
@@ -139,6 +145,8 @@ def main(argv):
         if file.endswith(".tagAlign"):
             filelist.append(os.path.join(chip_dir, file))
     sys.stderr.write("A total of " + str(len(filelist)) + " files have been located in " + chip_dir + ".\n")
+    global i_length
+    i_length = len(filelist)
 
     for file in filelist:
         child(file, rna_fn, reads_fn, window_size, bin_size)
@@ -149,8 +157,3 @@ def main(argv):
 # Execute this module as a command line script
 if __name__ == "__main__":
     main(sys.argv[1:])
-
-
-
-
-
