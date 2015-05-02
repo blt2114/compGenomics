@@ -11,7 +11,7 @@ advantage of this script in its entirety.
 """
 # HINT: type "python gtftools.py" on the command line to get started
 
-import sys, argparse, logging, csv, json, copy
+import sys, argparse, logging, csv, json, collections
 from utils import file_len
 
 #aliases for logging

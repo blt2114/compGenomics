@@ -161,6 +161,10 @@ def dump_stack(gene_stack, final_gene_list, passed_dict, failed_dict):
                 failed_dict['gene_status'][tup[0].attribute['gene_status']] += 1
             else:
                 failed_dict['gene_status'][tup[0].attribute['gene_status']] = 1
+            if tup[0].attribute['gene_status'] in failed_dict['gene_status']:
+                failed_dict['gene_status'][tup[0].attribute['gene_status']] += 1
+            else:
+                failed_dict['gene_status'][tup[0].attribute['gene_status']] = 1
             return []
         previous_tup = tup
     gene_tup = (previous_tup[0], previous_tup[1])
