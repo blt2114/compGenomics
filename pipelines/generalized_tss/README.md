@@ -206,7 +206,76 @@ It outputs a json file that looks like this:
       }
     }
 
-### Step 6: Run chip extraction script to add read counts###
+### Step 5a: Reduce the number of TSS sites for performance issues ###
+
+Run the file: 
+    
+    python utils/filter_tss_file_template.py > level1_tss.json
+       
+It's a poorly commented file right now, so just open it up and modify the desirable filtered items.
+ 
+In the case of this vignette, I filtered for: All sites that contain "Level 1" transcripts, reducing the total site
+count to about 2 thousand.
+
+### Step 5b: Summarize the file that you have (get summary info) ###
+
+    python utils/summarize_tss_file.py level1_tss.json
+    
+Produces a summary output some output like this:
+
+    {
+      "tss_number": {
+        "2_tss": 170, 
+        "3_tss": 32, 
+        "6_tss": 1, 
+        "4_tss": 5, 
+        "5_tss": 2, 
+        "1_tss": 1716
+      }, 
+      "level": {
+        "1": 2600, 
+        "3": 494, 
+        "2": 4503
+      }, 
+      "transcript_status": {
+        "KNOWN": 4317, 
+        "NOVEL": 1061, 
+        "PUTATIVE": 2219
+      }, 
+      "source": {
+        "HAVANA": 7076, 
+        "ENSEMBL": 521
+      }, 
+      "tss_type": {
+        "leading": 1069, 
+        "cassette": 1120
+      }, 
+      "transcript_type": {
+        "unitary_pseudogene": 1, 
+        "sense_intronic": 2, 
+        "lincRNA": 72, 
+        "retained_intron": 723, 
+        "antisense": 152, 
+        "protein_coding": 4427, 
+        "transcribed_unprocessed_pseudogene": 27, 
+        "processed_transcript": 1168, 
+        "pseudogene": 5, 
+        "transcribed_processed_pseudogene": 67, 
+        "unprocessed_pseudogene": 13, 
+        "polymorphic_pseudogene": 2, 
+        "retrotransposed": 2, 
+        "TEC": 1, 
+        "processed_pseudogene": 96, 
+        "nonsense_mediated_decay": 839
+      }
+    }
+    1914        # Total number of unique genes
+
+Interestingly, the number of unique genes does not match my measure of calculating leading and cassette exons. This
+either means I was too stringent with forcing sites to fall within the defined exon regions, or there is a bug in my 
+code.
+
+### Step 6: Run chip extraction script to add read counts ###
 
 The chip extraction script WORKS, but it takes way too long to run on the full list of TSS sites. Here is the metric:
  
@@ -216,9 +285,8 @@ The chip extraction script WORKS, but it takes way too long to run on the full l
     user	0m0.000s
     sys	0m0.001s
     
-In other words, for about 35666 tss sites, this program processes about 1000 TSS sites a minute. 
-
-Here are some other examples:
+In other words, for about 35666 tss sites, this program processes about 1000 TSS sites a minute. Instead of using the
+full TSS list, I decided at this point to limit the list to about 2000 sites:
 
     python xtract_chip_all_tss.py ../level1_tss.json ../../test_chip/ test.txt ../../files/experiment_read_counts.json 250 500 1
 
@@ -240,64 +308,33 @@ About 663 genes per minute. To process 352 samples, this is 19.4 CPU hours ~ 5 h
     user	3m17.750s
     sys	0m13.605s
     
-The bottleneck appears to be the buffer. FYI, this is the output of the program, which needs more processing (merging) afterwards:
+The bottleneck appears to be the buffer. Changing the number of windows does not have an extremely appreciable affect
+on how long it takes the program to run.
 
-Command Run:
-
-[1]   Done                    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip files/experiment_read_counts.json 3000 100 > out1.tsv
-[2]   Done                    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip2 files/experiment_read_counts.json 3000 100 > out2.tsv
-[3]-  Done                    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip3 files/experiment_read_counts.json 3000 100 > out3.tsv
-[4]+  Done                    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip4 files/experiment_read_counts.json 3000 100 > out4.tsv
+FYI, this is the output of the program, which needs more processing (merging) 
+afterwards:
 
     chr1	13184053	E003	H3K9ac	[0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.0, 0.03333333333333333, 0.06666666666666667, 0.0, 0.06666666666666667, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.06666666666666667, 0.0, 0.0, 0.0, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.13333333333333333, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.0, 0.0, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.0, 0.03333333333333333, 0.0, 0.0, 0.1, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.0, 0.0, 0.06666666666666667, 0.0, 0.06666666666666667, 0.0, 0.0, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.0, 0.06666666666666667, 0.0, 0.0, 0.0, 0.06666666666666667, 0.06666666666666667, 0.0, 0.0, 0.1, 0.03333333333333333, 0.0, 0.06666666666666667, 0.0, 0.0, 0.03333333333333333, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.06666666666666667, 0.06666666666666667, 0.03333333333333333, 0.0]
     chr1	15931077	E003	H3K9ac	[0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.0, 0.06666666666666667, 0.03333333333333333, 0.1, 0.1, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.06666666666666667, 0.1, 0.03333333333333333, 0.06666666666666667, 0.1, 0.0, 0.03333333333333333, 0.0, 0.0, 0.0, 0.0, 0.13333333333333333, 0.3, 0.5666666666666667, 0.5333333333333333, 0.5333333333333333, 0.26666666666666666, 0.03333333333333333, 0.06666666666666667, 0.23333333333333334, 0.23333333333333334, 0.26666666666666666, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.1, 0.0, 0.0, 0.0, 0.06666666666666667, 0.03333333333333333, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.13333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.1, 0.06666666666666667, 0.03333333333333333, 0.16666666666666666, 0.06666666666666667, 0.1, 0.16666666666666666, 0.0, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.06666666666666667, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.0, 0.0, 0.03333333333333333, 0.0]
     chr1	16154724	E003	H3K9ac	[0.0, 0.03333333333333333, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.06666666666666667, 0.0, 0.03333333333333333, 0.13333333333333333, 0.0, 0.0, 0.03333333333333333, 0.06666666666666667, 0.03333333333333333, 0.03333333333333333, 0.0, 0.0, 0.1, 0.03333333333333333, 0.16666666666666666, 0.06666666666666667, 0.0, 0.0, 0.0, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.0, 0.0, 0.0, 0.06666666666666667, 0.0, 0.06666666666666667, 0.06666666666666667, 0.06666666666666667, 0.06666666666666667, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.06666666666666667, 0.06666666666666667, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03333333333333333, 0.1, 0.0, 0.0, 0.03333333333333333, 0.0, 0.06666666666666667, 0.03333333333333333, 0.06666666666666667, 0.06666666666666667, 0.0, 0.1, 0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.13333333333333333, 0.03333333333333333, 0.1, 0.06666666666666667, 0.06666666666666667, 0.0, 0.06666666666666667, 0.06666666666666667, 0.1, 0.0, 0.03333333333333333, 0.06666666666666667, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.13333333333333333, 0.06666666666666667, 0.06666666666666667, 0.06666666666666667, 0.03333333333333333, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.23333333333333334]
     ...
     
-Alright. {
-  "tss_number": {
-    "2_tss": 170, 
-    "3_tss": 32, 
-    "6_tss": 1, 
-    "4_tss": 5, 
-    "5_tss": 2, 
-    "1_tss": 1716
-  }, 
-  "level": {
-    "1": 2600, 
-    "3": 494, 
-    "2": 4503
-  }, 
-  "transcript_status": {
-    "KNOWN": 4317, 
-    "NOVEL": 1061, 
-    "PUTATIVE": 2219
-  }, 
-  "source": {
-    "HAVANA": 7076, 
-    "ENSEMBL": 521
-  }, 
-  "tss_type": {
-    "leading": 1069, 
-    "cassette": 1120
-  }, 
-  "transcript_type": {
-    "unitary_pseudogene": 1, 
-    "sense_intronic": 2, 
-    "lincRNA": 72, 
-    "retained_intron": 723, 
-    "antisense": 152, 
-    "protein_coding": 4427, 
-    "transcribed_unprocessed_pseudogene": 27, 
-    "processed_transcript": 1168, 
-    "pseudogene": 5, 
-    "transcribed_processed_pseudogene": 67, 
-    "unprocessed_pseudogene": 13, 
-    "polymorphic_pseudogene": 2, 
-    "retrotransposed": 2, 
-    "TEC": 1, 
-    "processed_pseudogene": 96, 
-    "nonsense_mediated_decay": 839
-  }
-}
-1914
+Since it seemed like the python multithreading doesn't work very well (or efficently), I decided to simply run 4 parallel
+instances of the one-core version of the program. I split up the files between 4 directories before starting.
+
+This was the command that I ran:
+
+    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip files/experiment_read_counts.json 3000 100 > out1.tsv
+    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip2 files/experiment_read_counts.json 3000 100 > out2.tsv
+    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip3 files/experiment_read_counts.json 3000 100 > out3.tsv
+    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip4 files/experiment_read_counts.json 3000 100 > out4.tsv
+
+Realistically, it took about 9 hours.
+
+# Step 7: merge, sort, and pile up the output ###
+
+    cat out1.tsv out2.tsv out3.tsv out4.tsv > files/level1_tss_chip.tsv
+    sort -t $'\t' -k1,1 -k2n,2 files/level1_tss_chip.tsv > files/level1_tss_chip.tsv.sort
+
+Now need to run a program that piles up all this output into the json file.
+
