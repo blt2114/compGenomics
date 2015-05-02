@@ -3,7 +3,7 @@ This module contains utility classes and functions necessary
 for our project.
 """
 
-import sys, csv, logging, subprocess, tempfile
+import sys, os, csv, logging, subprocess, tempfile
 
 # Aliases for logging
 logging.getLogger(__name__).setLevel(logging.WARNING)
@@ -21,15 +21,28 @@ def file_len(fname):
     return int(result.strip().split()[0])
 
 # Returns a temporary file handle
-def unix_sort(fname, args, header=False):
-    temporary_file = tempfile.NamedTemporaryFile()
-    f = open(temporary_file.name, 'r+b')
-    sys.stderr.write('Sorting ' + fname + ' file based on arguments.\n')
-    if header:
-        subprocess.call("(head -n 1 " + fname + " && tail -n +2 " + fname + " | sort " + args + ")",
-                        shell=True, stdout=f)
+def unix_sort(fname, args, header=False, save=False):
+    if save:
+        if os.path.isfile(fname + ".sort"):
+            sys.stderr.write('File ' + fname + '.sort already exists. No need to sort.\n')
+            f = open(fname + ".sort", 'r+b')
+        else:
+            f = open(fname + ".sort", 'r+b')
+            sys.stderr.write('Sorting ' + fname + ' file based on arguments.\n')
+            if header:
+                subprocess.call("(head -n 1 " + fname + " && tail -n +2 " + fname + " | sort " + args + ")",
+                                shell=True, stdout=f)
+            else:
+                subprocess.call("sort " + args + " " + fname, shell=True, stdout=f)
     else:
-        subprocess.call("sort " + args + " " + fname, shell=True, stdout=f)
+        temporary_file = tempfile.NamedTemporaryFile()
+        f = open(temporary_file.name, 'r+b')
+        sys.stderr.write('Sorting ' + fname + ' file based on arguments.\n')
+        if header:
+            subprocess.call("(head -n 1 " + fname + " && tail -n +2 " + fname + " | sort " + args + ")",
+                            shell=True, stdout=f)
+        else:
+            subprocess.call("sort " + args + " " + fname, shell=True, stdout=f)
     f.seek(0)
     return f
 

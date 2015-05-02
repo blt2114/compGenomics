@@ -210,7 +210,7 @@ It outputs a json file that looks like this:
 
 Run the file: 
     
-    python utils/filter_tss_file_template.py > level1_tss.json
+    python utils/filter_tss_file_template.py ../../files/all_tss_rna.json > ../../files/level1_tss_rna.json 
        
 It's a poorly commented file right now, so just open it up and modify the desirable filtered items.
  
@@ -322,7 +322,7 @@ afterwards:
 Since it seemed like the python multithreading doesn't work very well (or efficently), I decided to simply run 4 parallel
 instances of the one-core version of the program. I split up the files between 4 directories before starting.
 
-This was the command that I ran:
+This was the command that I ran (all in parallel):
 
     python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip files/experiment_read_counts.json 3000 100 > out1.tsv
     python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip2 files/experiment_read_counts.json 3000 100 > out2.tsv
@@ -333,8 +333,112 @@ Realistically, it took about 9 hours.
 
 # Step 7: merge, sort, and pile up the output ###
 
+Run these two commands (make sure you're in the right directories)
+
     cat out1.tsv out2.tsv out3.tsv out4.tsv > files/level1_tss_chip.tsv
-    sort -t $'\t' -k1,1 -k2n,2 files/level1_tss_chip.tsv > files/level1_tss_chip.tsv.sort
+    python pileup_rna_chip_tss.py ../../files/level1_tss_rna.json ../../files/level1_tss_chip.tsv > ../../files/level_tss_rna_chip.json
 
-Now need to run a program that piles up all this output into the json file.
+The output looks like this:
 
+    {
+      "seqname": "chr1", 
+      "gene_id": "ENSG00000117620", 
+      "tss_type": "leading", 
+      "samples": {
+        "E070": {
+          "rpkm": "1.056", 
+          "H3K36me3": [
+            0.04738617839948443, 
+            0.09477235679896887, 
+            0.04738617839948443, 
+            0.0, 
+            0.04738617839948443, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.09477235679896887, 
+            0.04738617839948443, 
+            0.0, 
+            0.0, 
+            0.04738617839948443, 
+            0.04738617839948443, 
+            0.09477235679896887, 
+            0.04738617839948443, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.09477235679896887, 
+            0.04738617839948443, 
+            0.09477235679896887, 
+            0.04738617839948443, 
+            0.09477235679896887, 
+            0.0, 
+            0.0, 
+            0.04738617839948443, 
+            0.0, 
+            0.0, 
+            0.04738617839948443, 
+            0.04738617839948443, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.04738617839948443, 
+            0.04738617839948443, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.0, 
+            0.04738617839948443, 
+            0.09477235679896887, 
+            0.0, 
+            0.0, 
+            0.1421585351984533, 
+            0.04738617839948443, 
+            0.18954471359793773, 
+            0.0
+          ],
+      }, 
+      "transcripts": [
+        {
+          "seqname": "chr1", 
+          "end": 100488512, 
+          "source": "HAVANA", 
+          "attribute": {
+            "gene_status": "KNOWN", 
+            "havana_gene": "OTTHUMG00000010805.2", 
+            "level": "1", 
+            "transcript_name": "SLC35A3-004", 
+            "transcript_status": "KNOWN", 
+            "gene_id": "ENSG00000117620.7", 
+            "tag": "CCDS", 
+            "havana_transcript": "OTTHUMT00000029786.2", 
+            "ccdsid": "CCDS762.1", 
+            "transcript_id": "ENST00000427993.2", 
+            "gene_type": "protein_coding", 
+            "transcript_type": "protein_coding", 
+            "gene_name": "SLC35A3"
+          }, 
+          "frame": ".", 
+          "feature": "transcript", 
+          "start": 100435535, 
+          "length": 52977, 
+          "score": ".", 
+          "tss": 100435535, 
+          "strand": "+"
+        }
+      ], 
+      "tss": 100435345, 
+      "strand": "+"
+    }
