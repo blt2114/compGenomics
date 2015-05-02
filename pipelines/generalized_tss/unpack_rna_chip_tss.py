@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-This file piles up level1_tss.json and level1_tss_chip.tsv into one large json file by site.
+This file unpacks the rna data
 
 """
 
@@ -12,70 +12,46 @@ from src.utils import FileProgress, unix_sort
 
 # Main Method
 def main(argv):
-    # parse args
-    if len(sys.argv) is not 3:
-        sys.stderr.write("invalid usage: python " + sys.argv[0] +
-                " <level1_tss_rna.json> <level1_tss_chip.tsv>\n")
+
+    # Parse args
+    if len(sys.argv) is not 5:
+        sys.stderr.write("invalid usage: python " + sys.argv[0] + " <level1_tss_rna_chip.json> <left_bin> <right_bin> <bin_size>\n")
         sys.exit(2)
 
-    rna_fn = sys.argv[1]
-    chip_fn = sys.argv[2]
-    progress = FileProgress(chip_fn, "Percent Complete: ")
+    # Set args
+    data_fn = sys.argv[1]
+    bins_left = int(sys.argv[2])
+    bins_right = int(sys.argv[3])
+    bin_size = int(sys.argv[4])
+    progress = FileProgress(data_fn, "Percent Complete: ")
 
-    # Sort both files lexically by chromosome, then by position
-    sys.stderr.write('Beginning to sort both files (may take a while).\n')
-    rna_f = unix_sort(rna_fn, "-k2,2 -k4,4", header=False, save=True)
-    chip_f = unix_sort(chip_fn, "-t $'\t' -k1,2", header=False, save=True)
-    sys.stderr.write('Finished sorting.\n')
+    # Main loop
+    with open(data_fn) as json_file:
+        for line in json_file:
+            site = json.loads(line)
 
-    # Read RNA-seq data into memory
-    sys.stderr.write('Reading the RNA-seq data into memory.\n')
-    dict = {}
-    for line in rna_f:
-        site = json.loads(line)
-        seqname = site['seqname']
-        tss = site['tss']
+            # Filter for criteria
+            analyze_this_site = False
+            """
+            for transcript in site['transcripts'].iterValues():
+                if 'tag' in transcript['attribute']:
+                    if transcript['tag'] == "CCDS":
+                        analyze_this_site = True
+            """
+            if site['tss_type'] == "leading":
+                analyze_this_site = True
 
-        if seqname in dict:
-            if tss in dict[seqname]:
-                print "Error!"
-            else:
-                dict[seqname][str(tss)] = site
-        else:
-            dict[seqname] = { str(tss) : site }
-    rna_f.close()
+            # Print all samples in this site
+            if analyze_this_site:
+                for sample in site['samples'].iterValues():
+                    pass
 
-    # Begin looping through chip file
-    sys.stderr.write('Beginning to read the ChIP data.\n')
-    previous_seqname = None
-    previous_tss = None
-    for line in chip_f:
-        chip_row = line.split("\t")
-        seqname, tss, sample, mark, rpm = (chip_row[0], chip_row[1], chip_row[2], chip_row[3], eval(chip_row[4]))
+    """
+    I kind of can't really finish this without knowing exactly what the input into the SVM is
+    """
 
-        if previous_tss is None:
-            previous_seqname = seqname
-            previous_tss = tss
-            progress.update()
-            continue
 
-        if previous_seqname != seqname or previous_tss != tss:
-            print json.dumps(dict[previous_seqname][previous_tss])
-            dict[previous_seqname].pop(previous_tss, None)
 
-        tss_site = dict[seqname][tss]
-
-        if sample in tss_site['samples']:
-            tss_site['samples'][sample][mark] = rpm
-        else:
-            tss_site['samples'][sample] = { mark : rpm }
-
-        previous_seqname = seqname
-        previous_tss = tss
-        progress.update()
-    print json.dumps(dict[previous_seqname][previous_tss])
-
-    chip_f.close()
     sys.stderr.write("\nAll done!\n")
 
 # Execute this module as a command line script
