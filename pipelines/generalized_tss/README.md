@@ -206,4 +206,4 @@ It outputs a json file that looks like this:
       }
     }
 
-### Step 5: Sort all_tss_rna.json so it matches the chromosome order of the chip files ###
+### Step 6: Run chip extraction script to add read counts###
