@@ -338,6 +338,7 @@ Run these two commands (make sure you're in the right directories)
     cat out1.tsv out2.tsv out3.tsv out4.tsv > files/level1_tss_chip.tsv
     python pileup_rna_chip_tss.py ../../files/level1_tss_rna.json ../../files/level1_tss_chip.tsv > ../../files/level1_tss_rna_chip.json
 
+
 The output looks like this:
 
     {
