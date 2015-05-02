@@ -38,3 +38,695 @@ stderr output:
     Starting to load exons.
     Part 3/3: 100%
     Beginning to print.
+
+Sample Output:
+
+    {
+      "seqname": "chr19", 
+      "end": 41302847, 
+      "start": 41277553, 
+      "attribute": {
+        "gene_status": "KNOWN", 
+        "level": "3", 
+        "transcript_type": "protein_coding", 
+        "gene_id": "ENSG00000167578.10", 
+        "transcript_id": "ENSG00000167578.10", 
+        "transcript_name": "MIA", 
+        "gene_type": "protein_coding", 
+        "transcript_status": "KNOWN", 
+        "gene_name": "MIA"
+      }, 
+      "frame": ".", 
+      "feature": "gene", 
+      "source": "ENSEMBL", 
+      "score": ".", 
+      "transcripts": {
+        "ENST00000263369.2": {
+          "seqname": "chr19", 
+          "end": 41283392, 
+          "exons": [
+            {
+              "seqname": "chr19", 
+              "end": 41281574, 
+              "start": 41281300, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000263369.2", 
+                "ccdsid": "CCDS12566.1", 
+                "transcript_name": "MIA-201", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41281790, 
+              "start": 41281657, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000263369.2", 
+                "ccdsid": "CCDS12566.1", 
+                "transcript_name": "MIA-201", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41282984, 
+              "start": 41282874, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000263369.2", 
+                "ccdsid": "CCDS12566.1", 
+                "transcript_name": "MIA-201", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41283392, 
+              "start": 41283302, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000263369.2", 
+                "ccdsid": "CCDS12566.1", 
+                "transcript_name": "MIA-201", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }
+          ], 
+          "start": 41281300, 
+          "attribute": {
+            "gene_status": "KNOWN", 
+            "level": "3", 
+            "transcript_type": "protein_coding", 
+            "tag": "CCDS", 
+            "gene_id": "ENSG00000167578.10", 
+            "transcript_id": "ENST00000263369.2", 
+            "ccdsid": "CCDS12566.1", 
+            "transcript_name": "MIA-201", 
+            "gene_type": "protein_coding", 
+            "transcript_status": "KNOWN", 
+            "gene_name": "MIA"
+          }, 
+          "frame": ".", 
+          "feature": "transcript", 
+          "source": "ENSEMBL", 
+          "score": ".", 
+          "strand": "+"
+        }, 
+        "ENST00000378307.4": {
+          "seqname": "chr19", 
+          "end": 41302847, 
+          "exons": [
+            {
+              "seqname": "chr19", 
+              "end": 41284296, 
+              "start": 41284213, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000378307.4", 
+                "transcript_name": "MIA-203", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41286004, 
+              "start": 41285924, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000378307.4", 
+                "transcript_name": "MIA-203", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41286404, 
+              "start": 41286290, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000378307.4", 
+                "transcript_name": "MIA-203", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41289745, 
+              "start": 41289683, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000378307.4", 
+                "transcript_name": "MIA-203", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41292665, 
+              "start": 41292570, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000378307.4", 
+                "transcript_name": "MIA-203", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41292883, 
+              "start": 41292753, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000378307.4", 
+                "transcript_name": "MIA-203", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41302847, 
+              "start": 41302475, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000378307.4", 
+                "transcript_name": "MIA-203", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }
+          ], 
+          "start": 41284213, 
+          "attribute": {
+            "gene_status": "KNOWN", 
+            "level": "3", 
+            "transcript_type": "protein_coding", 
+            "gene_id": "ENSG00000167578.10", 
+            "transcript_id": "ENST00000378307.4", 
+            "transcript_name": "MIA-203", 
+            "gene_type": "protein_coding", 
+            "transcript_status": "KNOWN", 
+            "gene_name": "MIA"
+          }, 
+          "frame": ".", 
+          "feature": "transcript", 
+          "source": "ENSEMBL", 
+          "score": ".", 
+          "strand": "+"
+        }, 
+        "ENST00000419646.2": {
+          "seqname": "chr19", 
+          "end": 41289707, 
+          "exons": [
+            {
+              "seqname": "chr19", 
+              "end": 41277968, 
+              "start": 41277553, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000419646.2", 
+                "transcript_name": "MIA-204", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41281574, 
+              "start": 41281442, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000419646.2", 
+                "transcript_name": "MIA-204", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41281790, 
+              "start": 41281657, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000419646.2", 
+                "transcript_name": "MIA-204", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41282984, 
+              "start": 41282874, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000419646.2", 
+                "transcript_name": "MIA-204", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41286004, 
+              "start": 41285924, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000419646.2", 
+                "transcript_name": "MIA-204", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41286404, 
+              "start": 41286290, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000419646.2", 
+                "transcript_name": "MIA-204", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41289707, 
+              "start": 41289683, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000419646.2", 
+                "transcript_name": "MIA-204", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }
+          ], 
+          "start": 41277553, 
+          "attribute": {
+            "gene_status": "KNOWN", 
+            "level": "3", 
+            "transcript_type": "protein_coding", 
+            "gene_id": "ENSG00000167578.10", 
+            "transcript_id": "ENST00000419646.2", 
+            "transcript_name": "MIA-204", 
+            "gene_type": "protein_coding", 
+            "transcript_status": "KNOWN", 
+            "gene_name": "MIA"
+          }, 
+          "frame": ".", 
+          "feature": "transcript", 
+          "source": "ENSEMBL", 
+          "score": ".", 
+          "strand": "+"
+        }, 
+        "ENST00000357052.2": {
+          "seqname": "chr19", 
+          "end": 41302847, 
+          "exons": [
+            {
+              "seqname": "chr19", 
+              "end": 41284296, 
+              "start": 41284171, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000357052.2", 
+                "ccdsid": "CCDS33030.1", 
+                "transcript_name": "MIA-202", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41286004, 
+              "start": 41285924, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000357052.2", 
+                "ccdsid": "CCDS33030.1", 
+                "transcript_name": "MIA-202", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41286404, 
+              "start": 41286290, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000357052.2", 
+                "ccdsid": "CCDS33030.1", 
+                "transcript_name": "MIA-202", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41289745, 
+              "start": 41289683, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000357052.2", 
+                "ccdsid": "CCDS33030.1", 
+                "transcript_name": "MIA-202", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41289980, 
+              "start": 41289826, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000357052.2", 
+                "ccdsid": "CCDS33030.1", 
+                "transcript_name": "MIA-202", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41292665, 
+              "start": 41292570, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000357052.2", 
+                "ccdsid": "CCDS33030.1", 
+                "transcript_name": "MIA-202", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41292883, 
+              "start": 41292753, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000357052.2", 
+                "ccdsid": "CCDS33030.1", 
+                "transcript_name": "MIA-202", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }, 
+            {
+              "seqname": "chr19", 
+              "end": 41302847, 
+              "start": 41302475, 
+              "attribute": {
+                "gene_status": "KNOWN", 
+                "level": "3", 
+                "transcript_type": "protein_coding", 
+                "tag": "CCDS", 
+                "gene_id": "ENSG00000167578.10", 
+                "transcript_id": "ENST00000357052.2", 
+                "ccdsid": "CCDS33030.1", 
+                "transcript_name": "MIA-202", 
+                "gene_type": "protein_coding", 
+                "transcript_status": "KNOWN", 
+                "gene_name": "MIA"
+              }, 
+              "frame": ".", 
+              "feature": "exon", 
+              "source": "ENSEMBL", 
+              "score": ".", 
+              "strand": "+"
+            }
+          ], 
+          "start": 41284171, 
+          "attribute": {
+            "gene_status": "KNOWN", 
+            "level": "3", 
+            "transcript_type": "protein_coding", 
+            "tag": "CCDS", 
+            "gene_id": "ENSG00000167578.10", 
+            "transcript_id": "ENST00000357052.2", 
+            "ccdsid": "CCDS33030.1", 
+            "transcript_name": "MIA-202", 
+            "gene_type": "protein_coding", 
+            "transcript_status": "KNOWN", 
+            "gene_name": "MIA"
+          }, 
+          "frame": ".", 
+          "feature": "transcript", 
+          "source": "ENSEMBL", 
+          "score": ".", 
+          "strand": "+"
+        }
+      }, 
+      "strand": "+"
+    }
