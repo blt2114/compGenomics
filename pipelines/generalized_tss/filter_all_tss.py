@@ -31,8 +31,7 @@ def main(argv):
 
                 exon_list = []
                 for exon in transcript['exons']:
-                    tuple = (exon['start'], exon['end'])
-                    exon_list.append(tuple)
+                    exon_list.append( (exon['start'], exon['end']) )
 
                 transcript.pop("exons", None)
                 transcript['exons'] = exon_list
@@ -44,6 +43,20 @@ def main(argv):
                     transcript['tss'] = transcript['end']
                     transcript['exons'].sort(key=lambda tup: tup[1], reverse=True)
                 transcript['length'] = int(transcript['end']) - int(transcript['start'])
+
+                # Generate a list of introns
+                intron_list = []
+                if (transcript['strand'] == "+"):
+                    for i in range(0, len(transcript['exons']) - 1):
+                        intron_start = transcript['exons'][i][1] + 1
+                        intron_end = transcript['exons'][i + 1][0] - 1
+                        intron_list.append( (intron_start, intron_end) )
+                else:
+                    for i in range(0, len(transcript['exons']) - 1):
+                        intron_start = transcript['exons'][i][0] - 1
+                        intron_end = transcript['exons'][i + 1][1] + 1
+                        intron_list.append( (intron_start, intron_end) )
+                transcript['introns'] = intron_list
 
             # Reorder the gene dictionary so it is easier to sort in the future
             d = collections.OrderedDict()

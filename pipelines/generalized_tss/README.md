@@ -93,6 +93,20 @@ It outputs a json file in this format, with one gene on each line:
           }, 
           "frame": ".", 
           "feature": "transcript", 
+          "introns": [
+            [
+              41281575, 
+              41281656
+            ], 
+            [
+              41281791, 
+              41282873
+            ], 
+            [
+              41282985, 
+              41283301
+            ]
+          ], 
           "start": 41281300, 
           "length": 2092, 
           "score": ".", 
@@ -146,14 +160,40 @@ It outputs a json file in this format, with one gene on each line:
           }, 
           "frame": ".", 
           "feature": "transcript", 
+          "introns": [
+            [
+              41284297, 
+              41285923
+            ], 
+            [
+              41286005, 
+              41286289
+            ], 
+            [
+              41286405, 
+              41289682
+            ], 
+            [
+              41289746, 
+              41292569
+            ], 
+            [
+              41292666, 
+              41292752
+            ], 
+            [
+              41292884, 
+              41302474
+            ]
+          ], 
           "start": 41284213, 
           "length": 18634, 
           "score": ".", 
           "tss": 41284213, 
           "strand": "+"
         },
-      }
     }
+
 
 ### Step 4: Append RNA-seq values to this list of TSS sites ###
 
