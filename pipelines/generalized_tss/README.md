@@ -611,12 +611,42 @@ The output looks like this:
 
 Since I missed a lot of the data the first time through, the metadata is being applied now:
 
-
+    python misc/summarize_tss_file.py ../files/level1_tss_rna_chip.json 
 
 ### Step 8b: At this point, filter for relevant entries and unpack them ###
 
 In the case for this experiment, I'm going to filter for only non-cassette TSS sites.
 
 
+### Step 9: Throw into ML program ###
 
-
+The ML takes input in this format:
+    
+    {
+      "E065": {
+        "p_inc": 2.1222970919414976, 
+        "H3K9me3_num_reads_five_p": 27, 
+        "H3K27me3_num_reads_three_p": 10, 
+        "H3K36me3_num_reads_three_p": 56, 
+        "H3K4me3_num_reads_five_p": 9, 
+        "H3K9me3_num_reads_three_p": 16, 
+        "H3K4me1_num_reads_five_p": 11, 
+        "H3K4me3_num_reads_three_p": 9, 
+        "H3K36me3_num_reads_five_p": 81, 
+        "H3K27me3_num_reads_five_p": 11, 
+        "H3K4me1_num_reads_three_p": 5
+      }, 
+      "E028": {
+        "p_inc": 1.559579714669844, 
+        "H3K9me3_num_reads_five_p": 2, 
+        "H3K27me3_num_reads_three_p": 8, 
+        "H3K36me3_num_reads_three_p": 31, 
+        "H3K4me3_num_reads_five_p": 0, 
+        "H3K9me3_num_reads_three_p": 2, 
+        "H3K4me1_num_reads_five_p": 15, 
+        "H3K4me3_num_reads_three_p": 4, 
+        "H3K36me3_num_reads_five_p": 74, 
+        "H3K27me3_num_reads_five_p": 7, 
+        "H3K4me1_num_reads_three_p": 45
+      },
+    }
