@@ -41,13 +41,15 @@ def main(argv):
     # Read RNA-seq data into memory
     # The purpose of this entire section is calculate leading and cassette exons
     gene_rna_dict = {}
-    sample_names = []
+    sample_names = {}
     with open(rna_fn) as rna_f:
         for line in rna_f:
-            row = line.strip('\t').split('\t')
             if progress1.count == 0:
-                sample_names = row[2:]
+                row = line.strip('\n').split('\t')
+                for i in range(2, len(row)):
+                    sample_names[row[i]] = i-2
             else:
+                row = line.strip('\t\n').split('\t')
                 gene = row[1]
                 if gene in gene_dict:
                     start = int(row[0].split(':')[1].split('-')[0])
@@ -61,10 +63,10 @@ def main(argv):
                         'start' : start,
                         'end' : end,
                         'strand' : ('+' if strand==1 else '-'),
-                        'samples' : row[2:-1],    # There's some weird formatting in the RPKM file
+                        'samples' : row[2:],    # There's some weird formatting in the RPKM file
                         'tss' : (start if strand==1 else end)
                     } )
-                    assert len(sample_names) == row[2:-1]
+                    assert len(sample_names) == len(row[2:])
             progress1.update()
 
     # Main loop of genes
@@ -136,19 +138,18 @@ def main(argv):
                     d['transcript_total'] = len(gene_dict[gene]['transcripts'])
                     d['transcripts'] = exon_transcripts
                     d['samples'] = {}
-                    for k in range(0, len(sample_names)):
-                        sample_name = sample_names[k]
+                    for sample_name, i in sample_names.iteritems():
                         if sample_name not in d['samples']:
                             d['samples'][sample_name] = {}
-                        d['samples'][sample_name]['rpkm'] = float(samples[k])
-                        d['samples'][sample_name]['max_rpkm'] = float(max_exon[k])
+                        d['samples'][sample_name]['rpkm'] = float(samples[i])
+                        d['samples'][sample_name]['max_rpkm'] = float(max_exon[i])
                     printlist.append(d)
 
             # Iterate through the exons again (this time of the accepted list)
             # We calculate the delta_rpkm to the previous transcript start site
             for k in range(0, len(printlist)):
                 d = printlist[k]
-                for sample_name in sample_names:
+                for sample_name in sample_names.iterkeys():
                     d['tss_total'] = len(printlist)
                     if len(printlist) == 1:
                          d['samples'][sample_name]['delta_rpkm'] = d['samples'][sample_name]['rpkm']
