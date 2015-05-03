@@ -25,7 +25,6 @@ def main(argv):
     granularity = int(sys.argv[4])
     progress1 = FileProgress(rna_fn, "Part 1/2: ")
     progress2 = FileProgress(rna_fn, "Part 2/2: ")
-    count = 0
 
     # load expected chromosome order from json into a dictionary
     with open(chromosomes_fn) as chromosomes_file:
@@ -44,8 +43,8 @@ def main(argv):
     gene_rna_dict = {}
     sample_names = []
     with open(rna_fn) as rna_f:
-        rna_file = csv.reader(rna_f, delimiter='\t')
-        for row in rna_file:
+        for line in rna_f:
+            row = line.strip('\t').split('\t')
             if progress1.count == 0:
                 sample_names = row[2:]
             else:
@@ -65,6 +64,7 @@ def main(argv):
                         'samples' : row[2:-1],    # There's some weird formatting in the RPKM file
                         'tss' : (start if strand==1 else end)
                     } )
+                    assert len(sample_names) == row[2:-1]
             progress1.update()
 
     # Main loop of genes
@@ -160,10 +160,7 @@ def main(argv):
                                 d['samples'][sample_name]['delta_rpkm'] = d['samples'][sample_name]['rpkm'] - printlist[k+1]['samples'][sample_name]['rpkm']
                         except IndexError:
                             d['samples'][sample_name]['delta_rpkm'] = d['samples'][sample_name]['rpkm']
-                print json.dumps(d, indent=2)
-                break
-
-            break
+                print json.dumps(d)
 
         progress2.update()
 

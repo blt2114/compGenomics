@@ -202,9 +202,12 @@ into the exon level. The start (or end) of the exon is taken to be the TSS of al
 
 Any transcript that does not map to any exon in the RNA-seq dataset is automatically discarded.
 
+The number in the command line args is how much "wiggle room" you are willing to allow transcripts to be called. When
+it is zero, transcripts must fall entirely within the boundaries of the RNA exons. 
+
 To run this step:
 
-    python xtract_rna_all_tss.py ../../files/all_tss.json ../../files/57epigenomes.exon.RPKM.all ../../config-files/chromosome_order.json > ../../files/all_tss_rna.json
+    python xtract_rna_all_tss.py ../../files/all_tss.json ../../files/57epigenomes.exon.RPKM.all ../../config-files/chromosome_order.json 200 > ../../files/all_tss_rna.json
 
 It outputs a json file that looks like this:
 
@@ -359,6 +362,9 @@ It outputs a json file that looks like this:
         },
       }
     }
+
+### Step 4a: Load Gene Expression data into the file ###
+    
 
 ### Step 5a: Reduce the number of TSS sites for performance issues ###
 
