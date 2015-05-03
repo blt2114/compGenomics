@@ -607,7 +607,13 @@ The output looks like this:
       "strand": "+"
     }
 
-### Step 8: At this point, filter for relevant entries and unpack them ###
+### Step 8a: Apply meta data to chip experiments ###
+
+Since I missed a lot of the data the first time through, the metadata is being applied now:
+
+
+
+### Step 8b: At this point, filter for relevant entries and unpack them ###
 
 In the case for this experiment, I'm going to filter for only non-cassette TSS sites.
 
