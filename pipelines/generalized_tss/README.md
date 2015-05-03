@@ -213,11 +213,31 @@ It outputs a json file that looks like this:
       "tss": 11869, 
       "strand": "+", 
       "gene_id": "ENSG00000223972", 
-      "tss_type": "leading", 
+      "exon_number": 1, 
+      "exon_total": 4, 
+      "splice_count": 1, 
+      "coverage_count": 5, 
+      "tss_mapped": 4, 
+      "tss_total": 1, 
+      "transcript_total": 4, 
       "transcripts": [
         {
           "seqname": "chr1", 
           "end": 14412, 
+          "exons": [
+            [
+              11872, 
+              12227
+            ], 
+            [
+              12613, 
+              12721
+            ], 
+            [
+              13225, 
+              14412
+            ]
+          ], 
           "start": 11872, 
           "attribute": {
             "transcript_status": "KNOWN", 
@@ -233,6 +253,16 @@ It outputs a json file that looks like this:
           }, 
           "frame": ".", 
           "feature": "transcript", 
+          "introns": [
+            [
+              12228, 
+              12612
+            ], 
+            [
+              12722, 
+              13224
+            ]
+          ], 
           "source": "ENSEMBL", 
           "length": 2540, 
           "score": ".", 
@@ -242,6 +272,24 @@ It outputs a json file that looks like this:
         {
           "seqname": "chr1", 
           "end": 14409, 
+          "exons": [
+            [
+              11874, 
+              12227
+            ], 
+            [
+              12595, 
+              12721
+            ], 
+            [
+              13403, 
+              13655
+            ], 
+            [
+              13661, 
+              14409
+            ]
+          ], 
           "start": 11874, 
           "attribute": {
             "transcript_status": "KNOWN", 
@@ -257,6 +305,20 @@ It outputs a json file that looks like this:
           }, 
           "frame": ".", 
           "feature": "transcript", 
+          "introns": [
+            [
+              12228, 
+              12594
+            ], 
+            [
+              12722, 
+              13402
+            ], 
+            [
+              13656, 
+              13660
+            ]
+          ], 
           "source": "ENSEMBL", 
           "length": 2535, 
           "score": ".", 
@@ -266,31 +328,35 @@ It outputs a json file that looks like this:
       ], 
       "samples": {
         "E071": {
-          "rpkm": "0.000"
+          "delta_rpkm": 0.161, 
+          "rpkm": 0.161, 
+          "max_rpkm": 0.267
         }, 
         "E016": {
-          "rpkm": "0.041"
+          "delta_rpkm": 0.0, 
+          "rpkm": 0.0, 
+          "max_rpkm": 0.039
         }, 
         "E120": {
-          "rpkm": "0.182"
+          "delta_rpkm": 0.071, 
+          "rpkm": 0.071, 
+          "max_rpkm": 0.23
         }, 
         "E062": {
-          "rpkm": "0.191"
+          "delta_rpkm": 0.612, 
+          "rpkm": 0.612, 
+          "max_rpkm": 1.41
         }, 
         "E003": {
-          "rpkm": "0.120"
+          "delta_rpkm": 0.0, 
+          "rpkm": 0.0, 
+          "max_rpkm": 0.0
         }, 
         "E028": {
-          "rpkm": "0.013"
-        }, 
-        "E066": {
-          "rpkm": "0.320"
-        }, 
-        "E007": {
-          "rpkm": "0.000"
-        }, 
-        "E006": {
-          "rpkm": "0.000"
+          "delta_rpkm": 0.054, 
+          "rpkm": 0.054, 
+          "max_rpkm": 0.098
+        },
       }
     }
 
@@ -535,6 +601,7 @@ The output looks like this:
 ### Step 8: At this point, filter for relevant entries and unpack them ###
 
 In the case for this experiment, I'm going to filter for only non-cassette TSS sites.
+
 
 
 
