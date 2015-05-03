@@ -63,4 +63,5 @@ with open(file, 'rb') as json_file:
 
 print json.dumps(results, indent=2)
 print "Number of unique genes: " + str(len(gene_dict))
+print "Number of tss sites: " + str(progress.count())
 sys.stderr.write("\nAll Done!\n")
