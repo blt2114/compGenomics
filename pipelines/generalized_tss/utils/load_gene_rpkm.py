@@ -21,7 +21,7 @@ def main(argv):
     json_fn = sys.argv[1]
     rna_fn = sys.argv[2]
     progress1 = FileProgress(rna_fn, "Part 1/2: ")
-    progress2 = FileProgress(json_fn, "Part 1/2: ")
+    progress2 = FileProgress(json_fn, "Part 2/2: ")
 
     # Read gene RPKM into memory
     gene_dict = {}
@@ -49,10 +49,9 @@ def main(argv):
                 else:
                     site['samples'][header[i]] = { 'gene_rpkm':  gene_dict[site['gene_id']][i] }
             print json.dumps(site, indent=2)
-            break
             progress2.update()
 
-    sys.stderr.write("All done!\n")
+    sys.stderr.write("\nAll done!\n")
 
 # Execute this module as a command line script
 if __name__ == "__main__":
