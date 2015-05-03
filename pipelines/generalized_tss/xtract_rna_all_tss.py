@@ -14,14 +14,15 @@ from src.utils import FileProgress, unix_sort
 # Main Method
 def main(argv):
     # parse args
-    if len(sys.argv) is not 4:
+    if len(sys.argv) is not 5:
         sys.stderr.write("invalid usage: python " + sys.argv[0] +
-                " <all_tss.json> <57epigenomes.exon.RPKM.all> <chromosome_order.json>\n")
+                " <all_tss.json> <57epigenomes.exon.RPKM.all> <chromosome_order.json> <granularity>\n")
         sys.exit(2)
 
     tss_fn = sys.argv[1]
     rna_fn = sys.argv[2]
     chromosomes_fn = sys.argv[3]
+    granularity = int(sys.argv[4])
     progress1 = FileProgress(rna_fn, "Part 1/2: ")
     progress2 = FileProgress(rna_fn, "Part 2/2: ")
 
@@ -32,7 +33,7 @@ def main(argv):
     # Sort RNA file by gene id, so they are confirmed to be in order
     rna_f = unix_sort(rna_fn, "-k2,2 -k1,1", header=True)
 
-    # Load JSON file into memory
+    # Load JSON GTF file into memory
     gene_dict = {}
     with open(tss_fn, 'rb') as json_file:
         for line in json_file:
@@ -92,18 +93,28 @@ def main(argv):
 
             # Assign all transcripts that map to this exon
             exon_transcripts = []
+            splice_count = 0
             for transcript in gene_dict[gene]['transcripts'].itervalues():
-                if transcript['tss'] > start and transcript['tss'] < end:
+                if transcript['tss'] > start - granularity and transcript['tss'] < end + granularity:
                     exon_transcripts.append(transcript)
+                for intron in transcript['introns']:
+                    if start > intron[2] or end < intron[1]:
+                        # not spliced out
+                        pass
+                    else:
+                        splice_count += 1
 
-            # If a transcript mapped, print it
+            # If a transcript mapped to one of the exons
             if len(exon_transcripts) > 0:
+
+                # Print this transcript
                 d = collections.OrderedDict()
                 d['seqname'] = seqname
                 d['tss'] = tss
                 d['strand'] = ('+' if strand==1 else '-')
                 d['gene_id'] = gene
                 d['tss_type'] = row[2]
+                d['splice_count'] = splice_count
                 d['transcripts'] = exon_transcripts
                 d['samples'] = {}
                 for i in range(3, len(samples)):
