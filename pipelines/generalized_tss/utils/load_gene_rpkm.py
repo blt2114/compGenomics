@@ -48,7 +48,7 @@ def main(argv):
                     site['samples'][header[i]]['gene_rpkm'] = gene_dict[site['gene_id']][i]
                 else:
                     site['samples'][header[i]] = { 'gene_rpkm':  gene_dict[site['gene_id']][i] }
-            print json.dumps(site, indent=2)
+            print json.dumps(site)
             progress2.update()
 
     sys.stderr.write("\nAll done!\n")

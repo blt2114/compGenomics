@@ -14,14 +14,19 @@ results['transcript_status'] = {}
 results['level'] = {}
 results['transcript_type'] = {}
 results['source'] = {}
-results['tss_number'] = {}
-results['tss_type'] = {}
+results['exon_number'] = {}
+results['exon_total'] = {}
+results['splice_count'] = {}
+results['coverage_count'] = {}
+results['tss_mapped'] = {}
+results['tss_total'] = {}
+results['transcript_total'] = {}
+
 gene_dict = {}
 
 progress = FileProgress(file, "Percent: ")
 
 with open(file, 'rb') as json_file:
-    prev = (None, 0)
     for line in json_file:
         site = json.loads(line)
         for transcript in site['transcripts']:
@@ -41,25 +46,21 @@ with open(file, 'rb') as json_file:
                 results['source'][transcript['source']] +=1
             else:
                 results['source'][transcript['source']] = 1
-        if site['tss_type'] in results['tss_type']:
-            results['tss_type'][site['tss_type']] += 1
-        else:
-            results['tss_type'][site['tss_type']] = 1
+        search = [
+            'exon_number', 'exon_total', 'splice_count', 'coverage_count', 'tss_mapped',
+            'tss_total', 'transcript_total'
+        ]
+        for item in search:
+            if str(site[item]) in results[item]:
+                results[item][str(site[item])] += 1
+            else:
+                results[item][str(site[item])] = 1
 
         if not site['gene_id'] in gene_dict:
             gene_dict[site['gene_id']] = True
 
-        if prev[0] != site['gene_id'] and prev[0] is not None:
-            label = str(prev[1]) + "_tss"
-            if label in results['tss_number']:
-                results['tss_number'][label] += 1
-            else:
-                results['tss_number'][label] = 1
-            prev = (site['gene_id'], 1)
-        else:
-            prev = (site['gene_id'], prev[1] + 1)
         progress.update()
 
 print json.dumps(results, indent=2)
-print str(len(gene_dict))
-
+print "Number of unique genes: " + str(len(gene_dict))
+sys.stderr.write("\nAll Done!\n")

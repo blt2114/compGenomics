@@ -363,8 +363,11 @@ It outputs a json file that looks like this:
       }
     }
 
-### Step 4a: Load Gene Expression data into the file ###
+### Step 4b: Load Gene Expression data into the file ###
     
+If necessary, load the gene RPKM expression data as well.
+
+    python utils/load_gene_rpkm.py ../../files/all_tss_rna.json ../../files/57epigenomes.RPKM.all > ../../files/all_tss_rna.json2
 
 ### Step 5a: Reduce the number of TSS sites for performance issues ###
 
