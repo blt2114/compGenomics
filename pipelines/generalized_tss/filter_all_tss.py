@@ -28,11 +28,21 @@ def main(argv):
         for line in json_file:
             gene = json.loads(line)
             for transcript in gene['transcripts'].itervalues():
+
+                exon_list = []
+                for exon in transcript['exons']:
+                    tuple = (exon['start'], exon['end'])
+                    exon_list.append(tuple)
+
                 transcript.pop("exons", None)
+                transcript['exons'] = exon_list
+
                 if (transcript['strand'] == "+"):
                     transcript['tss'] = transcript['start']
+                    transcript['exons'].sort(key=lambda tup: tup[0])
                 else:
                     transcript['tss'] = transcript['end']
+                    transcript['exons'].sort(key=lambda tup: tup[1], reverse=True)
                 transcript['length'] = int(transcript['end']) - int(transcript['start'])
 
             # Reorder the gene dictionary so it is easier to sort in the future

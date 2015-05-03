@@ -33,7 +33,7 @@ We are getting a comprehensive list of all TSS because there's no real reason to
 ourselves to the granularity present in the physical RNA-seq. We can collapse the transcripts that we see at that point.
 Run this program:
 
-    python filter_all_tss.py ../../files/genes.json > ../../files/all_tss.json
+    python filter_all_tss.py ../../files/gen10_files/genes.json > ../../files/all_tss.json
 
 It outputs a json file in this format, with one gene on each line:
 
@@ -59,6 +59,24 @@ It outputs a json file in this format, with one gene on each line:
         "ENST00000263369.2": {
           "seqname": "chr19", 
           "end": 41283392, 
+          "exons": [
+            [
+              41281300, 
+              41281574
+            ], 
+            [
+              41281657, 
+              41281790
+            ], 
+            [
+              41282874, 
+              41282984
+            ], 
+            [
+              41283302, 
+              41283392
+            ]
+          ], 
           "source": "ENSEMBL", 
           "attribute": {
             "gene_status": "KNOWN", 
@@ -84,6 +102,36 @@ It outputs a json file in this format, with one gene on each line:
         "ENST00000378307.4": {
           "seqname": "chr19", 
           "end": 41302847, 
+          "exons": [
+            [
+              41284213, 
+              41284296
+            ], 
+            [
+              41285924, 
+              41286004
+            ], 
+            [
+              41286290, 
+              41286404
+            ], 
+            [
+              41289683, 
+              41289745
+            ], 
+            [
+              41292570, 
+              41292665
+            ], 
+            [
+              41292753, 
+              41292883
+            ], 
+            [
+              41302475, 
+              41302847
+            ]
+          ], 
           "source": "ENSEMBL", 
           "attribute": {
             "gene_status": "KNOWN", 
@@ -447,5 +495,6 @@ The output looks like this:
 ### Step 8: At this point, filter for relevant entries and unpack them ###
 
 In the case for this experiment, I'm going to filter for only non-cassette TSS sites.
+
 
 
