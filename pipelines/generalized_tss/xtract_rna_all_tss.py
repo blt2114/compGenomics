@@ -98,7 +98,7 @@ def main(argv):
                 if transcript['tss'] > start - granularity and transcript['tss'] < end + granularity:
                     exon_transcripts.append(transcript)
                 for intron in transcript['introns']:
-                    if start > intron[2] or end < intron[1]:
+                    if start > intron[1] or end < intron[0]:
                         # not spliced out
                         pass
                     else:
@@ -123,6 +123,7 @@ def main(argv):
                         d['samples'][sample_name] = {}
                     d['samples'][sample_name]['rpkm'] = row[i]
                 print json.dumps(d)
+                break
 
         progress2.update()
     sys.stderr.write("\nAll done!\n")

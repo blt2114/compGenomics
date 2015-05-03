@@ -8,7 +8,7 @@ The input is a gene list, and the output is the gene RPKM.
 
 __author__ = 'jeffrey'
 
-import sys, json, csv, collections
+import sys, json, csv, collections, operator
 from src.utils import FileProgress, unix_sort
 
 # Main Method
@@ -30,9 +30,6 @@ def main(argv):
     with open(chromosomes_fn) as chromosomes_file:
         chromosomes = json.load(chromosomes_file)
 
-    # Sort RNA file by gene id, so they are confirmed to be in order
-    #rna_f = unix_sort(rna_fn, "-k2,2 -k1,1", header=True)
-
     # Load JSON GTF file into memory
     gene_dict = {}
     with open(tss_fn, 'rb') as json_file:
@@ -43,117 +40,124 @@ def main(argv):
 
     # Read RNA-seq data into memory
     # The purpose of this entire section is calculate leading and cassette exons
-    rna_dict = {}
-    samples = []
+    gene_rna_dict = {}
+    sample_names = []
     with open(rna_fn) as rna_f:
         rna_file = csv.reader(rna_f, delimiter='\t')
         for row in rna_file:
             if progress1.count == 0:
-                samples = row
+                sample_names = row[2:]
             else:
                 gene = row[1]
                 if gene in gene_dict:
                     start = int(row[0].split(':')[1].split('-')[0])
                     end = int(row[0].split('-')[1].split('<')[0])
                     strand = int(row[0].split('<')[1])
-                    if gene not in rna_dict:
-                        rna_dict[gene] = []
-                    rna_dict[gene].append( {
+                    if gene not in gene_rna_dict:
+                        gene_rna_dict[gene] = []
+                    gene_rna_dict[gene].append( {
+                        'gene' : gene,
                         'seqname' : row[0].split(':')[0],
                         'start' : start,
                         'end' : end,
                         'strand' : ('+' if strand==1 else '-'),
-                        'tss' : (start if strand==1 else end),
-                        'samples' : row[2:]
+                        'samples' : row[2:-1],    # There's some weird formatting in the RPKM file
+                        'tss' : (start if strand == '+' else end)
                     } )
+            progress1.update()
 
-    ##########################
-    #HERE
-    ###########################
-
-
-    rna_data = []
-    samples = []
-    previous_gene = None
-    rna_file = csv.reader(rna_f, delimiter='\t')
-    for row in rna_file:
-        if progress1.count == 0:
-            samples = row
-        else:
-            gene = row[1]
-            if gene in gene_dict:
-                if previous_gene != gene:
-                    if previous_gene is not None:
-                        # The previous exon was the last exon of the previous gene
-                        if gene_dict[previous_gene]['strand'] == '-':
-                            rna_data[-1][2] = 'leading'
-                    # The current exon is the first exon of this gene
-                    if gene_dict[gene]['strand'] == '+':
-                        row.insert(2, 'leading')
-                    else:
-                        row.insert(2, 'cassette')
-                else:
-                    row.insert(2, 'cassette')
-                rna_data.append(row)
-                previous_gene = gene
-        progress1.update()
-
-    # Now sort the RNA-seq data that is in memory
-    sys.stderr.write("\nBeginning to sort loaded RNA-seq file\n")
-    rna_data.sort(key=lambda row: (
-        chromosomes[row[0].split(':')[0]], #chromosome, passed into chromosomes config dictionary
-        (
-            int(row[0].split(':')[1].split('-')[0]) #start
-            if int(row[0].split('<')[1])==1 #if strand==1
-            else int(row[0].split('-')[1].split('<')[0]) #else end
-        )
-    ))
-    sys.stderr.write("Finished sorting loaded RNA-seq file\n")
-
-    # Now print the exons that have transcript start sites
-    for row in rna_data:
-        gene = row[1]
+    # Main loop of genes
+    sys.stderr.write("\nLoaded " + str(len(gene_rna_dict)) + " mRNA exons into memory.\n")
+    for genes in sorted(gene_rna_dict.values(), key=lambda k: ( chromosomes[k[0]['seqname']], k[0]['tss'] )):
+        gene = genes[0]['gene']
         if gene in gene_dict:
-            seqname = row[0].split(':')[0]
-            start = int(row[0].split(':')[1].split('-')[0])
-            end = int(row[0].split('-')[1].split('<')[0])
-            strand = int(row[0].split('<')[1])
-            tss = (start if strand==1 else end)
 
-            # Assign all transcripts that map to this exon
-            exon_transcripts = []
-            splice_count = 0
-            for transcript in gene_dict[gene]['transcripts'].itervalues():
-                if transcript['tss'] > start - granularity and transcript['tss'] < end + granularity:
-                    exon_transcripts.append(transcript)
-                for intron in transcript['introns']:
-                    if start > intron[2] or end < intron[1]:
-                        # not spliced out
-                        pass
-                    else:
-                        splice_count += 1
+            # Iterate through the genes and calculate the exon number
+            genes.sort(key=lambda x: x['start'])
+            if genes[0]['strand'] == '+':
+                for i in range(1, len(genes) + 1):
+                    genes[i-1]['exon_number'] = i
+            else:
+                for i in range(1, len(genes) + 1):
+                    genes[len(genes)-i]['exon_number'] = i
 
-            # If a transcript mapped to one of the exons
-            if len(exon_transcripts) > 0:
+            # Calculate cell with from samples maximum value
+            max_exon = None
+            max_rpkm = 0
+            for exon in genes:
+                for sample_rpkm in exon['samples']:
+                    if float(sample_rpkm) >= max_rpkm:
+                        max_exon = exon['samples']
+                        max_rpkm = float(sample_rpkm)
+            assert max_exon is not None
 
-                # Print this transcript
-                d = collections.OrderedDict()
-                d['seqname'] = seqname
-                d['tss'] = tss
-                d['strand'] = ('+' if strand==1 else '-')
-                d['gene_id'] = gene
-                d['tss_type'] = row[2]
-                d['splice_count'] = splice_count
-                d['transcripts'] = exon_transcripts
-                d['samples'] = {}
-                for i in range(3, len(samples)):
-                    sample_name = samples[i]
-                    if sample_name not in d['samples']:
-                        d['samples'][sample_name] = {}
-                    d['samples'][sample_name]['rpkm'] = row[i]
-                print json.dumps(d)
+            # Iterate through exons within this gene
+            printlist = []
+            for i in range(0, len(genes)):
+                exon = genes[i]
+                samples = exon['samples']
+
+                # Assign all transcripts that map to this exon
+                exon_transcripts = []
+                splice_count = 0
+                coverage_count = 0
+                for transcript in gene_dict[gene]['transcripts'].itervalues():
+                    if transcript['tss'] > exon['start'] - granularity and transcript['tss'] < exon['end'] + granularity:
+                        exon_transcripts.append(transcript)
+                    for intron in transcript['introns']:
+                        if exon['start'] > intron[1] or exon['end'] < intron[0]:
+                            # not spliced out
+                            pass
+                        else:
+                            splice_count += 1
+                    for transcript_exon in transcript['exons']:
+                        if exon['start'] > transcript_exon[1] or exon['end'] < transcript_exon[0]:
+                            # not covered by exon
+                            pass
+                        else:
+                            coverage_count += 1
+
+                # If a transcript mapped to one of the exons
+                if len(exon_transcripts) > 0:
+
+                    # Save this transcript
+                    d = collections.OrderedDict()
+                    d['seqname'] = exon['seqname']
+                    d['tss'] = exon['tss']
+                    d['strand'] = exon['strand']
+                    d['gene_id'] = gene
+                    d['exon_number'] = exon['exon_number']
+                    d['exon_count'] = len(genes)
+                    d['splice_count'] = splice_count
+                    d['transcripts'] = exon_transcripts
+                    d['samples'] = {}
+                    for k in range(0, len(sample_names)):
+                        sample_name = sample_names[k]
+                        if sample_name not in d['samples']:
+                            d['samples'][sample_name] = {}
+                        d['samples'][sample_name]['rpkm'] = float(samples[k])
+                        d['samples'][sample_name]['max_rpkm'] = float(max_exon[k])
+                    printlist.append(d)
+
+            # Iterate through the exons again (this time of the accepted list)
+            # We calculate the delta_rpkm to the previous transcript start site
+            for k in range(0, len(printlist)):
+                d = printlist[k]
+                for sample_name in sample_names:
+                    try:
+                        if d['strand'] == '+':
+                            d['samples'][sample_name]['delta_rpkm'] = printlist[k-1]['samples'][sample_name]['rpkm'] # d['samples'][sample_name]['rpkm'] #-
+                        else:
+                            d['samples'][sample_name]['delta_rpkm'] = printlist[k+1]['samples'][sample_name]['rpkm'] # d['samples'][sample_name]['rpkm'] #-
+                    except IndexError:
+                        d['samples'][sample_name]['delta_rpkm'] = d['samples'][sample_name]['rpkm']
+                print json.dumps(d, indent=2)
+                break
+            print len(printlist)
+            break
 
         progress2.update()
+
     sys.stderr.write("\nAll done!\n")
 
 # Execute this module as a command line script
