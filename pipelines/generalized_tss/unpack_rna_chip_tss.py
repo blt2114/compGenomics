@@ -14,15 +14,12 @@ from src.utils import FileProgress, unix_sort
 def main(argv):
 
     # Parse args
-    if len(sys.argv) is not 5:
-        sys.stderr.write("invalid usage: python " + sys.argv[0] + " <level1_tss_rna_chip.json> <left_bin> <right_bin> <bin_size>\n")
+    if len(sys.argv) is not 2:
+        sys.stderr.write("invalid usage: python " + sys.argv[0] + " <level1_tss_rna_chip.json>\n")
         sys.exit(2)
 
     # Set args
     data_fn = sys.argv[1]
-    bins_left = int(sys.argv[2])
-    bins_right = int(sys.argv[3])
-    bin_size = int(sys.argv[4])
     progress = FileProgress(data_fn, "Percent Complete: ")
 
     # Main loop
@@ -38,19 +35,14 @@ def main(argv):
                     if transcript['tag'] == "CCDS":
                         analyze_this_site = True
             """
+            """
             if site['tss_type'] == "leading":
                 analyze_this_site = True
+            """
 
-            # Print all samples in this site
-            if analyze_this_site:
-                for sample in site['samples'].iterValues():
-                    pass
-
-    """
-    I kind of can't really finish this without knowing exactly what the input into the SVM is
-    """
-
-
+            # This is the main printing section
+            print json.dumps(site['samples'])
+            progress.update()
 
     sys.stderr.write("\nAll done!\n")
 
