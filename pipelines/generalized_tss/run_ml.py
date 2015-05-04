@@ -67,12 +67,12 @@ def main(argv):
 
                 # Compute the label
                 sample['gene_rpkm'] = float(sample['gene_rpkm'])
-                #if sample['delta_rpkm'] < 0:
-                #    sample['delta_rpkm'] = 0
+                if sample['delta_rpkm'] < 0:
+                    sample['delta_rpkm'] = 0
                 #if sample['max_rpkm'] == 0:
                 #    sample['label'] = 0
                 #else:
-                sample['label'] = sample['rpkm']
+                sample['label'] = sample['delta_rpkm']
 
                 datapoint_list.append(sample)
             progress.update()
@@ -179,10 +179,10 @@ def main(argv):
     print "len X: " + str(len(X))
     print "Starting Random Forests:"
 
-    for n_estimators in [50,150]:
-        for depth in [6,12]:
+    for n_estimators in [100,150]:
+        for depth in [4,6]:
             clf =RandomForestClassifier(n_estimators=n_estimators,max_depth=depth,
-                    min_samples_split=100, random_state=0)
+                    min_samples_split=10, random_state=0)
 
             clf.fit(X,Y_C)
             print "n_estimators, depth: " + str(n_estimators) + ", " + str(depth)
