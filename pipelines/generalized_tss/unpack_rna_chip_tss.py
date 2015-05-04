@@ -29,19 +29,22 @@ def main(argv):
 
             # Filter for criteria
             analyze_this_site = False
+
             """
-            for transcript in site['transcripts'].iterValues():
+            for transcript in site['transcripts']:
                 if 'tag' in transcript['attribute']:
-                    if transcript['tag'] == "CCDS":
+                    if transcript['attribute']['tag'] == "CCDS":
                         analyze_this_site = True
             """
-            """
-            if site['tss_type'] == "leading":
+
+
+            if site['exon_number'] != 1:
                 analyze_this_site = True
-            """
+
 
             # This is the main printing section
-            print json.dumps(site['samples'])
+            if analyze_this_site:
+                print json.dumps(site['samples'])
             progress.update()
 
     sys.stderr.write("\nAll done!\n")

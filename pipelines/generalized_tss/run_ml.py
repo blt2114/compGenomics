@@ -23,10 +23,9 @@ def listsum(numList):
 
 # Main Method
 def main(argv):
-    if len(sys.argv) != 2:
-        sys.stderr.write("invalid usage: python ensembe_test.py <all_level1.json>\n")
+    if not (len(sys.argv) == 4 or len(sys.argv) == 5):
+        sys.stderr.write("invalid usage: python " + sys.argv[0] + " <all_level1.json> <left> <right> [cutoff]\n")
         sys.exit(2)
-
 
     keys=[
         #core marks
@@ -44,28 +43,41 @@ def main(argv):
         "DNase",
         "H3K79me2"
     ]
-    ranges = (25, 35)
+    ranges = (int(sys.argv[2]), int(sys.argv[3]))
 
 
     # Load file
-    tss_list =[]
-    datapoint_list=[]
+    datapoint_list = []
     file = sys.argv[1]
     progress = FileProgress(file, "Reading file: ")
     with open(file) as json_file:
         for line in json_file:
             tss_dict = json.loads(line)
-            tss_list.append(tss_dict)
             for sample in tss_dict.values():
                 remove = False
                 for mark in keys:
                     if mark not in sample:
                         remove = True
+                    else:
+                        # Compute the feature vector
+                        sum = listsum(sample[mark][ranges[0]:ranges[1]])
+                        sample[mark] = sum
                 if remove: continue
+
+
+                # Compute the label
+                sample['gene_rpkm'] = float(sample['gene_rpkm'])
+                #if sample['delta_rpkm'] < 0:
+                #    sample['delta_rpkm'] = 0
+                #if sample['max_rpkm'] == 0:
+                #    sample['label'] = 0
+                #else:
+                sample['label'] = sample['rpkm']
+
                 datapoint_list.append(sample)
             progress.update()
     sys.stderr.write("\nFinished reading file\n")
-
+    print "Label Method: rpkm"
 
     # For regression, create vector
     X = []
@@ -75,40 +87,26 @@ def main(argv):
         # Assign feature vector
         exprmt_feature_vector=[]
         for mark in keys:
-            if type(datapoint[mark]) is list:
-                reads_in_range = listsum(datapoint[mark][ranges[0]:ranges[1]])
-                exprmt_feature_vector.append(reads_in_range)
-            else:
-                exprmt_feature_vector.append(datapoint[mark])
+            exprmt_feature_vector.append(datapoint[mark])
 
         # Assing feature label
-        if datapoint["delta_rpkm"] < 0:
-            datapoint["delta_rpkm"] = 0
-        if datapoint["max_rpkm"] == 0:
-            # This gene is not expressed
-            exprmt_label = 0
-        else:
-            exprmt_label = datapoint["delta_rpkm"] / datapoint["max_rpkm"]
+        exprmt_label = datapoint['label']
 
         # Add both vectors
         X.append(exprmt_feature_vector)
         Y_R.append(exprmt_label)
 
     # Classify feature labels into binary space
-    label_cutoff = np.median(Y_R)
+    if len(sys.argv) == 5:
+        label_cutoff = int(sys.argv[4])
+    else:
+        label_cutoff = np.median(Y_R)
+    print "marks: " + ", ".join(keys)
+    print "window: " + str(ranges[0]) + ", " + str(ranges[1])
     print "label cutoff: " + str(label_cutoff)
     Y_C = []
     for datapoint in datapoint_list:
-
-        # Recaulate feature label (for classification)
-        if datapoint["delta_rpkm"] < 0:
-            datapoint["delta_rpkm"] = 0
-        if datapoint["max_rpkm"] == 0:
-            # This gene is not expressed
-            exprmt_label = 0
-        else:
-            exprmt_label = datapoint["delta_rpkm"] / datapoint["max_rpkm"]
-        Y_C.append(int(float(exprmt_label) < label_cutoff))
+        Y_C.append(int(float(datapoint['label']) < label_cutoff))
 
     print "mean label: " + str(np.mean(Y_R))
     print "median label: " + str(np.median(Y_R))
@@ -179,21 +177,22 @@ def main(argv):
     # Regression!
     print "len Y_C: " + str(len(Y_C))
     print "len X: " + str(len(X))
-    print "len X[0]: " + str(len(X[0]) )
+    print "Starting Random Forests:"
 
-    for n_estimators in [10,50,150]:
-        for depth in [8,12]:
+    for n_estimators in [50,150]:
+        for depth in [6,12]:
             clf =RandomForestClassifier(n_estimators=n_estimators,max_depth=depth,
-                    min_samples_split=10, random_state=0)
+                    min_samples_split=100, random_state=0)
 
             clf.fit(X,Y_C)
-            print "n_estimators: " + str(n_estimators)
-            print "depth: " + str(depth)
+            print "n_estimators, depth: " + str(n_estimators) + ", " + str(depth)
             feature_importances = clf.feature_importances_
 
             print "feature_importances: "
             for i in range(0,len(keys)):
                 print "\t" + keys[i] + ":\t" + str(feature_importances[i])
+
+
 
 
             """
@@ -211,6 +210,8 @@ def main(argv):
 
             scores = cross_val_score(clf, X, Y_C)
             print "RandomForest mean cross validation score: " + str( scores.mean())
+
+    print "#" * 75 + "\n"
 
 # Execute this module as a command line script
 if __name__ == "__main__":
