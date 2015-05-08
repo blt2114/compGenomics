@@ -1,15 +1,25 @@
 #!/usr/bin/env python
 
 """
-The principle to this file is to add RPKM values to all transcripts in a config file
+The purpose of this script is to extract the RPKM data from a matrix of exon expressions, and append this
+information to an overall JSON file that will eventually be fed into the Random Forest. The structure of
+the output JSON file is as follows:
 
-The input is a gene list, and the output is the gene RPKM.
+Each line is a TSS site. The number of TSS sites have been reduced to the number of exons inside the RPKM
+matrix. The reasoning for this is that when multiple theoretical transcripts map to the same exon in the RPKM
+matrix, the granularity of the data is limited to entire exons. Therefore, we will consider all transcripts
+that map to the same exon as a group of TSS sites that aggregately hold this position.
+
+Each effective TSS site contains a list of transcripts, along with a dictionary of samples and their expression
+values. This scripts also calculates a lot of metadata, such as which exons are spliced and which in what
+proportion of transcripts they are spliced.
+
 """
 
 __author__ = 'jeffrey'
 
-import sys, json, csv, collections, operator
-from src.utils import FileProgress, unix_sort
+import sys, json, collections, copy
+from src.utils import FileProgress
 
 # Main Method
 def main(argv):
@@ -150,25 +160,13 @@ def main(argv):
                     d['tss_mapped'] = len(exon_transcripts)
                     d['tss_total'] = 0
                     d['transcript_total'] = len(gene_dict[gene]['transcripts'])
-                    d['transcripts'] = exon_transcripts
+                    d['transcripts'] = copy.deepcopy(exon_transcripts)
                     d['samples'] = {}
                     for sample_name, i in sample_names.iteritems():
                         if sample_name not in d['samples']:
                             d['samples'][sample_name] = {}
                         d['samples'][sample_name]['rpkm'] = float(samples[i])
                         d['samples'][sample_name]['max_rpkm'] = float(max_exon[i])
-                    for transcript in d['transcripts']:
-                        # Delete redundant information to reduce size of the file
-                        transcript.pop("exons")
-                        transcript.pop("introns")
-                        transcript.pop("length")
-                        transcript.pop("score")
-                        transcript.pop("frame")
-                        transcript.pop("feature")
-                        transcript.pop("strand")
-                        transcript.pop("seqname")
-                        transcript.pop("start")
-                        transcript.pop("end")
                     printlist.append(d)
 
             # Iterate through the exons again (this time of the accepted list)
@@ -187,6 +185,18 @@ def main(argv):
                                 d['samples'][sample_name]['delta_rpkm'] = d['samples'][sample_name]['rpkm'] - printlist[k+1]['samples'][sample_name]['rpkm']
                         except IndexError:
                             d['samples'][sample_name]['delta_rpkm'] = d['samples'][sample_name]['rpkm']
+                # Delete redundant information to reduce size of the file
+                for this_transcript in d['transcripts']:
+                    this_transcript.pop("exons")
+                    this_transcript.pop("introns")
+                    this_transcript.pop("length")
+                    this_transcript.pop("score")
+                    this_transcript.pop("frame")
+                    this_transcript.pop("feature")
+                    this_transcript.pop("strand")
+                    this_transcript.pop("seqname")
+                    this_transcript.pop("start")
+                    this_transcript.pop("end")
                 print json.dumps(d)
 
         progress2.update()

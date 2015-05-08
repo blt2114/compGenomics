@@ -212,156 +212,69 @@ To run this step:
 It outputs a json file that looks like this:
 
     {
-      "seqname": "chr1", 
-      "tss": 11869, 
-      "strand": "+", 
-      "gene_id": "ENSG00000223972", 
-      "exon_number": 1, 
-      "exon_total": 4, 
-      "splice_count": 1, 
-      "coverage_count": 5, 
-      "tss_mapped": 4, 
-      "tss_total": 1, 
-      "transcript_total": 4, 
-      "transcripts": [
-        {
-          "seqname": "chr1", 
-          "end": 14412, 
-          "exons": [
-            [
-              11872, 
-              12227
-            ], 
-            [
-              12613, 
-              12721
-            ], 
-            [
-              13225, 
-              14412
-            ]
-          ], 
-          "start": 11872, 
-          "attribute": {
-            "transcript_status": "KNOWN", 
-            "gene_status": "KNOWN", 
-            "havana_gene": "OTTHUMG00000000961.2", 
-            "level": "3", 
-            "transcript_type": "transcribed_unprocessed_pseudogene", 
-            "gene_id": "ENSG00000223972.4", 
-            "transcript_id": "ENST00000515242.2", 
-            "gene_type": "pseudogene", 
-            "transcript_name": "DDX11L1-201", 
-            "gene_name": "DDX11L1"
-          }, 
-          "frame": ".", 
-          "feature": "transcript", 
-          "introns": [
-            [
-              12228, 
-              12612
-            ], 
-            [
-              12722, 
-              13224
-            ]
-          ], 
-          "source": "ENSEMBL", 
-          "length": 2540, 
-          "score": ".", 
-          "tss": 11872, 
-          "strand": "+"
-        }, 
-        {
-          "seqname": "chr1", 
-          "end": 14409, 
-          "exons": [
-            [
-              11874, 
-              12227
-            ], 
-            [
-              12595, 
-              12721
-            ], 
-            [
-              13403, 
-              13655
-            ], 
-            [
-              13661, 
-              14409
-            ]
-          ], 
-          "start": 11874, 
-          "attribute": {
-            "transcript_status": "KNOWN", 
-            "gene_status": "KNOWN", 
-            "havana_gene": "OTTHUMG00000000961.2", 
-            "level": "3", 
-            "transcript_type": "transcribed_unprocessed_pseudogene", 
-            "gene_id": "ENSG00000223972.4", 
-            "transcript_id": "ENST00000518655.2", 
-            "gene_type": "pseudogene", 
-            "transcript_name": "DDX11L1-202", 
-            "gene_name": "DDX11L1"
-          }, 
-          "frame": ".", 
-          "feature": "transcript", 
-          "introns": [
-            [
-              12228, 
-              12594
-            ], 
-            [
-              12722, 
-              13402
-            ], 
-            [
-              13656, 
-              13660
-            ]
-          ], 
-          "source": "ENSEMBL", 
-          "length": 2535, 
-          "score": ".", 
-          "tss": 11874, 
-          "strand": "+"
-        },
-      ], 
-      "samples": {
-        "E071": {
-          "delta_rpkm": 0.161, 
-          "rpkm": 0.161, 
-          "max_rpkm": 0.267
-        }, 
-        "E016": {
-          "delta_rpkm": 0.0, 
-          "rpkm": 0.0, 
-          "max_rpkm": 0.039
-        }, 
-        "E120": {
-          "delta_rpkm": 0.071, 
-          "rpkm": 0.071, 
-          "max_rpkm": 0.23
-        }, 
-        "E062": {
-          "delta_rpkm": 0.612, 
-          "rpkm": 0.612, 
-          "max_rpkm": 1.41
-        }, 
-        "E003": {
-          "delta_rpkm": 0.0, 
-          "rpkm": 0.0, 
-          "max_rpkm": 0.0
-        }, 
-        "E028": {
-          "delta_rpkm": 0.054, 
-          "rpkm": 0.054, 
-          "max_rpkm": 0.098
-        },
-      }
-    }
+  "seqname": "chr1", 
+  "tss": 11869, 
+  "strand": "+", 
+  "gene_id": "ENSG00000223972", 
+  "exon_number": 1, 
+  "exon_total": 4, 
+  "splice_count": 1, 
+  "coverage_count": 5, 
+  "tss_mapped": 4, 
+  "tss_total": 1, 
+  "transcript_total": 4, 
+  "transcripts": [
+    {
+      "attribute": {
+        "transcript_status": "KNOWN", 
+        "gene_status": "KNOWN", 
+        "havana_gene": "OTTHUMG00000000961.2", 
+        "level": "3", 
+        "transcript_type": "transcribed_unprocessed_pseudogene", 
+        "gene_id": "ENSG00000223972.4", 
+        "transcript_id": "ENST00000515242.2", 
+        "gene_type": "pseudogene", 
+        "transcript_name": "DDX11L1-201", 
+        "gene_name": "DDX11L1"
+      }, 
+      "source": "ENSEMBL", 
+      "tss": 11872
+    }, 
+    {
+      "attribute": {
+        "transcript_status": "KNOWN", 
+        "gene_status": "KNOWN", 
+        "havana_gene": "OTTHUMG00000000961.2", 
+        "level": "3", 
+        "transcript_type": "transcribed_unprocessed_pseudogene", 
+        "gene_id": "ENSG00000223972.4", 
+        "transcript_id": "ENST00000518655.2", 
+        "gene_type": "pseudogene", 
+        "transcript_name": "DDX11L1-202", 
+        "gene_name": "DDX11L1"
+      }, 
+      "source": "ENSEMBL", 
+      "tss": 11874
+    },
+  ], 
+  "samples": {
+    "E057": {
+      "delta_rpkm": 0.014, 
+      "rpkm": 0.014, 
+      "max_rpkm": 0.02
+    }, 
+    "E113": {
+      "delta_rpkm": 0.249, 
+      "rpkm": 0.249, 
+      "max_rpkm": 0.28
+    }, 
+    "E120": {
+      "delta_rpkm": 0.071, 
+      "rpkm": 0.071, 
+      "max_rpkm": 0.23
+    },
+  }
+}
 
 ### Step 4b: Load Gene Expression data into the file ###
     
