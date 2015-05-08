@@ -103,6 +103,7 @@ def main(argv):
                 # Assign all transcripts that map to this exon
                 exon_transcripts = []
                 splice_count = 0
+                splice_before = 0
                 coverage_count = 0
                 for transcript in gene_dict[gene]['transcripts'].itervalues():
                     if transcript['tss'] > exon['start'] - granularity and transcript['tss'] < exon['end'] + granularity:
@@ -113,6 +114,19 @@ def main(argv):
                             pass
                         else:
                             splice_count += 1
+                        if exon['strand'] == '+':
+                            if intron[1] < exon['start']:
+                                splice_before += 1
+                        else:
+                            if intron[0] > exon['end']:
+                                splice_before += 1
+                    if exon['strand'] == '+':
+                        if transcript['end'] < exon['start']:
+                            splice_before += 1
+                    else:
+                        if transcript['end'] < exon['start']:
+                            if transcript['start'] > exon['end']:
+                                splice_before += 1
                     for transcript_exon in transcript['exons']:
                         if exon['start'] > transcript_exon[1] or exon['end'] < transcript_exon[0]:
                             # not covered by exon
@@ -143,6 +157,18 @@ def main(argv):
                             d['samples'][sample_name] = {}
                         d['samples'][sample_name]['rpkm'] = float(samples[i])
                         d['samples'][sample_name]['max_rpkm'] = float(max_exon[i])
+                    for transcript in d['transcripts']:
+                        # Delete redundant information to reduce size of the file
+                        transcript.pop("exons")
+                        transcript.pop("introns")
+                        transcript.pop("length")
+                        transcript.pop("score")
+                        transcript.pop("frame")
+                        transcript.pop("feature")
+                        transcript.pop("strand")
+                        transcript.pop("seqname")
+                        transcript.pop("start")
+                        transcript.pop("end")
                     printlist.append(d)
 
             # Iterate through the exons again (this time of the accepted list)

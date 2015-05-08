@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
 """
-This file gets all TSS sites and preserves all the information from the annotations.
+This file fetches all TSS sites from a JSON GTF file and extracts all information relevant for downstream
+processing.
+
+It produces a JSON output file with a series of nested dictionaries. Each line is a gene dictionary. Nested
+within each gene is a dictionary of transcripts, each transcript containing a list of exons and introns. The
+TSS is calculated for each transcript.
 
 Usage:
 python filter_all_tss.py ../../files/genes.json > all_tss.json
