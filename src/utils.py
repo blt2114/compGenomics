@@ -99,9 +99,12 @@ def unix_sort(fname, args, header=False, save=False):
     return f
 
 class FileProgress(object):
-    def __init__(self, fname, message):
-        sys.stderr.write("Estimating compute time.\n")
-        self.filelen = file_len(fname)
+    def __init__(self, fname, message, lines=False):
+        if lines is False:
+            sys.stderr.write("Estimating compute time.\n")
+            self.filelen = file_len(fname)
+        else:
+            self.filelen = lines
         self.count = 0
         self.message = message
         self.previous = None

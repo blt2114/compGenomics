@@ -34,7 +34,6 @@ def main(argv):
     chromosomes_fn = sys.argv[3]
     granularity = int(sys.argv[4])
     progress1 = FileProgress(rna_fn, "Part 1/2: ")
-    progress2 = FileProgress(rna_fn, "Part 2/2: ")
 
     # load expected chromosome order from json into a dictionary
     with open(chromosomes_fn) as chromosomes_file:
@@ -80,6 +79,7 @@ def main(argv):
             progress1.update()
 
     # Main loop of genes
+    progress2 = FileProgress(None, "Part 2/2: ", len(gene_rna_dict))
     sys.stderr.write("\nLoaded " + str(len(gene_rna_dict)) + " mRNA exons into memory.\n")
     for genes in sorted(gene_rna_dict.values(), key=lambda k: ( chromosomes[k[0]['seqname']], k[0]['tss'] )):
         gene = genes[0]['gene']
