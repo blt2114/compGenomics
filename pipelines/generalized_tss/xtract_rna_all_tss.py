@@ -156,6 +156,7 @@ def main(argv):
                     d['exon_number'] = exon['exon_number']
                     d['exon_total'] = len(genes)
                     d['splice_count'] = splice_count
+                    d['splice_before'] = splice_before
                     d['coverage_count'] = coverage_count
                     d['tss_mapped'] = len(exon_transcripts)
                     d['tss_total'] = 0
@@ -198,7 +199,6 @@ def main(argv):
                     this_transcript.pop("start")
                     this_transcript.pop("end")
                 print json.dumps(d)
-
         progress2.update()
 
     sys.stderr.write("\nAll done!\n")

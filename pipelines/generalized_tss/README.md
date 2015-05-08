@@ -212,75 +212,79 @@ To run this step:
 It outputs a json file that looks like this:
 
     {
-  "seqname": "chr1", 
-  "tss": 11869, 
-  "strand": "+", 
-  "gene_id": "ENSG00000223972", 
-  "exon_number": 1, 
-  "exon_total": 4, 
-  "splice_count": 1, 
-  "coverage_count": 5, 
-  "tss_mapped": 4, 
-  "tss_total": 1, 
-  "transcript_total": 4, 
-  "transcripts": [
-    {
-      "attribute": {
-        "transcript_status": "KNOWN", 
-        "gene_status": "KNOWN", 
-        "havana_gene": "OTTHUMG00000000961.2", 
-        "level": "3", 
-        "transcript_type": "transcribed_unprocessed_pseudogene", 
-        "gene_id": "ENSG00000223972.4", 
-        "transcript_id": "ENST00000515242.2", 
-        "gene_type": "pseudogene", 
-        "transcript_name": "DDX11L1-201", 
-        "gene_name": "DDX11L1"
-      }, 
-      "source": "ENSEMBL", 
-      "tss": 11872
-    }, 
-    {
-      "attribute": {
-        "transcript_status": "KNOWN", 
-        "gene_status": "KNOWN", 
-        "havana_gene": "OTTHUMG00000000961.2", 
-        "level": "3", 
-        "transcript_type": "transcribed_unprocessed_pseudogene", 
-        "gene_id": "ENSG00000223972.4", 
-        "transcript_id": "ENST00000518655.2", 
-        "gene_type": "pseudogene", 
-        "transcript_name": "DDX11L1-202", 
-        "gene_name": "DDX11L1"
-      }, 
-      "source": "ENSEMBL", 
-      "tss": 11874
-    },
-  ], 
-  "samples": {
-    "E057": {
-      "delta_rpkm": 0.014, 
-      "rpkm": 0.014, 
-      "max_rpkm": 0.02
-    }, 
-    "E113": {
-      "delta_rpkm": 0.249, 
-      "rpkm": 0.249, 
-      "max_rpkm": 0.28
-    }, 
-    "E120": {
-      "delta_rpkm": 0.071, 
-      "rpkm": 0.071, 
-      "max_rpkm": 0.23
-    },
-  }
-}
+      "seqname": "chr1", 
+      "tss": 11869, 
+      "strand": "+", 
+      "gene_id": "ENSG00000223972", 
+      "exon_number": 1, 
+      "exon_total": 4, 
+      "splice_count": 1, 
+      "splice_before": 0, 
+      "coverage_count": 5, 
+      "tss_mapped": 4, 
+      "tss_total": 1, 
+      "transcript_total": 4, 
+      "transcripts": [
+        {
+          "source": "ENSEMBL", 
+          "attribute": {
+            "gene_status": "KNOWN", 
+            "havana_gene": "OTTHUMG00000000961.2", 
+            "level": "3", 
+            "transcript_status": "KNOWN", 
+            "gene_id": "ENSG00000223972.4", 
+            "transcript_id": "ENST00000515242.2", 
+            "transcript_name": "DDX11L1-201", 
+            "gene_type": "pseudogene", 
+            "transcript_type": "transcribed_unprocessed_pseudogene", 
+            "gene_name": "DDX11L1"
+          }, 
+          "tss": 11872
+        }, 
+        {
+          "source": "ENSEMBL", 
+          "attribute": {
+            "gene_status": "KNOWN", 
+            "havana_gene": "OTTHUMG00000000961.2", 
+            "level": "3", 
+            "transcript_status": "KNOWN", 
+            "gene_id": "ENSG00000223972.4", 
+            "transcript_id": "ENST00000518655.2", 
+            "transcript_name": "DDX11L1-202", 
+            "gene_type": "pseudogene", 
+            "transcript_type": "transcribed_unprocessed_pseudogene", 
+            "gene_name": "DDX11L1"
+          }, 
+          "tss": 11874
+        },
+      ], 
+      "samples": {
+        "E057": {
+          "delta_rpkm": 0.014, 
+          "rpkm": 0.014, 
+          "max_rpkm": 0.02
+        }, 
+        "E113": {
+          "delta_rpkm": 0.249, 
+          "rpkm": 0.249, 
+          "max_rpkm": 0.28
+        }, 
+        "E120": {
+          "delta_rpkm": 0.071, 
+          "rpkm": 0.071, 
+          "max_rpkm": 0.23
+        },
+      }
+    }
+
 
 ### Step 4b: Load Gene Expression data into the file ###
     
 If necessary, load the gene RPKM expression data as well.
 
     python utils/load_gene_rpkm.py ../../files/all_tss_rna.json ../../files/57epigenomes.RPKM.all > ../../files/all_tss_rna.json2
+
+Most likely, this step is not necessary. 
 
 ### Step 5a: Reduce the number of TSS sites for performance issues ###
 
@@ -292,6 +296,9 @@ It's a poorly commented file right now, so just open it up and modify the desira
  
 In the case of this vignette, I filtered for: All sites that contain "Level 1" transcripts, reducing the total site
 count to about 2 thousand.
+
+I am also running a version where I filter for TSS sites that that are never spliced and TSS sites that have no
+splicing before its position.
 
 ### Step 5b: Summarize the file that you have (get summary info) ###
 

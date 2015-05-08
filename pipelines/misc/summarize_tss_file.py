@@ -17,6 +17,7 @@ results['source'] = {}
 results['exon_number'] = {}
 results['exon_total'] = {}
 results['splice_count'] = {}
+results['splice_before'] = {}
 results['coverage_count'] = {}
 results['tss_mapped'] = {}
 results['tss_total'] = {}
@@ -26,6 +27,7 @@ gene_dict = {}
 
 progress = FileProgress(file, "Percent: ")
 
+counter = 0
 with open(file, 'rb') as json_file:
     for line in json_file:
         site = json.loads(line)
@@ -47,7 +49,7 @@ with open(file, 'rb') as json_file:
             else:
                 results['source'][transcript['source']] = 1
         search = [
-            'exon_number', 'exon_total', 'splice_count', 'coverage_count', 'tss_mapped',
+            'exon_number', 'exon_total', 'splice_count', 'splice_before', 'coverage_count', 'tss_mapped',
             'tss_total', 'transcript_total'
         ]
         for item in search:
@@ -60,8 +62,9 @@ with open(file, 'rb') as json_file:
             gene_dict[site['gene_id']] = True
 
         progress.update()
+        counter += 1
 
 print json.dumps(results, indent=2)
 print "Number of unique genes: " + str(len(gene_dict))
-print "Number of tss sites: " + str(progress.count())
+print "Number of tss sites: " + str(counter)
 sys.stderr.write("\nAll Done!\n")

@@ -14,10 +14,14 @@ progress = FileProgress(file, "Percent: ")
 with open(file, 'rb') as json_file:
     for line in json_file:
         site = json.loads(line, object_pairs_hook=collections.OrderedDict)
+        """
         for transcript in site['transcripts']:
             if transcript['attribute']['level'] == "1":
                 print json.dumps(site)
                 break
+        """
+        if site['splice_before'] == 0 and site['splice_count'] == 0:
+            print json.dumps(site)
         progress.update()
 
 sys.stderr.write("\nAll done!\n")
