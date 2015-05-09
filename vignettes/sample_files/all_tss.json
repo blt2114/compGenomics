@@ -1,0 +1,156 @@
+{
+  "gene_id": "ENSG00000167578",
+  "seqname": "chr19",
+  "source": "ENSEMBL",
+  "start": 41277553,
+  "end": 41302847,
+  "strand": "+",
+  "attribute": {
+    "gene_status": "KNOWN",
+    "level": "3",
+    "transcript_type": "protein_coding",
+    "gene_id": "ENSG00000167578.10",
+    "transcript_name": "MIA",
+    "transcript_id": "ENSG00000167578.10",
+    "gene_type": "protein_coding",
+    "transcript_status": "KNOWN",
+    "gene_name": "MIA"
+  },
+  "transcripts": {
+    "ENST00000263369.2": {
+      "seqname": "chr19",
+      "end": 41283392,
+      "exons": [
+        [
+          41281300,
+          41281574
+        ],
+        [
+          41281657,
+          41281790
+        ],
+        [
+          41282874,
+          41282984
+        ],
+        [
+          41283302,
+          41283392
+        ]
+      ],
+      "source": "ENSEMBL",
+      "attribute": {
+        "gene_status": "KNOWN",
+        "level": "3",
+        "transcript_type": "protein_coding",
+        "gene_id": "ENSG00000167578.10",
+        "tag": "CCDS",
+        "gene_type": "protein_coding",
+        "ccdsid": "CCDS12566.1",
+        "transcript_id": "ENST00000263369.2",
+        "transcript_name": "MIA-201",
+        "transcript_status": "KNOWN",
+        "gene_name": "MIA"
+      },
+      "frame": ".",
+      "feature": "transcript",
+      "introns": [
+        [
+          41281575,
+          41281656
+        ],
+        [
+          41281791,
+          41282873
+        ],
+        [
+          41282985,
+          41283301
+        ]
+      ],
+      "start": 41281300,
+      "length": 2092,
+      "score": ".",
+      "tss": 41281300,
+      "strand": "+"
+    },
+    "ENST00000378307.4": {
+      "seqname": "chr19",
+      "end": 41302847,
+      "exons": [
+        [
+          41284213,
+          41284296
+        ],
+        [
+          41285924,
+          41286004
+        ],
+        [
+          41286290,
+          41286404
+        ],
+        [
+          41289683,
+          41289745
+        ],
+        [
+          41292570,
+          41292665
+        ],
+        [
+          41292753,
+          41292883
+        ],
+        [
+          41302475,
+          41302847
+        ]
+      ],
+      "source": "ENSEMBL",
+      "attribute": {
+        "gene_status": "KNOWN",
+        "level": "3",
+        "transcript_type": "protein_coding",
+        "gene_id": "ENSG00000167578.10",
+        "transcript_name": "MIA-203",
+        "transcript_id": "ENST00000378307.4",
+        "gene_type": "protein_coding",
+        "transcript_status": "KNOWN",
+        "gene_name": "MIA"
+      },
+      "frame": ".",
+      "feature": "transcript",
+      "introns": [
+        [
+          41284297,
+          41285923
+        ],
+        [
+          41286005,
+          41286289
+        ],
+        [
+          41286405,
+          41289682
+        ],
+        [
+          41289746,
+          41292569
+        ],
+        [
+          41292666,
+          41292752
+        ],
+        [
+          41292884,
+          41302474
+        ]
+      ],
+      "start": 41284213,
+      "length": 18634,
+      "score": ".",
+      "tss": 41284213,
+      "strand": "+"
+    },
+}

@@ -1,199 +1,59 @@
 Generalized Pipeline for Obtaining TSS Information
---------------------------------------------------
+==================================================
 
 ### Background ###
 
-Is better suited for computational resource reasons.
+This pipeline describes the commands to run to process the TSS portion of the data. Please skip
+to the end of this file to obtain a comprehensive list of files and their command line options.
 
-Programs and Commands
+Pipeline Instructions
 ---------------------
 
-### Input Files ###
+### Step 0: Download the necessary files ###
+
+The following files are required:
+
 * gen10.long.gtf
 * 57epigenomes.exon.RPKM.nc
 * 58epigenomes.exon.RPKM.pc
+* [All of the ChIP-seq data]
 
-### Step 1: Combine the two RPKM by gene files ###
-    head -1 57epigenomes.exon.RPKM.pc > 57epigenomes.exon.RPKM.all
-    tail -q -n +2 57epigenomes.exon.RPKM.pc 57epigenomes.exon.RPKM.nc >> 57epigenomes.exon.RPKM.all
-    
-### Step 2: Use genes.json file for annotation purposes ###
+See the download instructions available [here]. These instructions will assume you have downloaded the
+chip files to /root/chip/ and all other files to /root/files/. 
 
-Run pipeline (convert_gtf_file_into_json). This produces this file:
+Run all commands in these instructions from the application root.
 
-    files/genes.json
-    
-### Step 3: Get a list of all TSS ###
+For some of these scripts, it will be necessary to add the application root to PYTHONPATH:
 
-To use this python be sure to:
+    export PYTHONPATH={path to the application folder}
 
-    export PYTHONPATH={path to the compgenomics folder}
+### Step 1: Prepare downloaded data into format necessary for the pipeline ###
 
-We are getting a comprehensive list of all TSS because there's no real reason to begin filtering until we limit
-ourselves to the granularity present in the physical RNA-seq. We can collapse the transcripts that we see at that point.
-Run this program:
+Combine both noncoding and protein coding RNA rpkm data into one file:
 
-    python filter_all_tss.py ../../files/gen10_files/genes.json > ../../files/all_tss.json
+    head -1 files/57epigenomes.exon.RPKM.pc > files/57epigenomes.exon.RPKM.all
+    tail -q -n +2 files/57epigenomes.exon.RPKM.pc files/57epigenomes.exon.RPKM.nc >> files/57epigenomes.exon.RPKM.all
 
-It outputs a json file in this format, with one gene on each line:
+Filter the GTF file into three relevant partitions:
 
-    {
-      "gene_id": "ENSG00000167578", 
-      "seqname": "chr19", 
-      "source": "ENSEMBL", 
-      "start": 41277553, 
-      "end": 41302847, 
-      "strand": "+", 
-      "attribute": {
-        "gene_status": "KNOWN", 
-        "level": "3", 
-        "transcript_type": "protein_coding", 
-        "gene_id": "ENSG00000167578.10", 
-        "transcript_name": "MIA", 
-        "transcript_id": "ENSG00000167578.10", 
-        "gene_type": "protein_coding", 
-        "transcript_status": "KNOWN", 
-        "gene_name": "MIA"
-      }, 
-      "transcripts": {
-        "ENST00000263369.2": {
-          "seqname": "chr19", 
-          "end": 41283392, 
-          "exons": [
-            [
-              41281300, 
-              41281574
-            ], 
-            [
-              41281657, 
-              41281790
-            ], 
-            [
-              41282874, 
-              41282984
-            ], 
-            [
-              41283302, 
-              41283392
-            ]
-          ], 
-          "source": "ENSEMBL", 
-          "attribute": {
-            "gene_status": "KNOWN", 
-            "level": "3", 
-            "transcript_type": "protein_coding", 
-            "gene_id": "ENSG00000167578.10", 
-            "tag": "CCDS", 
-            "gene_type": "protein_coding", 
-            "ccdsid": "CCDS12566.1", 
-            "transcript_id": "ENST00000263369.2", 
-            "transcript_name": "MIA-201", 
-            "transcript_status": "KNOWN", 
-            "gene_name": "MIA"
-          }, 
-          "frame": ".", 
-          "feature": "transcript", 
-          "introns": [
-            [
-              41281575, 
-              41281656
-            ], 
-            [
-              41281791, 
-              41282873
-            ], 
-            [
-              41282985, 
-              41283301
-            ]
-          ], 
-          "start": 41281300, 
-          "length": 2092, 
-          "score": ".", 
-          "tss": 41281300, 
-          "strand": "+"
-        }, 
-        "ENST00000378307.4": {
-          "seqname": "chr19", 
-          "end": 41302847, 
-          "exons": [
-            [
-              41284213, 
-              41284296
-            ], 
-            [
-              41285924, 
-              41286004
-            ], 
-            [
-              41286290, 
-              41286404
-            ], 
-            [
-              41289683, 
-              41289745
-            ], 
-            [
-              41292570, 
-              41292665
-            ], 
-            [
-              41292753, 
-              41292883
-            ], 
-            [
-              41302475, 
-              41302847
-            ]
-          ], 
-          "source": "ENSEMBL", 
-          "attribute": {
-            "gene_status": "KNOWN", 
-            "level": "3", 
-            "transcript_type": "protein_coding", 
-            "gene_id": "ENSG00000167578.10", 
-            "transcript_name": "MIA-203", 
-            "transcript_id": "ENST00000378307.4", 
-            "gene_type": "protein_coding", 
-            "transcript_status": "KNOWN", 
-            "gene_name": "MIA"
-          }, 
-          "frame": ".", 
-          "feature": "transcript", 
-          "introns": [
-            [
-              41284297, 
-              41285923
-            ], 
-            [
-              41286005, 
-              41286289
-            ], 
-            [
-              41286405, 
-              41289682
-            ], 
-            [
-              41289746, 
-              41292569
-            ], 
-            [
-              41292666, 
-              41292752
-            ], 
-            [
-              41292884, 
-              41302474
-            ]
-          ], 
-          "start": 41284213, 
-          "length": 18634, 
-          "score": ".", 
-          "tss": 41284213, 
-          "strand": "+"
-        },
-    }
+    python src/gtftools.py -v -i files/gen10.long.gtf -o files/gen10.long.gtf.genes -f feature=gene
+    python src/gtftools.py -v -i files/gen10.long.gtf -o files/gen10.long.gtf.transcripts -f feature=transcript
+    python src/gtftools.py -v -i files/gen10.long.gtf -o files/gen10.long.gtf.exons -f feature=exon
 
+Convert the GTF file into JSON format:
+
+    python src/gtf2dict.py files/gen10.long.gtf.genes files/gen10_files/gen10.long.gtf.transcripts files/gen10_files/gen10.long.gtf.exons > files/genes.json
+
+### Step 2: Obtain a list of all potential TSS sites ###
+
+We are getting a comprehensive list of all TSS because we will save the filtering of the sites towards the last parts
+of the pipeline.
+
+Run this command:
+
+    python tss/filter_all_tss.py files/gen10_files/genes.json > files/all_tss.json
+
+It outputs a json file in [this format](link)
 
 ### Step 4: Append RNA-seq values to this list of TSS sites ###
 

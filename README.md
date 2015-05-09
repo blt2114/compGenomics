@@ -2,7 +2,9 @@ A Computation Investigation into the Epigenetics of Transcript Isoform Selection
 ================================================================================
 
 Course Project for Columbia Course in Computational Genomics 
-CBMF W4761 taught by Itshack Pe'er
+CBMF W4761 
+
+Taught by Itshack Pe'er
 
 Brian Trippe and Jeffrey Zhou
 
@@ -48,16 +50,9 @@ Data Sources
 
 ### GTF Annotations: gen10.long.gtf.gz ###
 
-> This file contains all the gene/transcript annotations that
-> Misha Belinky from UBC (author of the project) used to 
-> perform RNA quantification. 
->
-> This dataset is a subset of the original GENCODE v10 from ncbi
-> which is the full dataset of all transcripts/genes not including
-> tRNAs. This "long" dataset only contains entries of long
-> transcripts (protein coding, processed transcripts, pseduogenes).
-> We will use this file for our parsing purposes and ignore small
-> RNAs since Misha did not perform alignment to smaller RNAs.
+> This file contains all the gene/transcript/exon annotations 
+> originally used by the roadmap project used to 
+> perform RNA quantification.
 
 [gen10.long.gtf.gz](http://egg2.wustl.edu/roadmap/data/byDataType/rna/annotations/gen10.long.gtf.gz)
 
