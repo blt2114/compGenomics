@@ -143,141 +143,16 @@ This program outs a tab delimited text file in [this format](https://github.com/
 
 # Step 7: merge, sort, and pile up the output ###
 
-Go to the output directory of the previous file and remove the first line of each file:
+Cat all of the output from the previous step together
 
-    tail -n +2 #####_ > out1.tsv
-    tail -n +2 #####_ > out2.tsv
-    tail -n +2 #####_ > out3.tsv
-    tail -n +2 #####_ > out4.tsv
+    cat ####_ ####_ ####_ ####_ > files/nosplice_tss_chip.tsv
+    
+Run this command:
 
-Run these two commands (make sure you're in the right directories)
+    python tss/pileup_rna_chip_tss.py files/nosplice_tss_rna.json files/nosplice_tss_chip.tsv files/experiment_read_counts.json > files/nosplice_tss_rna_chip.json
 
-    cat out1.tsv out2.tsv out3.tsv out4.tsv > files/level1_tss_chip.tsv
-    python pileup_rna_chip_tss.py ../../files/level1_tss_rna.json ../../files/level1_tss_chip.tsv > ../../files/level1_tss_rna_chip.json
-
-
-The output looks like this:
-
-    {
-      "seqname": "chr1", 
-      "tss_total": 5, 
-      "transcript_total": 9, 
-      "tss_mapped": 3, 
-      "coverage_count": 3, 
-      "gene_id": "ENSG00000117620", 
-      "tss": 100435345, 
-      "exon_number": 1, 
-      "tss_type": "leading", 
-      "samples": {
-        "E057": {
-          "H3K4me3": [
-            0.040773509353116855, 
-            0.0, 
-            0.0, 
-            0.0, 
-            0.0, 
-            0.040773509353116855, 
-            0.0, 
-            0.0, 
-            0.0, 
-            0.0, 
-            0.040773509353116855, 
-            0.040773509353116855, 
-            0.0, 
-            0.040773509353116855, 
-            0.0, 
-            0.0, 
-            0.0, 
-            0.08154701870623371, 
-            0.0, 
-            0.040773509353116855, 
-            0.08154701870623371, 
-            0.08154701870623371, 
-            0.12232052805935056, 
-            0.24464105611870113, 
-            0.5300556215905191, 
-            1.386299318005973, 
-            1.712487392830908, 
-            2.1202224863620764, 
-            2.364863542480778, 
-            2.527957579893245, 
-            2.242543014421427, 
-            3.058013201483764, 
-            3.098786710836881, 
-            3.2211072388962316, 
-            3.5065218043680497, 
-            3.465748295014933, 
-            3.3434277669555823, 
-            3.098786710836881, 
-            2.487184070540128, 
-            1.6717138834777912, 
-            1.182431771240389, 
-            0.856243696415454, 
-            0.7746966777092202, 
-            0.856243696415454, 
-            0.6931496590029865, 
-            0.08154701870623371, 
-            0.0, 
-            0.040773509353116855, 
-            0.20386754676558427, 
-            0.08154701870623371, 
-            0.12232052805935056, 
-            0.040773509353116855, 
-            0.08154701870623371, 
-            0.040773509353116855, 
-            0.08154701870623371, 
-            0.040773509353116855, 
-            0.08154701870623371, 
-            0.040773509353116855, 
-            0.08154701870623371, 
-            0.0
-          ], 
-          "rpkm": 3.549, 
-          "max_rpkm": 3.649,
-          "gene_rpkm": "2.604",
-          "delta_rpkm": -0.935
-        },
-      }, 
-      "splice_count": 0, 
-      "transcripts": [
-        {
-          "seqname": "chr1", 
-          "end": 100488512, 
-          "source": "HAVANA", 
-          "attribute": {
-            "gene_status": "KNOWN", 
-            "havana_gene": "OTTHUMG00000010805.2", 
-            "level": "1", 
-            "transcript_status": "KNOWN", 
-            "gene_id": "ENSG00000117620.7", 
-            "tag": "CCDS", 
-            "gene_type": "protein_coding", 
-            "havana_transcript": "OTTHUMT00000029786.2", 
-            "ccdsid": "CCDS762.1", 
-            "transcript_id": "ENST00000427993.2", 
-            "transcript_name": "SLC35A3-004", 
-            "transcript_type": "protein_coding", 
-            "gene_name": "SLC35A3"
-          }, 
-          "frame": ".", 
-          "feature": "transcript", 
-          "start": 100435535, 
-          "length": 52977, 
-          "score": ".", 
-          "tss": 100435535, 
-          "strand": "+"
-        }
-      ], 
-      "exon_total": 11, 
-      "strand": "+"
-    }
-
-
-### Step 8a: Apply meta data to chip experiments ###
-
-Since I missed a lot of the data the first time through, the metadata is being applied now:
-
-    python misc/summarize_tss_file.py ../files/level1_tss_rna_chip.json 
+Note that to run this step, you need to obtain the json file called experiment_read_counts.json. This file contains the
+number of reads per experiment. This step performs the read-count normalization.
 
 ### Step 8b: At this point, filter for relevant entries and unpack them ###
 
