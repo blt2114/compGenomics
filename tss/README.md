@@ -55,11 +55,11 @@ Run this command:
 
 It outputs a json file in [this format](https://github.com/blt2114/compGenomics/blob/master/vignettes/sample_files/all_tss.json)
 
-### Step 4: Append RNA-seq values to this list of TSS sites ###
+### Step 3: Append RNA-seq values to this list of TSS sites ###
 
 The RNA-seq matrix file contains RPKM values by exon. Since our "resolution" on the RNA-seq level is not better than
-the size of an exon, we will consider all TSS sites that map to the same exon the same TSS. The start (or end) of the
-exon is taken to be the new "effective TSS" of all transcripts that map to that exon.
+the size of an exon, we will consider all TSS sites that map to the same exon the same effective TSS. The start 
+(or end) of the exon is taken to be the new "effective TSS" of all transcripts that map to that exon.
 
 Any transcript that does not map to any exon in the RNA-seq dataset is automatically discarded.
 
@@ -75,27 +75,40 @@ To run this step:
 
 It outputs a json file in [this format](https://github.com/blt2114/compGenomics/blob/master/vignettes/sample_files/all_tss_rna.json)
 
-### Step 4b: Load Gene Expression data into the file ###
+Some explanations on the output:
+
+    # Each line is an exon in from the RPKM matrix that contain a TSS site
     
-If necessary, load the gene RPKM expression data as well.
+    "seqname":          Chromosome
+    "location":         Location of the TSS (exon start for positive strand, exon end for negative strand)
+    "strand":           1 for the positive strand, and -1 for the negative strand
+    "gene_id":          The ensembl gene ID
+    "exon_number":      The exon number in the RPKM matrix this TSS site maps to, for this gene id
+    "exon_total":       Total number of exons in the RPKM matrix for this gene id
+    "splice_count":     The number of transcripts that have an intron overlapping with this exon
+    "splice_before":    The number of transcripts that have an intron upstream of this exon (or transcript end)
+    "coverage_count":   The number of transcripts that have an exon overlapping with this exon
+    "tss_mapped":       The number of transcripts have mapped to this TSS site
+    "tss_total":        Number of "effective TSS" sites for this gene -- (all TSS site that map to the same exon, count as a single effective TSS site).
+    "transcript_total": Total number of theoretical TSS sites reported for this gene   
+    "transcripts":      A list of all transcripts that have their TSS mapped to this exon 
+    "samples":          A dictionary of samples, containing RPKM data for each sample.
 
-    python utils/load_gene_rpkm.py ../../files/all_tss_rna.json ../../files/57epigenomes.RPKM.all > ../../files/all_tss_rna.json2
+### Step 3a: Reduce the number of TSS sites for performance issues (optional) ###
 
-Most likely, this step is not necessary. 
+If your computer is limited by the amount of RAM (we load the entire JSON file into memory during certain portions
+of the pipeline), it may be desirable reduce the overall number of sites at this point. 
 
-### Step 5a: Reduce the number of TSS sites for performance issues ###
+A template filtering file is provided below. With a little knowledge of python, you can modify this template file
+to filter for certain features you know you will be looking at in the future.
+
+In my case, I have chosen to filter for TSS sites that are part of exons that are theoretically never spliced, never
+have any introns located before it, and never have any prematuring ending transcripts located before it.
 
 Run the file: 
     
-    python utils/filter_tss_file_template.py ../../files/all_tss_rna.json > ../../files/level1_tss_rna.json 
+    python tss/filter_tss_file_template.py files/all_tss_rna.json > files/nosplice_tss_rna.json 
        
-It's a poorly commented file right now, so just open it up and modify the desirable filtered items.
- 
-In the case of this vignette, I filtered for: All sites that contain "Level 1" transcripts, reducing the total site
-count to about 2 thousand.
-
-I am also running a version where I filter for TSS sites that that are never spliced and TSS sites that have no
-splicing before its position.
 
 ### Step 6: Run chip extraction script to add read counts ###
 
