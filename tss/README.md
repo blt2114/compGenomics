@@ -112,61 +112,43 @@ Run the file:
 
 ### Step 6: Run chip extraction script to add read counts ###
 
-The chip extraction script WORKS, but it takes way too long to run on the full list of TSS sites. Here is the metric:
- 
-    time python xtract_chip_all_tss.py ../../files/all_tss_rna.json ../../test_chip/ test.txt ../../files/experiment_read_counts.json 250 500 1
+The chip extraction is written in C++. To compile this script, use:
+
+    clang++ -std=c++11 src/extract_reads_from_TagAlign.cpp
+
+Rename a.out to "extract_chip" and move it to the folder: src/ChIP.
+
+Now run:
+
+    bash src/ChIP/run_download_and_extract.sh chip out files/all_experiments_to_acquire.txt files/nosplice_tss_rna.json config-files/config_windows_for_C.json 4 1
+
+Here is an explanation of the arguments:
+
+* 1st Argument: The input directory. This directory should contain all of the unzipped chip files.
+* 2nd Argument: The ouput directory, which will hold the results in the end.
+* 3rd Argument: A list of all chip files to acquire. (with a .gz extension)
+* 4th Argument: The sites.json file that was put together in the previous steps of this pipeline.
+* 5th Argument: Configuration file for the extraction
+* 6th Argument: Number of threads (4 CPUs, for instance)
+* 7th Argument (Optional): Use this argument if you have already downloaded the files.
+
+This step takes several hours to run. Start this command and monitor the progress by checking the log files
+periodically in the input directory. It is typically useful to run a grep command to see if any script is still running.
+
+    ps -e | grep extract
     
-    real	32m53.612s
-    user	0m0.000s
-    sys	0m0.001s
-    
-In other words, for about 35666 tss sites, this program processes about 1000 TSS sites a minute. Instead of using the
-full TSS list, I decided at this point to limit the list to about 2000 sites:
+It takes close to 2 minutes to parse through an 80k sites and one ChIP file. 
 
-    python xtract_chip_all_tss.py ../level1_tss.json ../../test_chip/ test.txt ../../files/experiment_read_counts.json 250 500 1
-
-    real	3m28.225s
-    user	0m0.000s
-    sys	0m0.001s
-    
-    python xtract_chip_all_tss.py ../level1_tss.json ../../test_chip/ test.txt ../../files/experiment_read_counts.json 1000 200 1
-
-    real	3m20.300s
-    user	3m16.730s
-    sys	0m14.668s
-
-About 663 genes per minute. To process 352 samples, this is 19.4 CPU hours ~ 5 hours on 4 cores
-
-    time python xtract_chip_all_tss.py ../level1_tss.json ../../test_chip/ test.txt ../../files/experiment_read_counts.json 2000 100 1
-
-    real	3m22.420s
-    user	3m17.750s
-    sys	0m13.605s
-    
-The bottleneck appears to be the buffer. Changing the number of windows does not have an extremely appreciable affect
-on how long it takes the program to run.
-
-FYI, this is the output of the program, which needs more processing (merging) 
-afterwards:
-
-    chr1	13184053	E003	H3K9ac	[0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.0, 0.03333333333333333, 0.06666666666666667, 0.0, 0.06666666666666667, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.06666666666666667, 0.0, 0.0, 0.0, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.13333333333333333, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.0, 0.0, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.0, 0.03333333333333333, 0.0, 0.0, 0.1, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.0, 0.0, 0.06666666666666667, 0.0, 0.06666666666666667, 0.0, 0.0, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.0, 0.06666666666666667, 0.0, 0.0, 0.0, 0.06666666666666667, 0.06666666666666667, 0.0, 0.0, 0.1, 0.03333333333333333, 0.0, 0.06666666666666667, 0.0, 0.0, 0.03333333333333333, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.06666666666666667, 0.06666666666666667, 0.03333333333333333, 0.0]
-    chr1	15931077	E003	H3K9ac	[0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.0, 0.06666666666666667, 0.03333333333333333, 0.1, 0.1, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.06666666666666667, 0.1, 0.03333333333333333, 0.06666666666666667, 0.1, 0.0, 0.03333333333333333, 0.0, 0.0, 0.0, 0.0, 0.13333333333333333, 0.3, 0.5666666666666667, 0.5333333333333333, 0.5333333333333333, 0.26666666666666666, 0.03333333333333333, 0.06666666666666667, 0.23333333333333334, 0.23333333333333334, 0.26666666666666666, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.1, 0.0, 0.0, 0.0, 0.06666666666666667, 0.03333333333333333, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.13333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.1, 0.06666666666666667, 0.03333333333333333, 0.16666666666666666, 0.06666666666666667, 0.1, 0.16666666666666666, 0.0, 0.06666666666666667, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.0, 0.06666666666666667, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.0, 0.0, 0.03333333333333333, 0.0]
-    chr1	16154724	E003	H3K9ac	[0.0, 0.03333333333333333, 0.03333333333333333, 0.03333333333333333, 0.0, 0.03333333333333333, 0.06666666666666667, 0.0, 0.03333333333333333, 0.13333333333333333, 0.0, 0.0, 0.03333333333333333, 0.06666666666666667, 0.03333333333333333, 0.03333333333333333, 0.0, 0.0, 0.1, 0.03333333333333333, 0.16666666666666666, 0.06666666666666667, 0.0, 0.0, 0.0, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.0, 0.0, 0.0, 0.06666666666666667, 0.0, 0.06666666666666667, 0.06666666666666667, 0.06666666666666667, 0.06666666666666667, 0.0, 0.03333333333333333, 0.0, 0.03333333333333333, 0.03333333333333333, 0.0, 0.06666666666666667, 0.06666666666666667, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03333333333333333, 0.1, 0.0, 0.0, 0.03333333333333333, 0.0, 0.06666666666666667, 0.03333333333333333, 0.06666666666666667, 0.06666666666666667, 0.0, 0.1, 0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.13333333333333333, 0.03333333333333333, 0.1, 0.06666666666666667, 0.06666666666666667, 0.0, 0.06666666666666667, 0.06666666666666667, 0.1, 0.0, 0.03333333333333333, 0.06666666666666667, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.13333333333333333, 0.06666666666666667, 0.06666666666666667, 0.06666666666666667, 0.03333333333333333, 0.03333333333333333, 0.0, 0.0, 0.03333333333333333, 0.03333333333333333, 0.06666666666666667, 0.23333333333333334]
-    ...
-    
-Since it seemed like the python multithreading doesn't work very well (or efficently), I decided to simply run 4 parallel
-instances of the one-core version of the program. I split up the files between 4 directories before starting.
-
-This was the command that I ran (all in parallel):
-
-    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip files/experiment_read_counts.json 3000 100 > out1.tsv
-    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip2 files/experiment_read_counts.json 3000 100 > out2.tsv
-    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip3 files/experiment_read_counts.json 3000 100 > out3.tsv
-    python pipelines/generalized_tss/xtract_chip_all_tss_1core.py pipelines/generalized_tss/level1_tss.json chip4 files/experiment_read_counts.json 3000 100 > out4.tsv
-
-Realistically, it took about 9 hours.
+This program outs a tab delimited text file in [this format](https://github.com/blt2114/compGenomics/blob/master/vignettes/sample_files/all_tss_rna.json)
 
 # Step 7: merge, sort, and pile up the output ###
+
+Go to the output directory of the previous file and remove the first line of each file:
+
+    tail -n +2 #####_ > out1.tsv
+    tail -n +2 #####_ > out2.tsv
+    tail -n +2 #####_ > out3.tsv
+    tail -n +2 #####_ > out4.tsv
 
 Run these two commands (make sure you're in the right directories)
 
