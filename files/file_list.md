@@ -86,3 +86,6 @@ File List
 > "The human splicing code reveals new insights into the genetic determinants of disease"
 > Science December 2014
 
+### Hs\_AS\_novel.bed/
+> list of exon alternative splicing events
+> obtained from http://zhanglab.c2b2.columbia.edu/index.php/Cortex\_AS
