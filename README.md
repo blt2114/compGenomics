@@ -39,7 +39,7 @@ Overall Workflow
 
 ### TSS Workflow ###
 
-See [these] instructions.
+See [these](https://github.com/blt2114/compGenomics/tree/master/tss) instructions.
 
 ### Splicing Workflow ###
 

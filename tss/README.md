@@ -1,5 +1,5 @@
-Generalized Pipeline for Obtaining TSS Information
-==================================================
+Pipeline for TSS
+================
 
 ### Background ###
 
@@ -53,7 +53,7 @@ Run this command:
 
     python tss/filter_all_tss.py files/gen10_files/genes.json > files/all_tss.json
 
-It outputs a json file in [this format](link)
+It outputs a json file in [this format](https://github.com/blt2114/compGenomics/blob/master/vignettes/sample_files/all_tss.json)
 
 ### Step 4: Append RNA-seq values to this list of TSS sites ###
 
