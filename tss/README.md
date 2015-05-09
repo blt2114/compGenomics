@@ -169,11 +169,12 @@ To reiterate my process:
 * Expressed sites need to have a ln(delta_RPKM) >= 1
 * The window sizes will be +500 and -500 for every ChIP mark, by default. The normalized reads per million will be
 summed within this range.
-* I will examine 12 marks, and discard any samples that do not have these 12 marks:
+* I will examine 12 marks, and discard any samples that do not have these 12 marks: "H3K4me1", "H3K4me3", "H3K27me3", 
+"H3K36me3", "H3K9me3", "H2A.Z", "H3K4me2", "H3K27ac", "H4K20me1", "H3K9ac", "DNase", "H3K79me2"
 
 It is possible to pass as a parameter windows for each different mark.
 
-In the case for this experiment, I'm going to take everything.
+Run this command
 
     python generalized_tss/unpack_rna_chip_tss.py ../files/level1_tss_rna_chip.json > generalized_tss/level1_trials/files/all_level1.json
 
