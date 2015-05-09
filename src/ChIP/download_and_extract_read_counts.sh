@@ -5,14 +5,12 @@ if [ "$#" -eq 5 ];then
     root=http://egg2.wustl.edu/roadmap/data/byFileType/alignments/consolidated/
     wd=$1
     output_dir=$2
+    sites=$4
     config=$5
-    output_fn_base=$output_dir"/"$$"_" #include PID so script don't overwrite eachother's progress
+    output_fn_base=$output_dir"/"$$ #include PID so script don't overwrite eachother's progress
     output_fn=output
-    stage=0
-    next_stage=$(($stage+1))
 
     #copy the original sites to a new location
-    cp $4 $output_fn_base$stage
     while read l; do
         data_url=$root$l
         echo $$ wget $data_url -O $wd"/"$l
@@ -29,17 +27,14 @@ if [ "$#" -eq 5 ];then
         gunzip -f $wd"/"$l
 
         unzipped_fn=`echo $wd"/"$l | sed "s/.gz//g"`
-
         sample_mark=`echo $l | sed "s/.tagAlign.gz//g"`
-        echo $$ : python src/ChIP/windowed_extract_reads_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd
-        python src/ChIP/windowed_extract_from_TagAlign.py $config $sample_mark $output_fn_base$stage $wd > $output_fn_base$next_stage
+        IFS='-' read -a array <<< "$sample_mark"
+
+        echo $$ : src/ChIP/extract_chip $config ${array[0]} ${array[1]} $sites $unzipped_fn >> $output_fn_base$output
+            src/ChIP/extract_chip $config ${array[0]} ${array[1]} $sites $unzipped_fn >> $output_fn_base$output
         echo $$ ": finished parsing "$l
-        stage=$(($stage+1))
-        next_stage=$(($stage+1))
         #rm $unzipped_fn
     done <$3
-
-    mv $output_fn_base$stage $output_fn_base"final_output"
 
 else
     if [ "$#" -eq 6 ]; then
@@ -48,7 +43,7 @@ else
         output_dir=$2
         sites=$4
         config=$5
-        output_fn_base=$output_dir"/"$$"_" #include PID so script don't overwrite eachother's progress
+        output_fn_base=$output_dir"/"$$ #include PID so script don't overwrite eachother's progress
         output_fn=output
 
         while read l; do
@@ -56,7 +51,6 @@ else
 
             sample_mark=`echo $l | sed "s/.tagAlign.gz//g"`
             IFS='-' read -a array <<< "$sample_mark"
-            echo "${array[0]}"
 
             echo $$ : src/ChIP/extract_chip $config ${array[0]} ${array[1]} $sites $unzipped_fn >> $output_fn_base$output
             src/ChIP/extract_chip $config ${array[0]} ${array[1]} $sites $unzipped_fn >> $output_fn_base$output

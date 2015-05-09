@@ -18,8 +18,8 @@ if [ "$#" -eq 6 ];then
 
     for part in $ChIP_parts; do
 
-        echo "command: ./src/ChIP/download_and_extract_read_counts.sh $wd $out_dir $part $sites_fn $config "
-        ./src/ChIP/download_and_extract_read_counts.sh $wd $out_dir $part $sites_fn $config> $part"_log" 2>&1 &
+        echo "command: ./src/ChIP/download_and_extract_read_counts.sh $wd $out_dir $part $sites_fn $config"
+            ./src/ChIP/download_and_extract_read_counts.sh $wd $out_dir $part $sites_fn $config > $part"_log" 2>&1 &
 
     done
 

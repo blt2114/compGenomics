@@ -139,7 +139,7 @@ periodically in the input directory. It is typically useful to run a grep comman
     
 It takes close to 2 minutes to parse through an 80k sites and one ChIP file. 
 
-This program outs a tab delimited text file in [this format](https://github.com/blt2114/compGenomics/blob/master/vignettes/sample_files/all_tss_rna.json)
+This program outs a tab delimited text file in [this format](https://github.com/blt2114/compGenomics/blob/master/vignettes/sample_files/nosplice_tss_chip.tsv)
 
 # Step 7: merge, sort, and pile up the output ###
 
@@ -154,7 +154,24 @@ Run this command:
 Note that to run this step, you need to obtain the json file called experiment_read_counts.json. This file contains the
 number of reads per experiment. This step performs the read-count normalization.
 
+This program outs a json file in [this format](https://github.com/blt2114/compGenomics/blob/master/vignettes/sample_files/nosplice_tss_rna_chip.json)
+
 ### Step 8b: At this point, filter for relevant entries and unpack them ###
+
+This is the point in the workflow where all filtering occurs. The information in the previous step must be transformed
+into feature vectors and binary feature labels. I am going to use arbitrary cutoffs such as ln(RPKM)<1 as the cutoff
+for expression, but the end-user should be able to go into this file and modify items to suit their implementation
+details. For instance, it is perfectly possible to filter for TSS sites only of lincRNA's or some other arbitrary
+detail.
+
+To reiterate my process:
+
+* Expressed sites need to have a ln(delta_RPKM) >= 1
+* The window sizes will be +500 and -500 for every ChIP mark, by default. The normalized reads per million will be
+summed within this range.
+* I will examine 12 marks, and discard any samples that do not have these 12 marks:
+
+It is possible to pass as a parameter windows for each different mark.
 
 In the case for this experiment, I'm going to take everything.
 
