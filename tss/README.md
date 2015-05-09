@@ -57,86 +57,23 @@ It outputs a json file in [this format](https://github.com/blt2114/compGenomics/
 
 ### Step 4: Append RNA-seq values to this list of TSS sites ###
 
-Since the granularity of our RNA-seq data is limited to the size of the exon, we will refine multiple transcripts down
-into the exon level. The start (or end) of the exon is taken to be the TSS of all the transcripts that map to that exon.
+The RNA-seq matrix file contains RPKM values by exon. Since our "resolution" on the RNA-seq level is not better than
+the size of an exon, we will consider all TSS sites that map to the same exon the same TSS. The start (or end) of the
+exon is taken to be the new "effective TSS" of all transcripts that map to that exon.
 
 Any transcript that does not map to any exon in the RNA-seq dataset is automatically discarded.
 
-The number in the command line args is how much "wiggle room" you are willing to allow transcripts to be called. When
-it is zero, transcripts must fall entirely within the boundaries of the RNA exons. 
+The "granularity" argument is how much wiggle room you will allow transcripts to be mapped to the same exon. 
+With a granularity of 0, only TSS sites that fall exactly within the boundaries of an exon will be mapped to it.
+A granularity of 200 will allow TSS sites up to 200bp upstream or downstream of an exon to be mapped to it. 
+I recommend a higher granularity (ie. 200) because the boundaries defined by the RPKM matrix do not necessarily encompass
+all transcripts--it is more of an approximation of the exons detected during RNA-seq.
 
 To run this step:
 
-    python xtract_rna_all_tss.py ../../files/all_tss.json ../../files/57epigenomes.exon.RPKM.all ../../config-files/chromosome_order.json 200 > ../../files/all_tss_rna.json
+    python tss/xtract_rna_all_tss.py files/all_tss.json files/57epigenomes.exon.RPKM.all config-files/chromosome_order.json 200 > files/all_tss_rna.json
 
-It outputs a json file that looks like this:
-
-    {
-      "seqname": "chr1", 
-      "tss": 11869, 
-      "strand": "+", 
-      "gene_id": "ENSG00000223972", 
-      "exon_number": 1, 
-      "exon_total": 4, 
-      "splice_count": 1, 
-      "splice_before": 0, 
-      "coverage_count": 5, 
-      "tss_mapped": 4, 
-      "tss_total": 1, 
-      "transcript_total": 4, 
-      "transcripts": [
-        {
-          "source": "ENSEMBL", 
-          "attribute": {
-            "gene_status": "KNOWN", 
-            "havana_gene": "OTTHUMG00000000961.2", 
-            "level": "3", 
-            "transcript_status": "KNOWN", 
-            "gene_id": "ENSG00000223972.4", 
-            "transcript_id": "ENST00000515242.2", 
-            "transcript_name": "DDX11L1-201", 
-            "gene_type": "pseudogene", 
-            "transcript_type": "transcribed_unprocessed_pseudogene", 
-            "gene_name": "DDX11L1"
-          }, 
-          "tss": 11872
-        }, 
-        {
-          "source": "ENSEMBL", 
-          "attribute": {
-            "gene_status": "KNOWN", 
-            "havana_gene": "OTTHUMG00000000961.2", 
-            "level": "3", 
-            "transcript_status": "KNOWN", 
-            "gene_id": "ENSG00000223972.4", 
-            "transcript_id": "ENST00000518655.2", 
-            "transcript_name": "DDX11L1-202", 
-            "gene_type": "pseudogene", 
-            "transcript_type": "transcribed_unprocessed_pseudogene", 
-            "gene_name": "DDX11L1"
-          }, 
-          "tss": 11874
-        },
-      ], 
-      "samples": {
-        "E057": {
-          "delta_rpkm": 0.014, 
-          "rpkm": 0.014, 
-          "max_rpkm": 0.02
-        }, 
-        "E113": {
-          "delta_rpkm": 0.249, 
-          "rpkm": 0.249, 
-          "max_rpkm": 0.28
-        }, 
-        "E120": {
-          "delta_rpkm": 0.071, 
-          "rpkm": 0.071, 
-          "max_rpkm": 0.23
-        },
-      }
-    }
-
+It outputs a json file in [this format](https://github.com/blt2114/compGenomics/blob/master/vignettes/sample_files/all_tss_rna.json)
 
 ### Step 4b: Load Gene Expression data into the file ###
     
