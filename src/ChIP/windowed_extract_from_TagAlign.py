@@ -61,8 +61,6 @@ sites_file= open(sites_json_fn)
 site_line = sites_file.readline().strip("\n")
 current_site = json.loads(site_line)
 #calculate new site information 
-exon_sides=[]
-exon_side_order=[]
 if current_site["read_dir"] == 1:
     (win_start,win_end)=(int(current_site["five_p_loc"])-upstream_window,int(current_site["five_p_loc"])+downstream_window)
 else:

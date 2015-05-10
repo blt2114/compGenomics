@@ -42,11 +42,11 @@ cat 57epigenomes.exon.N.pc > script-1.py | script-2.py | ... | script-n.py > TSS
         -somewhere along the way, dump the TSS locations into a file, TSS-starts.json
         with objects that look like:
 {
-        "chrom":"X",            # chromosome identifier as a string
+        "seqname":"chrx",            # chromosome identifier as a string
 
         "location":1220,        # base offset from chromosome start
 
-        "read_dir":1,           # 1 if forward, 0 if backwards. This is 
+        "strand":1,           # 1 if forward, 0 if backwards. This is 
                                 # important if we are interested in looking
                                 # at positions upstream/ downstream of the TSS
 }
@@ -97,4 +97,46 @@ Working off of aligned reads, TagAlign Files.
 docs.google.com/spreadsheet/ccc?key=0Am6FxqAtrFDwdHU1UC13ZUxKYy1XVEJPUzV6MEtQOXc&usp=sharing#gid=15
         -this also contains information on which samples have which data.
 
+Depends on RapidJSON: https://github.com/miloyip/rapidjson
 
+Bash script, take parameter for directory with files (optional)
+        -ultimate output, a few files with lines look like:
+chr1 1220351345 EOO1 H3K9ac [423 23 1 43 7 2342 23]
+        -single file with all chip results
+
+another other script that catts
+then runs one last python script that reads this output file and  
+
+initial list of Cassette exons from:http://www.biomedcentral.com/1471-2164/15/1148
+
+Later from brandon fray
+
+output of ChIP collection:
+(same as input and sample info)
+{
+        "seqname":"chrx",            # chromosome identifier as a string
+
+        "location":1220,        # base offset from chromosome start
+
+        "strand":1,           # 1 if forward, 0 if backwards. This is 
+                                # important if we are interested in looking
+                                # at positions upstream/ downstream of the TSS
+
+        "samples":{
+
+                "E001":{
+                        "labels":{
+                                inc: 2.o12,
+                                exon_included: 0,
+                                d_RKPKM: 24t,
+                                label: 
+                        },
+                        features:{
+                                "H3K9me3":read_counts
+                                "H3K9me2":read_counts
+                                "H3K9me3":read_counts
+                                "H3K9me3":read_counts
+                        }
+                }
+        }
+}
