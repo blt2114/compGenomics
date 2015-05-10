@@ -3,7 +3,7 @@ import json
 
 if len(sys.argv)!=2:
     sys.stderr.write("invalid usage: python parse_out_cassette_exon.py"+
-    "<exons_list.txt>")
+    " <exons_list.txt>\n")
     sys.exit(2)
 
 exons_fn = sys.argv[1]
