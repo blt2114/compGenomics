@@ -114,9 +114,7 @@ Run the file:
 
 The chip extraction is written in C++. To compile this script, use:
 
-    clang++ -std=c++11 src/extract_reads_from_TagAlign.cpp
-
-Rename a.out to "extract_chip" and move it to the folder: src/ChIP.
+    make
 
 Now run:
 
