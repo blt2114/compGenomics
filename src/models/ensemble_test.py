@@ -33,14 +33,13 @@ for l in exons_file:
     exon_dicts.append(exon_dict)
     for key in exon_dict.keys():
         if type(exon_dict[key]) == dict:
-            if len(exon_dict[key]) < 5: 
+            if len(exon_dict[key]) < 10: 
                 continue
             if not sample_dicts.has_key(key):
                 sample_dicts[key]=[]
             experiment_dicts.append(exon_dict[key])
             sample_dicts[key].append(exon_dict[key])
 exons_file.close()
-'''
 keys=[
 "H2A.Z_num_reads_five_p",
 "H3K4me1_num_reads_five_p",
@@ -75,12 +74,13 @@ keys=[
     "H3K36me3_num_reads_five_p",
     "H3K4me3_num_reads_five_p",
     "H3K4me1_num_reads_five_p",
-#    "H3K9me3_num_reads_three_p",
-#    "H3K27me3_num_reads_three_p",
-#    "H3K36me3_num_reads_three_p",
-#    "H3K4me3_num_reads_three_p",
-#    "H3K4me1_num_reads_three_p"
+    "H3K9me3_num_reads_three_p",
+    "H3K27me3_num_reads_three_p",
+    "H3K36me3_num_reads_three_p",
+    "H3K4me3_num_reads_three_p",
+    "H3K4me1_num_reads_three_p"
     ]
+'''
 label="p_inc"
 labels=[0,1]
 
@@ -168,7 +168,7 @@ for sample in samples_features_and_labels.keys():
     samples_features_and_labels[sample]["X"]=X_sample_p
     samples_features_and_labels[sample]["Y_C"]=Y_sample_C_p
     samples_features_and_labels[sample]["Y_R"]=Y_sample_R_p
-    
+ 
 
 
 train_X=X[0:train_size]
@@ -190,24 +190,6 @@ print "label == 1: " + str(float(Y_C.count(1))/len(Y_C))
 
 
 # Regression!
-'''
-for a in [0.00001,0.0001, 0.001,0.01,0.1,1]:
-    clf = linear_model.Lasso(alpha=a,copy_X=True)#,normalize=True)
-    clf.fit(train_X,train_Y_R_decile)
-    Y_R_predicted=clf.predict(test_X)
-    MSE=((np.array(test_Y_R_decile) - np.array(Y_R_predicted)) ** 2).mean()
-    print "with alpha =" + str(a)+" MSE="+str(MSE)
-    print "params: " + str(clf.get_params())
-    Y_R_predicted_print = [ '%.2f' % elem for elem in Y_R_predicted ]
-    test_Y_R_print = [ '%.2f' % elem for elem in Y_R_decile ]
-    print "first 10 labels predicted: \t"+str(Y_R_predicted_print[0:10])
-    print "first 10 labels real:\t\t"+str(list(test_Y_R_print[0:10]))
-    scores = cross_val_score(clf, train_X, train_Y_R_decile)
-    print "Lasso mean cross validation score: " + str( scores.mean())
-    print "\n\n"
-    for key in sample_dicts.keys()
-        sample_dicts[key]
-'''
 '''
 # Random Forest Regressor
 print "testing Regressor"
@@ -242,9 +224,9 @@ for j in [20,200]:
 #        print "Random Forest Regressio mean cross validation score: " + str( scores.mean())
         print "\n\n"
         '''
-for j in [30,50,100]:
+for j in [50]:
     clf = RandomForestClassifier(n_estimators=j,
-        max_depth=10, min_samples_split=10, random_state=0)
+        max_depth=4, min_samples_split=3, random_state=0)
 #    clf = AdaBoostClassifier(n_estimators=j)
     clf.fit(train_X,train_Y_C)
     # print "params: "+str(clf.get_params())
