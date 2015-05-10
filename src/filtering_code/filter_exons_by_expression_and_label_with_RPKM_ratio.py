@@ -16,8 +16,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 if not len(sys.argv) in [4, 5]:
     sys.stderr.write("invalid usage: python filter_exons.py"+
-            " <genes_to_filter_RPKM.tsv>"+
-            " <exons_RPKM.tsv> <most_expressed_exons.json> (<gene_RPKM_threshold>)\n")
+            " <genes_RPKM.json>"+
+            " <exons_with_rpkm_values.json> <most_expressed_exons.json> (<gene_RPKM_threshold>)\n")
     sys.exit(2)
 
 genes_fn = sys.argv[1]
@@ -34,13 +34,13 @@ if len(sys.argv) is 5:      # if included, set explicitly
     # Presumably this file will be small enough that doing this is not a
     # problem.
 with open(genes_fn) as genes_file:
-    genes = list(genes_file)
+    genes = json.load(genes_file)
 genes_file.close()
 
 with open(most_expressed_exons_fn) as most_expressed_exons_file:
-    most_expressed_exons=json.loads(most_expressed_exons_file.readline())#,object_hook=_decode_dict)
+    most_expressed_exons=json.load(most_expressed_exons_file)
 most_expressed_exons_file.close()
-
+'''
 genes_dict={} # holds information by gene
 gene_labels=genes[0].strip("\n").split("\t") # first row is column headings
 for gene in genes[1:]: # for all lines after the headings
@@ -57,12 +57,49 @@ for gene in genes[1:]: # for all lines after the headings
             gene_dict[gene_labels[i]]=gene_split[i]
     genes_dict[gene_split[0]]=gene_dict # index whole line by gene name
 #print json.dumps(genes_dict)
+'''
 
 # load exons info from json into a dictionary
+'''
 with open(exons_fn) as exons_file:
     exons = list(exons_file)
 exons_file.close()
+'''
 
+exons_file=open(exons_fn)
+
+for exon_line in exons_file:
+    exon = json.loads(exon_line)
+    gene_id=exon["gene_id"]
+    if not genes.has_key(gene_id):
+        sys.stderr.write(gene_id +" is not present in file, "+genes_fn+"\n")
+        continue
+    gene_rpkms=genes[gene_id]["RPKM_by_sample"]
+    ref_exon_rpkms=most_expressed_exons[gene_id]["RPKM_by_sample"]
+    exon_rpkms=exon["RPKM_by_sample"]
+    exon["samples"]={}
+    for sample_id in exon_rpkms.keys():
+        ref_exon_rpkm =ref_exon_rpkms[sample_id]
+        gene_rpkm =gene_rpkms[sample_id]
+        exon_rpkm=exon_rpkms[sample_id]
+        if ref_exon_rpkm<ref_exon_RPKM_threshold:
+            continue
+        if gene_rpkm<gene_RPKM_threshold:
+            continue
+        exon["samples"][sample_id]={"ref_RPKM":ref_exon_rpkm,"gene_RPKM":gene_rpkm,"RPKM":exon_rpkm}
+        p_inclusion_exon = exon_rpkm/ref_exon_rpkm
+        p_inclusion_gene = exon_rpkm/gene_rpkm
+
+        # add the p_inclusion to the exon dict
+        exon["samples"][sample_id]["p_inc"]=p_inclusion_exon
+        exon["samples"][sample_id]["p_inc_gene"]=p_inclusion_gene
+    if len(exon["samples"])==0:
+        sys.stderr.write("not including exon: "+exon["exon_location"]+"\n")
+        continue
+    print json.dumps(exon)
+
+
+'''
 # this function parses exon location entry in to 3 prime and 5 prime
 # locations
 def parse_3p_5p(exon_location):
@@ -148,20 +185,20 @@ while line_num < len(exons):
                 #make calculations for exons of current gene and move on.
                 # grap the RPMK value from the column corresponding to
                 # label i.
-                exon_RPKM = float(past_exon_split[exon_labels.index(i)])
+                exon_RPKM = past_exon_split[exon_labels.index(i)]
                 
                 # calculate an approximation of the portion of
                 # transcripts that include the present exon in the
                 # present sample.
                 ref_RPKM=ref_RPKMs[exon_labels.index(i)]
-                if float(ref_RPKM) < float(ref_exon_RPKM_threshold):
+                if ref_RPKM < ref_exon_RPKM_threshold:
                     continue
-                p_inclusion_exon = exon_RPKM/float(ref_RPKM)
-                p_inclusion_gene = exon_RPKM/float(gene_RPKM)
+                p_inclusion_exon = exon_RPKM/ref_RPKM
+                p_inclusion_gene = exon_RPKM/gene_RPKM
 
                 # add the p_inclusion to the exon dict
                 exon_dict[i]={"p_inc":p_inclusion_gene}
-                exon_dict[i]={"p_inc_exon":p_inclusion_gene}
+                exon_dict[i]={"p_inc_exon":p_inclusion_exon}
                 inclusion_vals.append(p_inclusion_exon)
             print json.dumps(exon_dict)
 
@@ -192,3 +229,4 @@ if True: #set to True to produce figures
             plt.hist(exons_dict[keys[exon_idx]],bins=100,range=(0,3))
             plt.axis([0,3,0,10])
     plt.show()
+    '''
