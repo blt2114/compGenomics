@@ -4,6 +4,8 @@
 
 import sys
 import json
+from json import encoder
+encoder.FLOAT_REPR = lambda o: format(o, '.2f')
 
 if len(sys.argv) < 2:
     sys.stderr.write("invalid usage: python scale_down_labels.py"+
