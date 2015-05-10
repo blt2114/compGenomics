@@ -146,9 +146,12 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
+    int count=0;
     tuple<int,int> ChIP_read_loc(0,0);
     string throw_away; // string to dump ends of lines that are unused into
     do{
+        // print every million or so lines.
+        if (!(++count % (1<< 20)) ) cerr << "line: " << count <<" \n";
         if (!get_read_loc(ChIP_read_loc,tag_align_file,chr_order)){
             cerr << "get_read_loc returned 0, exitting now" << endl;
             exit(0);
