@@ -48,8 +48,9 @@ while line_num < len(exons):
     exon_dict["five_p_loc"]=five_p_loc
     exon_dict["three_p_loc"]=three_p_loc
     exon_dict["read_dir"]=read_dir
+    exon_dict["RPKM_by_sample"]={}
     for i in range(2,len(exon_labels)):
-        exon_dict[exon_labels[i]]=exon_split[i]
+        exon_dict["RPKM_by_sample"][exon_labels[i]]=float(exon_split[i])
     print json.dumps(exon_dict)
     exon=exons[line_num]
     line_num+=1
