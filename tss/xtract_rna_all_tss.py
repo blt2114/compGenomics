@@ -14,6 +14,12 @@ Each effective TSS site contains a list of transcripts, along with a dictionary 
 values. This scripts also calculates a lot of metadata, such as which exons are spliced and which in what
 proportion of transcripts they are spliced.
 
+The "granularity" argument is how much wiggle room you will allow transcripts to be mapped to the same exon.
+With a granularity of 0, only TSS sites that fall exactly within the boundaries of an exon will be mapped to it.
+A granularity of 200 will allow TSS sites up to 200bp upstream or downstream of an exon to be mapped to it.
+I recommend a higher granularity because the boundaries defined by the RPKM matrix do not necessarily encompass
+all transcripts--it is more of an approximation of the exons detected during RNA-seq.
+
 """
 
 __author__ = 'jeffrey'
@@ -150,8 +156,8 @@ def main(argv):
                     # Save this transcript
                     d = collections.OrderedDict()
                     d['seqname'] = exon['seqname']
-                    d['tss'] = exon['tss']
-                    d['strand'] = exon['strand']
+                    d['location'] = exon['tss']
+                    d['strand'] = (1 if exon['strand']=='+' else -1)
                     d['gene_id'] = gene
                     d['exon_number'] = exon['exon_number']
                     d['exon_total'] = len(genes)

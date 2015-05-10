@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+
+"""
+This file is a template for filtering a json file of TSS sites and RNA RPKM values.
+"""
+
 __author__ = 'jeffrey'
 
 import json, sys, collections

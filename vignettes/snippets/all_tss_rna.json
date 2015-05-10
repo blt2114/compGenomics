@@ -1,0 +1,65 @@
+{
+  "seqname": "chr1",
+  "location": 11869,
+  "strand": 1,
+  "gene_id": "ENSG00000223972",
+  "exon_number": 1,
+  "exon_total": 4,
+  "splice_count": 1,
+  "splice_before": 0,
+  "coverage_count": 5,
+  "tss_mapped": 4,
+  "tss_total": 1,
+  "transcript_total": 4,
+  "transcripts": [
+    {
+      "source": "ENSEMBL",
+      "attribute": {
+        "gene_status": "KNOWN",
+        "havana_gene": "OTTHUMG00000000961.2",
+        "level": "3",
+        "transcript_status": "KNOWN",
+        "gene_id": "ENSG00000223972.4",
+        "transcript_id": "ENST00000515242.2",
+        "transcript_name": "DDX11L1-201",
+        "gene_type": "pseudogene",
+        "transcript_type": "transcribed_unprocessed_pseudogene",
+        "gene_name": "DDX11L1"
+      },
+      "tss": 11872
+    },
+    {
+      "source": "ENSEMBL",
+      "attribute": {
+        "gene_status": "KNOWN",
+        "havana_gene": "OTTHUMG00000000961.2",
+        "level": "3",
+        "transcript_status": "KNOWN",
+        "gene_id": "ENSG00000223972.4",
+        "transcript_id": "ENST00000518655.2",
+        "transcript_name": "DDX11L1-202",
+        "gene_type": "pseudogene",
+        "transcript_type": "transcribed_unprocessed_pseudogene",
+        "gene_name": "DDX11L1"
+      },
+      "tss": 11874
+    },
+  ],
+  "samples": {
+    "E057": {
+      "delta_rpkm": 0.014,
+      "rpkm": 0.014,
+      "max_rpkm": 0.02
+    },
+    "E113": {
+      "delta_rpkm": 0.249,
+      "rpkm": 0.249,
+      "max_rpkm": 0.28
+    },
+    "E120": {
+      "delta_rpkm": 0.071,
+      "rpkm": 0.071,
+      "max_rpkm": 0.23
+    },
+  }
+}

@@ -37,8 +37,8 @@ int get_read_loc(tuple<int,int>&loc, ifstream & ChIP_file, Document & chr_order)
     // read in the site position and interpret it as a decimal integer.
     int ChIP_chr=chr_order[ChIP_chr_str.c_str()].GetInt();
     int ChIP_loc=stoi(ChIP_loc_str);
- loc=tuple <int,int>(ChIP_chr,ChIP_loc);
-//    loc=tuple <int,int>(0,0);
+    loc=tuple <int,int>(ChIP_chr,ChIP_loc);
+    // loc=tuple <int,int>(0,0);
     return 1;
 }
 
@@ -49,6 +49,7 @@ void reverse(vector <int> & vec){
     }  
     vec=tmp;
 }
+
 int main(int argc, char** argv) {
 
     if (argc != 6){
@@ -62,6 +63,8 @@ int main(int argc, char** argv) {
     char *MarkID=argv[3];
     char *sites_fn=argv[4];
     char *ChIP_fn=argv[5];
+
+
 
     // Open and parse config file 
     ifstream config_file;
@@ -98,10 +101,12 @@ int main(int argc, char** argv) {
     chr_order.Parse(chr_line.c_str());
     chr_file.close();
 
+
+
     // open file of ordered site locations
     int buff_size=100000;
     ifstream sites_file;
-//    char *sites_buff = new char[buff_size];
+    // char *sites_buff = new char[buff_size];
     char sites_buff [buff_size];
     sites_file.rdbuf()->pubsetbuf(sites_buff,buff_size);
     sites_file.open(sites_fn);
@@ -109,16 +114,18 @@ int main(int argc, char** argv) {
         cerr << "could not open file with sites to label <"<< sites_fn <<">" << endl;
         exit(1);
     }
+
     string site_line;
     getline(sites_file,site_line);
     Document current_site;
-    current_site.Parse(site_line.c_str()); 
-    string site_chr=current_site["chrom"].GetString();
+    current_site.Parse(site_line.c_str());
+    string site_chr=current_site["seqname"].GetString();
     // read in the site position and interpret it as a decimal integer.
     //int site_pos=stoi(current_site["five_p_loc"].GetString()); 
     int site_pos=current_site["location"].GetInt(); 
 
     int site_chr_val = chr_order[site_chr.c_str()].GetInt();
+
     tuple<int,int> site_strt(site_chr_val,site_pos-window_size*num_windows);
     tuple<int,int> site_end(site_chr_val,site_pos+window_size*num_windows);
 
@@ -132,7 +139,7 @@ int main(int argc, char** argv) {
 //    char *buff = new char[buff_size];
     char buff [buff_size];
     tag_align_file.rdbuf()->pubsetbuf(buff,buff_size);
-    
+
     tag_align_file.open(ChIP_fn);
     if (!tag_align_file.is_open()){
         cerr << "could not open tagAlign file <"<< ChIP_fn <<">" << endl;
@@ -158,18 +165,18 @@ int main(int argc, char** argv) {
         }
 
         //at this point we know the read is past the current site, so we must move to the next site.
-        if (current_site["read_dir"].GetInt() ==-1){
+        if (current_site["strand"].GetInt() == -1){
             reverse(site_reads);
         }
 
-        cout << string("{ ") <<MarkID << ": [ " ;
+        cout << site_chr << string("\t") << site_pos << string("\t") << sampleID << string("\t") << MarkID << "\t[" ;
         for (int x= 0; x < site_reads.size()-1;++x) 
-            cout << site_reads[x] << string(",");
+            cout << site_reads[x] << string(", ");
         cout <<site_reads[site_reads.size()-1];
-        cout << string(" ]}") ;
-        cout<< "#" << current_site["location"].GetInt() << endl;
+        cout << string("]") ;
+        cout << endl;
 //        cout<< "#" << current_site["five_p_loc"].GetString() << endl;
-        /*
+/*
            Value &sample_dict = current_site[sample_ID];
            string sample_json= sample_dict.GetString();
            Document new_sample_doc;
@@ -180,8 +187,8 @@ int main(int argc, char** argv) {
            for ( int i = 0; i < site_reads.size();++i){
            myArray.PushBack(site_reads[i],allocator);
            } 
-
 */
+
         // trace back in case windows are overlapping
         int dist_to_go_back = int(tag_align_file.tellg())>10000? 10000:int( tag_align_file.tellg()); 
         tag_align_file.seekg(-dist_to_go_back,tag_align_file.cur);
@@ -197,15 +204,18 @@ int main(int argc, char** argv) {
         // reset site_reads
         for (int x= 0; x < site_reads.size();++x) site_reads[x]=0; // zero it out
 
-        site_chr=current_site["chrom"].GetString();
+        site_chr=current_site["seqname"].GetString();
         site_pos=current_site["location"].GetInt(); 
         //site_pos=stoi(current_site["five_p_loc"].GetString()); 
 
         site_chr_val = chr_order[site_chr.c_str()].GetInt();
         site_strt=tuple<int,int>(site_chr_val,site_pos-window_size*num_windows);
         site_end=tuple<int,int> (site_chr_val,site_pos+window_size*num_windows);
+
     }while (true);
+
     sites_file.close();
     tag_align_file.close();
+
     return 0;
 }

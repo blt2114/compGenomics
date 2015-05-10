@@ -4,7 +4,7 @@
 This file converts a gtf file into a json dictionary of genes > transcripts > exons
 
 Usage:
-    python pipelines/gtf2dict.py files/gen10.long.gtf.genes files/gen10.long.gtf.transcripts files/gen10.long.gtf.exons > pipelines/genes.json
+    python tss/gtf2dict.py files/gen10.long.gtf.genes files/gen10.long.gtf.transcripts files/gen10.long.gtf.exons > tss/genes.json
 
 """
 
