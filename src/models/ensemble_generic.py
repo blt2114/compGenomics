@@ -38,13 +38,13 @@ keys=[
         ]
 '''
 keys=[
-        "H2A.Z_num_reads_five_p",
-        "H3K4me2_num_reads_five_p",
-        "H3K9ac_num_reads_five_p",
-        "H3K27ac_num_reads_five_p",
-        "H3K79me2_num_reads_five_p",
-        "H4K20me1_num_reads_five_p",
-        "DNase_num_reads_five_p",
+#        "H2A.Z_num_reads_five_p",
+#        "H3K4me2_num_reads_five_p",
+#        "H3K9ac_num_reads_five_p",
+#        "H3K27ac_num_reads_five_p",
+#        "H3K79me2_num_reads_five_p",
+#        "H4K20me1_num_reads_five_p",
+#        "DNase_num_reads_five_p",
 
         #core marks 
         "H3K4me1_num_reads_five_p",
@@ -308,31 +308,39 @@ for n_estimators in [200]:
 
         # To make this use AdaBoost not RandomForest, uncomment below.
     #    clf = AdaBoostClassifier(n_estimators=n_estimators)
-        clf.fit(X,Y_C)
-        train=folds[0]+folds[1]+folds[2]
-        val=folds[3]
-        test=folds[4]
+        accuracies=[]
+        for fold_divisions in[{"tr":[0,1,2],"te":[3]},{"tr":[3,1,2],"te":[0]},{"tr":[0,3,2],"te":[3]},{"tr":[0,1,3],"te":[2]}]:
+            tr_folds=fold_divisions["tr"]
+            te_folds=fold_divisions["te"]
+            train=[]
+            val=[]
+            for f in tr_folds:
+                train+=folds[f]
+            for f in te_folds:
+                val+=folds[f]
 
-        train_X=[]
-        train_Y=[]
-        for i in train:
-            train_X.extend(i["X"])
-            train_Y.extend(i["Y_C"])
+            train_X=[]
+            train_Y=[]
+            for i in train:
+                train_X.extend(i["X"])
+                train_Y.extend(i["Y_C"])
 
-        val_X=[]
-        val_Y=[]
-        for i in val:
-            val_X.extend(i["X"])
-            val_Y.extend(i["Y_C"])
+            val_X=[]
+            val_Y=[]
+            for i in val:
+                val_X.extend(i["X"])
+                val_Y.extend(i["Y_C"])
 
-        clf, accuracy = test_model(clf,train_X,val_X,train_Y,val_Y)
+            clf, accuracy = test_model(clf,train_X,val_X,train_Y,val_Y)
+            accuracies.append(accuracy)
 
-        print "accuracy is " + str(accuracy)
-        
+            print "accuracy is " + str(accuracy)
+            
+        print "ave accuracy: "+ str(np.mean(accuracies))
         '''
-        # print "params: "+str(clf.get_params())
-        print "n_estimators: "+str(n_estimators)
-        print "depth: "+str(depth)
+            # print "params: "+str(clf.get_params())
+            print "n_estimators: "+str(n_estimators)
+            print "depth: "+str(depth)
         feature_importances = clf.feature_importances_
         print "feature_importances: "
         if len(X[0]) == len(keys):
