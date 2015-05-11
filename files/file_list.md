@@ -89,3 +89,7 @@ File List
 ### Hs\_AS\_novel.bed/
 > list of exon alternative splicing events
 > obtained from http://zhanglab.c2b2.columbia.edu/index.php/Cortex\_AS
+
+
+### known\_cassette\_exons.txt
+> processed list of known cassette exons, used as input for script: filter\_cassette\_exons.py
