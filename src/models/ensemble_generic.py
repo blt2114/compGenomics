@@ -19,6 +19,7 @@ if len(sys.argv) != 2:
     sys.exit(2)
 
 #names of marks from windowed trials
+'''
 keys=[ 
         #core marks
         "H3K36me3_reads",
@@ -37,13 +38,13 @@ keys=[
         ]
 '''
 keys=[
-#        "H2A.Z_num_reads_five_p",
-#        "H3K4me2_num_reads_five_p",
-#        "H3K9ac_num_reads_five_p",
-#        "H3K27ac_num_reads_five_p",
-#        "H3K79me2_num_reads_five_p",
-#        "H4K20me1_num_reads_five_p",
-#        "DNase_num_reads_five_p",
+        "H2A.Z_num_reads_five_p",
+        "H3K4me2_num_reads_five_p",
+        "H3K9ac_num_reads_five_p",
+        "H3K27ac_num_reads_five_p",
+        "H3K79me2_num_reads_five_p",
+        "H4K20me1_num_reads_five_p",
+        "DNase_num_reads_five_p",
 
         #core marks 
         "H3K4me1_num_reads_five_p",
@@ -67,7 +68,6 @@ keys=[
 #        "DNase_num_reads_three_p",
     ]
 
-'''
 #label="p_inc_gene" # for alternative label
 label="p_inc"
 labels=[0,1]
@@ -139,11 +139,11 @@ exons_file.close()
 
 ranges=[
         #           (20,40),
-#        (48,52),(45,55) # works well for cassette exons
+        #        (48,52),(45,55) # works well for cassette exons
         (48,52),
         (45,55),
-#                (35,50),
-#                (50,65),
+        #                (35,50),
+        #                (50,65),
         #        (30,70),
         ]
 
@@ -205,6 +205,18 @@ for key in sample_dicts.keys():
         samples_features_and_labels[key]["X"].append(exprmt_feature_vector)
         samples_features_and_labels[key]["Y_R"].append(exprmt_label)
         samples_features_and_labels[key]["Y_C"].append(int(float(exprmt_label)<label_cutoff))
+
+num_folds=5
+num_training_folds=3
+validation_folds=1
+
+folds=[[]]*num_folds
+num_samples= len(samples_features_and_labels.keys())
+fold_size=num_samples/num_folds
+print "number of samples in dataset: " + str(num_samples)
+for i in range(0,num_folds-1):
+    folds[i]=samples_features_and_labels.values()[i*fold_size:(i+1)*fold_size]
+folds[num_folds-1]=samples_features_and_labels.values()[(num_folds-1)*fold_size:num_folds*fold_size]
 
 num_points = len(Y_C)
 print "number of datapoints: " + str(num_points)
@@ -278,17 +290,46 @@ print "len Y_C: "+str(len(Y_C))
 print "len X: "+str(len(X)) 
 print "len X[0]: "+str(len(X[0]) )
 
+def test_model(clf,X_train,X_test,Y_train,Y_test):
+    clf.fit(X_train,Y_train)
+    Y_predicted = clf.predict(X_test)
+    accuracy=float(sum(Y_test==Y_predicted))/len(Y_predicted)
+    return clf, accuracy
+
+
+
 for n_estimators in [200]:
     for depth in [8,12]:#12 is good for cassette exons
         clf =RandomForestClassifier(n_estimators=n_estimators,max_depth=depth,
                 min_samples_split=20, random_state=0)#min per split was 10
-                                                #as good for all_dim/scaled_10_to_200.
+        #as good for all_dim/scaled_10_to_200.
                                                 # 2 samples per split works
                                                 # better for small dataset
 
         # To make this use AdaBoost not RandomForest, uncomment below.
     #    clf = AdaBoostClassifier(n_estimators=n_estimators)
         clf.fit(X,Y_C)
+        train=folds[0]+folds[1]+folds[2]
+        val=folds[3]
+        test=folds[4]
+
+        train_X=[]
+        train_Y=[]
+        for i in train:
+            train_X.extend(i["X"])
+            train_Y.extend(i["Y_C"])
+
+        val_X=[]
+        val_Y=[]
+        for i in val:
+            val_X.extend(i["X"])
+            val_Y.extend(i["Y_C"])
+
+        clf, accuracy = test_model(clf,train_X,val_X,train_Y,val_Y)
+
+        print "accuracy is " + str(accuracy)
+        
+        '''
         # print "params: "+str(clf.get_params())
         print "n_estimators: "+str(n_estimators)
         print "depth: "+str(depth)
@@ -302,6 +343,8 @@ for n_estimators in [200]:
                 if i%len(ranges) ==0:
                     print ""
                 print "\t"+keys[i/len(ranges)]+str(ranges[i%len(ranges)])+":\t"+str(feature_importances[i])
+                '''
+        '''
         print "score by experiment:"
         mean_acc=[] 
         for sample in samples_features_and_labels.keys():
@@ -312,6 +355,8 @@ for n_estimators in [200]:
             mean_acc.append(np.mean(sample_scores)*(float(len(X_sample)/float(num_points))))
             print "\t"+sample+" test accuracy: "+str(np.mean(sample_scores))
         print "average sample accuracy:"+str(sum(mean_acc))
+        '''
+        '''
         scores = cross_val_score(clf, X, Y_C)
         print "RandomForest mean cross validation score: " + str( scores.mean())
 
@@ -359,3 +404,4 @@ if False:
     plt.suptitle("Random Forest decision boundaries on best two dimensions.")
     plt.axis("tight")
     plt.show()
+    '''
